@@ -336,7 +336,6 @@
 	    	</div>
 	    </div>
 	    <!--绑定账号-->
-	    <th:block th:if="${user}==null">
 	    <div class="alertCon alertbd" id="alertbd">
 	    	<div class="alertTl">
 	    		信息绑定
@@ -388,111 +387,189 @@
 	    		</form>
 	    	</div>
 	    </div>
-	    </th:block>
 	    <script type="text/javascript" th:src="@{/js/main.js}" ></script>
 	    <script type="text/javascript">
-	    	/* var token =  [[${token}]];
-	    	var account =  [[${account}]];
-	    	var role =  [[${role}]]; */
-	    	
-			/* $(document).ready(function () {
-				console.log($.cookie("account"))
-				console.log($.cookie("role"))
-				
-				if(($.cookie("account")!=null) {
-					$("#loginBefore").css('display','none'); 
-					$("#loginAfter").css('display','block'); 
-				}else {
-					$("#loginBefore").css('display','block'); 
-					$("#loginAfter").css('display','none'); 
-				}
-				
-				if($.cookie("account")!=account){
-					$.cookie('account', account);
-				}
-				if($.cookie("role")!=role){
-					$.cookie('role', role);
-				}
-				if(token == "1"){
-					$('.alertZh').css('display','block');
-					alert("密码输入错误") */
-					/* $('#noaccount').css('display','none');
-					$('#passworderror').css('display','block'); */
-				/*}
-				
-				if(token == "2"){
-					$('.alertZh').css('display','block');
-					alert("未找到该用户名")
-					/* $('#passworderror').css('display','none');
-					$('#noaccount').css('display','block'); 
-					}
-				
-				 $("#bindButtion").click(function(){
-					if($("#bdaccount").val() == ""){
-						alert('请输入用户名','提示')
-						return;
-					}
-					if($("#bdpassword").val() == ""){
-						alert('请输入密码','提示')
-						return;
-					}
-					if($("#bdpassword2").val() == ""){
-						alert('请确认密码','提示')
-						return;
-					}
-					if($("#bdpassword").val() !== $("#bdpassword2").val()){
-						alert('两次输入密码不一致','提示')
-						return;
-					}
+	    var time;
+    	// 获取登录二维码
+        function getQcode() {
+            var url = "/wechat/getLoginQcode";
+            $.ajax({
+                url: url,
+                type: "get",
+                async: true,
+                success: function (res) {
+                    $("#showqrcode").attr("src", res.img);
+                    time = window.setInterval(isLogin, 3000);
+                }
+            });
+    	}
+
+      //轮询判断是否登录
+        function isLogin() {
+                var url = "/wechat/islogin";
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    async: true,
+                    success: function (resObj) {
+//	                        var resObj = JSON.parse(res);
+                        if (resObj.code == 200) {
+                            window.clearInterval(time);
+	        				$.cookie("openId",resObj.openId);
+	        				$.cookie("nickName",resObj.nickName);
+	        				$.cookie("headImg",resObj.headUrl);
+	        				$.cookie("role",resObj.role);
+	        				console.log("openId inserted into cookie " + resObj.openId)
+
+                            if(resObj.bind==="false") {
+								$("#showcode").css('display','none');
+								// $("#showqrcode").css('display','none');
+                            	$("#alertbd").css('display','block');
+                            }else {
+								window.location.href = "/";
+							}
+                        } else if (resObj.code == 1) {
+                            window.clearInterval(time);
+                            console.log("获取微信用户信息失败")
+                        }
+                    }
+                });
+            }
+    	
+		 $(document).ready(function () {
+//				console.log($.cookie("openId"))
+//				$.cookie("openId","2");
+//				$.cookie("role","管理员");
+			//$.cookie("role","普通用户");
+			
+			$("#alertbd").css('display','none');
+			if($.cookie("openId")!=null) {
+				$("#loginBefore").css('display','none'); 
+				$("#headImg").attr("src", $.cookie("headImg"));
+				$("#loginAfter").css('display','block');
+				if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
+					$(".vip").html("普通用户"); 
+					$("#backgroud").css('display','none'); 
+					document.getElementById("xituzhiku").removeAttribute("href");
+					document.getElementById("chanyejiance").removeAttribute("href");
+					document.getElementById("zhishifuwu").removeAttribute("href");
 					
-					if($("#bdemail").val() == ""){
-						alert('请输入电子邮箱','提示')
-						return;
-					}
-					if(!$("#bdemail").val().match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){
-						alert('请输入有效邮箱','提示')
-						return;
-					}
-					
-					
-					var formObject = {};
-			        var formArray =$("#bindForm").serializeArray();
-			        $.each(formArray,function(i,item){
-			            formObject[item.name] = item.value;
-			        });
-			        $.ajax({
-			            url:"user/bind",
-			            type:"post",
-			            contentType: "application/json; charset=utf-8",
-			            data: JSON.stringify(formObject),
-			            dataType: "json",
-			            success:function(data){
-			                if(data.token == "0")
-			                {
-			                	$('#exist').css('display','block');
-			                }
-			                else
-			                {
-			                	$.cookie('token', data.token);
-			                	$("#hiddentoken").val(data.token);
-			                	$("form[name='loginForm']").submit();
-			                }
-			            },
-			            error:function(e){
-			                alert("错误！！");
-			            }
-			        });
-	
-				});
-				
-				
-				
-				$(".alertInp").bind('input propertychange',function(){ 
-					$('.erroText').css('display','none');
-				});
-			});*/
+				}
+				if($.cookie("role")!=null && $.cookie("role")==="管理员"){
+					$(".vip").html("管理员"); 
+					$("#backgroud").css('display','block'); 
+				}
+				$("#logoinName").html($.cookie("nickName"));
+			}else {
+				$("#loginBefore").css('display','block'); 
+				$("#loginAfter").css('display','none'); 
+			}
+			
+
+			
+			$("#loginBefore").click(function(){
+				getQcode();
+			});
+//				if($.cookie("account")!=account){
+//					$.cookie('account', account);
+//				}
+//				if($.cookie("role")!=role){
+//					$.cookie('role', role);
+//				}
+//				if(token == "1"){
+//					$('.alertZh').css('display','block');
+//					alert("密码输入错误")
+//					$('#noaccount').css('display','none');
+//					$('#passworderror').css('display','block');
+//				}
+			
+//				if(token == "2"){
+//					$('.alertZh').css('display','block');
+//					alert("未找到该用户名")
+//					$('#passworderror').css('display','none');
+//					$('#noaccount').css('display','block'); 
+//				}
 			
 			
+			$("#quit").click(function(){
+				$.cookie("openId", "", {expires: -1});
+				$.cookie("nickName", "", {expires: -1});
+				$.cookie("headImg", "", {expires: -1});
+				$.cookie("role", "", {expires: -1});
+				window.location.href = "/";
+			});
+			
+			 $("#bindButtion").click(function(){
+				if($("#bdaccount").val() == ""){
+					alert('请输入用户名','提示')
+					return;
+				}
+				if($("#bdpassword").val() == ""){
+					alert('请输入密码','提示')
+					return;
+				}
+				if($("#bdpassword2").val() == ""){
+					alert('请确认密码','提示')
+					return;
+				}
+				if($("#bdpassword").val() !== $("#bdpassword2").val()){
+					alert('两次输入密码不一致','提示')
+					return;
+				}
+				
+				if($("#bdemail").val() == ""){
+					alert('请输入电子邮箱','提示')
+					return;
+				}
+				if(!$("#bdemail").val().match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){
+					alert('请输入有效邮箱','提示')
+					return;
+				}
+				
+				
+				var formObject = {};
+		        var formArray =$("#bindForm").serializeArray();
+		        $.each(formArray,function(i,item){
+		            formObject[item.name] = item.value;
+		        });
+		        formObject["nickName"] = $.cookie("nickName")
+		        formObject["openId"] = $.cookie("openId")
+		        $.ajax({
+		            url:"user/bind",
+		            type:"post",
+		            contentType: "application/json; charset=utf-8",
+		            data: JSON.stringify(formObject),
+		            dataType: "json",
+		            success:function(data){
+		            	$("#alertbd").css('display','none'); 
+		                if(data.code == "200")
+		                {
+		                	console.log($.cookie("nickName"))
+		                	$("#logoinName").html($.cookie("nickName"));
+		    			    $("#headImg").attr("src", $.cookie("headImg"));
+							$("#loginBefore").css('display','none');
+		    			    $("#loginAfter").css('display','block');
+							window.location.href = "/";
+		                }
+		                else
+		                {
+		                	console.log("binding error" + data);
+		                	if(data.code=="401") {
+		                		alert(data.msg);
+		                	}else {
+		                	 $("#quit").click();
+		                	}
+		                	
+		                }
+		            },
+		            error:function(e){
+		                alert("错误！！");
+		                $("#quit").click();
+		            }
+		        });
+
+			});			
+		 });
 			function search(){
 			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
 			    window.location.href="/patent/list?q=" + $("#keywords").val();
