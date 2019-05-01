@@ -1,6 +1,6 @@
 spring:
   application:
-     name: xitu
+     name: shengwu
   datasource:
      #url: 'jdbc:mysql://45.76.75.11:3306/?useUnicode=true&characterEncoding=utf-8&useSSL=false'
      #url: 'jdbc:mysql://47.104.7.73:3306/?useUnicode=true&characterEncoding=utf-8&useSSL=false'
@@ -8,7 +8,7 @@ spring:
      username: root
      password: 123456
      driver-class: 'com.mysql.jdbc.Driver'
-     database-name: xitu
+     database-name: yiyao
      init-sql: mysql/init.sql
   thymeleaf:
      cache: false
