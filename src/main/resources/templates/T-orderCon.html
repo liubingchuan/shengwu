@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" th:href="@{/css/xinit.css}" />
+		<link rel="stylesheet" th:href="@{/css/xmain.css}" />
+		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
+	</head>
+	<body>
+		<div class="nyMain">
+			<div class="nycontainer">
+			<div class="head">
+			<div class="clearfix">
+				<a href="/" class="left logo">
+					<img th:src="@{/ximages/logo.png}" />
+				</a>
+				<a href="/" class="left headBack">
+					<<返回首页
+				</a>
+				<div class="left headsuos">
+					<em></em>
+					<input type="button" class="headsuosBtn" value="搜索"  onClick="search();"/>
+					<input type="text" class="headsuosInp" th:text="${query}" id="keywords"/>
+				</div>
+				<div class="right">
+					<!--登录前-->
+					<!--<div class="loginbefore">
+						<a href="javascript:;" class="loginBtn">登录</a><span>/</span><a href="loginBtn">注册</a>
+					</div>-->
+					<!--登陆后-->
+					<div class="loginAfter">
+						<div class="loginAfterM">
+							<a href="#" class="loginAfterTx">
+								<img id="headImg" th:src="@{/ximages/jiazai.png}" />
+							</a>
+							<div class="loginAfterNo">
+								
+								<div class="loginAfterNoM">
+									<em class="loginAfterNoMSj"></em>
+									<p>
+										<!-- <span class="loginName" th:text="${user.account}"></span> -->
+										<span class="loginName" id="logoinName"></span>
+										<span class="vip">
+										</span>
+									</p>
+									<p id="backgroud">
+										<!-- <a th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}"  th:href="@{/user/list(token=${cookie.getValue()},pageIndex=0,pageSize=10)}"> -->
+										<a th:href="@{/user/list(pageIndex=0,pageSize=10)}">
+											<img th:src="@{/ximages/houtai.png}" />
+											进入管理后台
+										</a>
+									</p>
+									<p>
+										<a href="#">
+											<img th:src="@{/ximages/dingdan.png}" />
+											我的申请
+										</a>
+									</p>
+									<p>
+										<a id="quit" href="/">
+											<img th:src="@{/ximages/tuichu.png}" />
+											退出
+										</a>
+									</p>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				
+				</div>
+			</div>
+		</div>              
+		    
+			</div>
+			<div class="shenqingM">
+				<div class="nycontainer">
+				
+				    <div class="dingdanxq">
+					<div class="shenqingTop clearfix">
+						<span class="left shenqingTopName">
+							订单详情
+						</span>
+						
+					</div>
+					<div class="dingdanxqB" th:object="${order}">
+					
+		    		<a th:if="${order.chulizhuangtai == '已完成' && order.chulirenfujianId != null && order.chulirenfujianId !='' }" th:href="@{/file/fileDownload(filename=${chufujianId})}" class="btnblue orderconDown">
+		    					下载报告 
+		    		</a>
+		    		
+						<!-- <a href="#" class="btnblue orderconDown">
+							下载报告
+						</a> -->
+						<div class="orderconTl">
+							订单状态
+						</div>
+						<div class="orderconText">
+							
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									提交时间：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{shenqingshijian}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									处理时间：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{chulishijian}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									处理状态：
+								</span>
+								<div class="orderconTextGpRt">
+									<span class="colorGreen" th:text="*{chulizhuangtai}"></span>
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									 处理人：
+								</span>
+								<div class="orderconTextGpRt" th:text="${chuliren}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName" >
+									处理意见：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{chuliyijian}">
+									 
+								</div>
+							</div>
+						</div>
+					    <div class="orderconTl">
+							订单信息
+						</div>
+						<div class="orderconText">
+							
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									订单号：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{uuid}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									项目名称：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{title}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									查新范围：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{chaxinfanwei}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									 查新目的：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{mudi}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									项目科学要点：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{kexueyaodian}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									参考检索词：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{jiansuoci}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									检索点：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{jiansuodian}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									学科分类：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{xueke}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									 产业分类：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{chanye}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									备注：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{beizhu}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									附件： 
+								</span>
+								<div class="orderconTextGpRt" th:each="s : ${ids}" th:if=" ${not #lists.isEmpty(ids)}">
+									<p>
+										<span th:text="${#strings.substringAfter(s,'_')} "></span>
+										<a th:href="@{/file/fileDownload(filename=${s})}" class="colorBlue">下载</a>
+										
+									</p>
+								</div>
+							</div>
+						</div>
+					    <div class="orderconTl">
+							主要联系人
+						</div>
+						<div class="orderconText" th:object="${linkuser}">
+							
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									姓名:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{name}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									单位:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{institution}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									手机:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{telephone}">
+								
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									 邮箱:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{email}">
+									
+								</div>
+							</div>
+							
+						</div>
+					    <div class="orderconTl" th:if="${fulinkuser != null && fulinkuser!=''}">
+							其他联系人
+						</div>
+						<div class="orderconText" th:object="${fulinkuser}" th:if="${fulinkuser != null}">
+							
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									姓名:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{name}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									单位:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{institution}">
+									
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									手机:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{telephone}">
+								
+								</div>
+							</div>
+							<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									 邮箱:
+								</span>
+								<div class="orderconTextGpRt" th:text="*{email}">
+									
+								</div>
+							</div>
+							
+						</div>
+					</div>
+					</div>
+
+				</div>
+			</div>
+			</div>
+		<div class="footer">
+	    	<div class="footerTop">
+	    		<div class="index-container clearfix">
+	    			<div class="left footerTopLf">
+	    				<img th:src="@{/ximages/wb.png}" class="xitufooterIMg" />
+	    			</div>
+	    			<div class="left footerTopMiddle">
+	    				<div class="footerTopMiddleTop">
+	    				<p class="footerTopTl">
+	    					<img th:src="@{/ximages/pingtai.png}" />
+	    					平台介绍
+	    				</p>
+	    				<div class="footerTopText">
+	    					平台围绕稀土领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为稀土研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。
+	    				</div>
+	    				</div>
+	    				<p class="footerTopTl">	    				
+	    					<img th:src="@{/ximages/lianxifangshi.png}" />联系方式
+	    				</p>
+	    				<div class="footerTopText">
+	    					<p>电话：010-82626611-6302</p>
+                             <p>邮箱：chinakx@mail.las.ac.cn</p>
+	    				</div>
+	    			</div>
+	    		    <div class="left footerTopLX">
+	    		    	
+	    		        <div class="footerTopText">
+	    		        	<p class="footerTopTl">	    				
+	    				 	<img th:src="@{/ximages/jigou.png}" />合作机构
+	    				    </p>
+	    		        	<ul>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;中国科学院分院</a>
+	    		        		</li>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;中国科学院文献情报中心</a>
+	    		        		</li>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;中国科学院分院</a>
+	    		        		</li>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;国家科学图书文献中心</a>
+	    		        		</li>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;中国科学院文献情报中心</a>
+	    		        		</li>
+	    		        		<li>
+	    		        			<a href="#">•&nbsp;国家科学图书文献中心</a>
+	    		        		</li>
+	    		        	</ul>
+	    		        </div>
+	    		    </div>
+	    		    <div class="right footerTopErw">
+	    		    	<img th:src="@{/ximages/erw.jpg}" />
+	    		    	<p>
+	    		    		<em></em>扫码快速关注公众号
+	    		    	</p>
+	    		    </div>
+	    		</div>
+	    	</div>
+	        <!-- <div class="footerB">
+	        	<div class="index-container">
+	        		版权所有 @ 2017 沈阳高新区生物医药知识服务云平台 中国科学院文献情报中心,京ICP证030173号
+	        	</div>
+	        </div> -->
+	    </div>
+		
+		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
+		<script type="text/javascript" th:inline="javascript">
+		
+		$(document).ready(function () {
+		    if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
+				$("#backgroud").css('display','none'); 
+			}
+			$("#logoinName").html($.cookie("nickName"));
+		    $("#headImg").attr("src", $.cookie("headImg"));
+		});
+		
+			function search(){
+			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
+			    window.location.href="/patent/list?q=" + $("#keywords").val();
+				/* window.location.href="http://47.104.7.73/patent/list?q=" + $("#keywords").val(); */
+			}
+			var fulinkuser =  [[${fulinkuser}]];
+				</script>
+	</body>
+</html>
