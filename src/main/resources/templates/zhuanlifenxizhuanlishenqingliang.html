@@ -7,6 +7,8 @@
 		<link rel="stylesheet" th:href="@{/css/main.css}" />
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/echarts.min.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/common.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
 	</head>
 	<body>
 		<div class="nyMain">
@@ -104,7 +106,7 @@
 		<script type="text/javascript">
 			
 			$(document).ready(function() {
-
+				showLoginInfoFrontend();
 				showleixing('jinwunian');
 			});
 			function showleixing(type) {

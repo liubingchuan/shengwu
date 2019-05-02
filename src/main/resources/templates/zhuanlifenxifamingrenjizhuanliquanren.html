@@ -7,6 +7,8 @@
 		<link rel="stylesheet" th:href="@{/css/main.css}" />
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/echarts.min.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/common.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
 	</head>
 	<body>
 		<div class="nyMain">
@@ -24,54 +26,7 @@
 					<input type="button" class="headsuosBtn" value="搜索" />
 					<input type="text" class="headsuosInp" />
 				</div>
-				<div class="right">
-					<!--登录前-->
-					<!--<div class="loginbefore">
-						<a href="javascript:;" class="loginBtn">登录</a><span>/</span><a href="loginBtn">注册</a>
-					</div>-->
-					<!--登陆后-->
-					<div class="loginAfter">
-						<div class="loginAfterM">
-							<a href="#" class="loginAfterTx">
-								<img src="images/tx.jpeg" />
-							</a>
-							<div class="loginAfterNo">
-								
-								<div class="loginAfterNoM">
-									<em class="loginAfterNoMSj"></em>
-									<p>
-										<span class="loginName">
-											张伟
-										</span>
-										<span class="vip">
-											超级管理员
-										</span>
-									</p>
-									<p>
-										<a th:href="@{/user/list(pageIndex=0,pageSize=10)}">
-											<img th:src="@{/images/houtai.png}" />
-											进入管理后台
-										</a>
-									</p>
-									<p>
-										<a href="#">
-											<img th:src="@{/images/dingdan.png}" />
-											我的申请
-										</a>
-									</p>
-									<p>
-										<a href="#">
-											<img th:src="@{/images/tuichu.png}" />
-											退出
-										</a>
-									</p>
-									
-								</div>
-							</div>
-						</div>
-					</div>
-				
-				</div>
+				<div th:replace="qiantaidenglu :: myqiantaidenglu"></div>
 			</div>
 		</div>              
 		    
@@ -97,7 +52,7 @@
 								</a>
 							</li>
 							<li>
-								<a th:href="@{/patent/agpeople}">
+								<a th:href="@{/patent/agpeople}" class="ahover">
 									<span>发明人及专利权人</span>
 								</a>
 							</li>
@@ -148,78 +103,7 @@
 				</div>
 			</div>
 			</div>
-		<div class="footer">
-	    	<div class="footerTop">
-	    		<div class="index-container clearfix">
-	    			<div class="left footerTopLf">
-	    				<p class="footerTopTl">
-	    					<img src="images/pingtai.png" />
-	    					平台介绍
-	    				</p>
-	    				<div class="footerTopText">
-	    					平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。
-	    				</div>
-	    			</div>
-	    			<div class="left footerTopMiddle">
-	    				<div class="footerTopMiddleTop">
-	    				<p class="footerTopTl">	    				
-	    					交流合作
-	    				</p>
-	    				<div class="footerTopText">
-	    					<span>平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。</span><a href="#">更多>></a>
-	    				</div>
-	    				</div>
-	    				<p class="footerTopTl">	    				
-	    					关于我们
-	    				</p>
-	    				<div class="footerTopText">
-	    					<span>平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。</span><a href="#">更多>></a>
-	    				</div>
-	    			</div>
-	    		    <div class="left footerTopLX">
-	    		    	<div class="footerTopLXT">
-	    		    	<p class="footerTopTl">	    				
-	    					<img src="images/lianxifangshi.png" />联系方式
-	    				</p>
-	    				<div class="footerTopText">
-	    					<p>电话：010-82626611-6302</p>
-                             <p>邮箱：chinakx@mail.las.ac.cn</p>
-	    				</div>
-	    		    	</div>
-	    		        <div class="footerTopText footerTopLXB">
-	    		        	<p class="footerTopTl">	    				
-	    				 	<img src="images/jigou.png" />合作机构
-	    				    </p>
-	    		        	<ul>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;沈阳浑南高新技术开发区</a>
-	    		        		</li>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;中国科学院沈阳分院</a>
-	    		        		</li>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;中国科学院文献情报中心</a>
-	    		        		</li>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;国家科学图书文献中心</a>
-	    		        		</li>
-	    		        	</ul>
-	    		        </div>
-	    		    </div>
-	    		    <div class="right footerTopErw">
-	    		    	<img src="images/erw.png" />
-	    		    	<p>
-	    		    		<em></em>扫码快速关注公众号
-	    		    	</p>
-	    		    </div>
-	    		</div>
-	    	</div>
-	        <div class="footerB">
-	        	<div class="index-container">
-	        		版权所有 @ 2017 沈阳高新区生物医药知识服务云平台 中国科学院文献情报中心,京ICP证030173号
-	        	</div>
-	        </div>
-	    </div>
+		<div th:replace="footer :: myfooter"></div>
 		
 		
 		
@@ -229,7 +113,7 @@
 			
 			$(document).ready(function() {
 
-				
+				showLoginInfoFrontend();
 				showfamingrenshenqingliang('famingren');
 			});
 			
