@@ -27,3 +27,21 @@ function showLoginInfo(){
 		}
 	}
 }
+
+function showLoginInfoFrontend(){
+	if($.cookie("openId")!=null) {
+		$("#headImg").attr("src", $.cookie("headImg"));
+		if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
+			$(".vip").html("普通用户"); 
+			$("#backgroud").css('display','none'); 
+			document.getElementById("xituzhiku").removeAttribute("href");
+			document.getElementById("chanyejiance").removeAttribute("href");
+			document.getElementById("zhishifuwu").removeAttribute("href");
+		}
+		if($.cookie("role")!=null && $.cookie("role")==="管理员"){
+			$(".vip").html("管理员"); 
+			$("#backgroud").css('display','block'); 
+		}
+		$("#logoinName").html($.cookie("nickName"));
+	}
+}

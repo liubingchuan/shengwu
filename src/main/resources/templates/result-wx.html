@@ -9,6 +9,7 @@
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		 <script type="text/javascript" th:src="@{/js/jedate/jedate.js}" ></script>
 		 <script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
+		 <script type="text/javascript" th:src="@{/js/common.js}" ></script>
 	</head>
 	<body>
 		<div class="nyMain">
@@ -279,11 +280,7 @@
 		<script type="text/javascript" th:inline="javascript">
 		    
 			$(document).ready(function () {
-			   if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
-					$("#backgroud").css('display','none'); 
-				}
-				$("#logoinName").html($.cookie("nickName"));
-			    $("#headImg").attr("src", $.cookie("headImg"));
+				showLoginInfoFrontend();
 			});
 		
 			function search(){
