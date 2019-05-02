@@ -3,27 +3,26 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<link rel="stylesheet" th:href="@{/css/xinit.css}" />
-		<link rel="stylesheet" th:href="@{/css/xmain.css}" />
+		<link rel="stylesheet" th:href="@{/css/init.css}" />
+		<link rel="stylesheet" th:href="@{/css/main.css}" />
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/echarts.min.js}" ></script>
-		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
 	</head>
 	<body>
 		<div class="nyMain">
 			<div class="nycontainer">
 			<div class="head">
 			<div class="clearfix">
-				<a href="/" class="left logo">
-					<img id="headImg" th:src="@{/images/jiazai.png}" />
+				<a href="index.html" class="left logo">
+					<img th:src="@{/images/logo.png}" />
 				</a>
 				<a href="/" class="left headBack">
 					<<返回首页
 				</a>
 				<div class="left headsuos">
 					<em></em>
-					<input type="button" class="headsuosBtn" value="搜索" onClick="search();"/>
-					<input type="text" class="headsuosInp" th:text="${query}" id="keywords"/>
+					<input type="button" class="headsuosBtn" value="搜索" />
+					<input type="text" class="headsuosInp" />
 				</div>
 				<div class="right">
 					<!--登录前-->
@@ -34,20 +33,21 @@
 					<div class="loginAfter">
 						<div class="loginAfterM">
 							<a href="#" class="loginAfterTx">
-								<img id="headImg" th:src="@{/images/jiazai.png}" />
+								<img src="images/tx.jpeg" />
 							</a>
 							<div class="loginAfterNo">
 								
 								<div class="loginAfterNoM">
 									<em class="loginAfterNoMSj"></em>
 									<p>
-										<!-- <span class="loginName" th:text="${user.account}"></span> -->
-										<span class="loginName" id="logoinName"></span>
+										<span class="loginName">
+											张伟
+										</span>
 										<span class="vip">
+											超级管理员
 										</span>
 									</p>
-									<p id="backgroud">
-										<!-- <a th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}"  th:href="@{/user/list(token=${cookie.getValue()},pageIndex=0,pageSize=10)}"> -->
+									<p>
 										<a th:href="@{/user/list(pageIndex=0,pageSize=10)}">
 											<img th:src="@{/images/houtai.png}" />
 											进入管理后台
@@ -60,12 +60,12 @@
 										</a>
 									</p>
 									<p>
-										<a id="quit" href="/">
+										<a href="#">
 											<img th:src="@{/images/tuichu.png}" />
 											退出
 										</a>
 									</p>
-
+									
 								</div>
 							</div>
 						</div>
@@ -76,226 +76,74 @@
 		</div>              
 		    
 			</div>
-			
 			<div class="nycontainer rencaiM">
 				<div class="rencaiTl">
-					分析报告
+					专利分析
 				</div>
 				<div class="rencaiNr clearfix">
 					<div class="rencaiLf left">
 						<div class="rencaiLfTl">
 							目录导航
 						</div>
-						
-						
+						<ul class="rencaiLfUl">
+							<li>
+								<a th:href="@{/patent/agmount}">
+									<span>专利申请量</span>
+								</a>
+							</li>
+							<li>
+								<a th:href="@{/patent/agcountry}">
+									<span>专利申请国</span>
+								</a>
+							</li>
+							<li>
+								<a th:href="@{/patent/agpeople}">
+									<span>发明人及专利权人</span>
+								</a>
+							</li>
+							<li>
+								<a th:href="@{/patent/agclassis}">
+									<span>技术分类</span>
+								</a>
+							</li>
+							<li>
+								<a th:href="@{/patent/agtype}">
+									<span>专利类型</span>
+								</a>
+							</li>
+						</ul>
 					</div>
 				    <div class="rencaiRt right">
-				    	<form>
-				    		<div class="recaiForm clearfix">
-				    			<select class="left">
-				    				<option>
-				    					全部发布机构
-				    				</option>
-				    			</select>
-				    			<select class="left">
-				    				<option>
-				    					全部发布年份
-				    				</option>
-				    			</select>
-				    			<select class="left">
-				    				<option>
-				    					全部报告类型
-				    				</option>
-				    			</select>
-				    			<input type="button" class="left shaixuanbtn" value="筛选">
+				    	    <div class="zhuanlFive clearfix">
+				    	    	<span class="left">
+				    	    		检索命中: 109090条 
+				    	    	</span>
+				    	    	<a href="#" class="right btnYellow">
+				    	    		下载数据
+				    	    	</a>
+				    	    </div>
+				    		<div class="recaiForm clearfix zhuanlOneNr">
+				    			<span class="left zhuanlOne">
+				    				发明人及专利权人
+				    			</span>
+				    			<div class="right zhuanlTwo">
+				    				<a href="javascript:showfamingrenshenqingliang('famingren');" class="ahover">
+				    					发明人申请量
+				    				</a>
+				    				<a href="javascript:showfamingrenshenqingliang('zhuanliquanren')">
+				    					专利权人申请量
+				    				</a>
+				    				<a href="javascript:showfamingrenshenqingliang('jishufenbu')">
+				    					专利权人技术分布
+				    				</a>
+				    			</div>
 				    		</div>
-				    	</form>
-				       <ul class="clearfix jigouUl fenxiUl">
-				       	<li class="clearfix">
-				       		<a th:href="@{/patent/agpeoplecon}" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}"/>
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a th:href="@{/patent/agpeoplecon}">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       	<li class="clearfix">
-				       		<a href="#" class="left jigouliLf">
-				       			<img th:src="@{/images/fenxi_03.png}" />
-				       		</a>
-				       		<div class="left jigouRt">
-				       			<div class="jiansuoLiTL">
-		            				<a href="#">
-		            					2018年中国生物制品医药制品行业细分市场研究及重点企业
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span>完成单位：中国科学院文献情报中心</span>
-		            				<span>发布时间：2018-09-29 </span>
-		            				<span>分类：生物医药</span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
-		            				</span>
-		            				
-		            			</div>
-				       		</div>
-				       	</li>
-				       </ul>
+				    	<div class="zhuanlThree" id="famingrenshenqingliang" style="width: 100%; height: 500px;">
+				    		
+				    	</div>
+						<div class="zhuanlThree" id="jishufenbu" style="width: 100%; height: 500px;">
+				    		
+				    	</div>
 				    </div>
 				</div>
 			</div>
@@ -304,44 +152,50 @@
 	    	<div class="footerTop">
 	    		<div class="index-container clearfix">
 	    			<div class="left footerTopLf">
-	    				<img th:src="@{/images/wb.png}" class="xitufooterIMg" />
-	    			</div>
-	    			<div class="left footerTopMiddle">
-	    				<div class="footerTopMiddleTop">
 	    				<p class="footerTopTl">
-	    					<img th:src="@{/images/pingtai.png}" />
+	    					<img src="images/pingtai.png" />
 	    					平台介绍
 	    				</p>
 	    				<div class="footerTopText">
-	    					平台围绕稀土领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为稀土研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。
+	    					平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。
+	    				</div>
+	    			</div>
+	    			<div class="left footerTopMiddle">
+	    				<div class="footerTopMiddleTop">
+	    				<p class="footerTopTl">	    				
+	    					交流合作
+	    				</p>
+	    				<div class="footerTopText">
+	    					<span>平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。</span><a href="#">更多>></a>
 	    				</div>
 	    				</div>
 	    				<p class="footerTopTl">	    				
-	    					<img th:src="@{/images/lianxifangshi.png}" />联系方式
+	    					关于我们
+	    				</p>
+	    				<div class="footerTopText">
+	    					<span>平台围绕生物医药领域进行信息监测与情报服务，结合文献情报中心的文献服务、情报咨询服务等，为领域研究相关科研机构、政府部门、企业等提供产业技术情报服务和科技咨询服务。</span><a href="#">更多>></a>
+	    				</div>
+	    			</div>
+	    		    <div class="left footerTopLX">
+	    		    	<div class="footerTopLXT">
+	    		    	<p class="footerTopTl">	    				
+	    					<img src="images/lianxifangshi.png" />联系方式
 	    				</p>
 	    				<div class="footerTopText">
 	    					<p>电话：010-82626611-6302</p>
                              <p>邮箱：chinakx@mail.las.ac.cn</p>
 	    				</div>
-	    			</div>
-	    		    <div class="left footerTopLX">
-	    		    	
-	    		        <div class="footerTopText">
+	    		    	</div>
+	    		        <div class="footerTopText footerTopLXB">
 	    		        	<p class="footerTopTl">	    				
-	    				 	<img th:src="@{/images/jigou.png}" />合作机构
+	    				 	<img src="images/jigou.png" />合作机构
 	    				    </p>
 	    		        	<ul>
 	    		        		<li>
-	    		        			<a href="#">•&nbsp;中国科学院分院</a>
+	    		        			<a href="#">•&nbsp;沈阳浑南高新技术开发区</a>
 	    		        		</li>
 	    		        		<li>
-	    		        			<a href="#">•&nbsp;中国科学院文献情报中心</a>
-	    		        		</li>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;中国科学院分院</a>
-	    		        		</li>
-	    		        		<li>
-	    		        			<a href="#">•&nbsp;国家科学图书文献中心</a>
+	    		        			<a href="#">•&nbsp;中国科学院沈阳分院</a>
 	    		        		</li>
 	    		        		<li>
 	    		        			<a href="#">•&nbsp;中国科学院文献情报中心</a>
@@ -353,18 +207,18 @@
 	    		        </div>
 	    		    </div>
 	    		    <div class="right footerTopErw">
-	    		    	<img th:src="@{/images/erw.jpg}" />
+	    		    	<img src="images/erw.png" />
 	    		    	<p>
 	    		    		<em></em>扫码快速关注公众号
 	    		    	</p>
 	    		    </div>
 	    		</div>
 	    	</div>
-	        <!-- <div class="footerB">
+	        <div class="footerB">
 	        	<div class="index-container">
 	        		版权所有 @ 2017 沈阳高新区生物医药知识服务云平台 中国科学院文献情报中心,京ICP证030173号
 	        	</div>
-	        </div> -->
+	        </div>
 	    </div>
 		
 		
@@ -374,13 +228,11 @@
 		
 			
 			$(document).ready(function() {
+
+				
 				showfamingrenshenqingliang('famingren');
-			    if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
-					$("#backgroud").css('display','none'); 
-				}
-				$("#logoinName").html($.cookie("nickName"));
-			    $("#headImg").attr("src", $.cookie("headImg"));
 			});
+			
 			 function showfamingrenshenqingliang(type){
 				if(type=='famingren'){
 					document.getElementById('jishufenbu').style.display='none';
@@ -587,29 +439,7 @@
 					myChart1.setOption(option);
 				}
 			}
-			 function search(){
-			    	var uri = '';
-			    	/* var entrust = ''
-			    	$.each($('input:checkbox:checked'),function(){
-			    		if($(this).attr("name") == "entrust") {
-			    			if(entrust == '') 
-			    			{
-			    				entrust = $(this).val()
-			    			}
-			    			else
-			    			{
-			    				entrust = entrust + '-' + $(this).val()
-			    			}
-			    		}
-			        });
-			    	if(entrust != '') {
-			    		uri = uri + 'entrust=' + entrust + ''
-			    	} */
-					/* window.location.href="http://47.104.7.73/project/list?q=" + $("#keywords").val() + "&" + uri; */
-					if($("#keywords").val() != "") {
-				    	window.location.href="/patent/list?q=" + $("#keywords").val() + "&" + uri;
-					}
-				}
+			
 		</script>
 	</body>
 </html>

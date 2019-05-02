@@ -548,6 +548,23 @@ public class PatentController {
 		return "zhuanlifenxifamingrenjizhuanliquanren";
 	}
 	
+	@GetMapping(value = "patent/agtype")
+	public String agtype() {
+		return "zhuanlifenxizhuanlileixing";
+	}
+	@GetMapping(value = "patent/agmount")
+	public String agmount() {
+		return "zhuanlifenxizhuanlishenqingliang";
+	}
+	@GetMapping(value = "patent/agcountry")
+	public String agcountry() {
+		return "zhuanlifenxizhuanlishenqingguo";
+	}
+	@GetMapping(value = "patent/agpeople")
+	public String agpeople() {
+		return "zhuanlifenxifamingrenjizhuanliquanren";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "patent/agpersons", method = RequestMethod.POST,consumes = "application/json")
 	public R persons(@RequestBody AgPersonRequest request) {
@@ -614,31 +631,21 @@ public class PatentController {
 	}
 	
 	
-	@GetMapping(value = "patent/agtype")
-	public String agtype() {
-		return "zhuanlifenxizhuanlileixing";
-	}
-	@GetMapping(value = "patent/agmount")
-	public String agmount(Model model) {
-		String time = priceMapper.getLatestUpdateTime();
-		if(time != null) {
-			List<Price> prices = priceMapper.getPricesByUpdateTime(time);
-			model.addAttribute("prices", prices);
-		}else {
-			model.addAttribute("prices", new ArrayList<String>());
-		}
-		List<String> items = priceMapper.getPricesGroupByName();
-		model.addAttribute("items", items);
-		return "zhuanlifenxizhuanlishenqingliang";
-	}
-	@GetMapping(value = "patent/agcountry")
-	public String agcountry() {
-		return "zhuanlifenxizhuanlishenqingguo";
-	}
-	@GetMapping(value = "patent/agpeople")
-	public String agpeople() {
-		return "zhuanlifenxifamingrenjizhuanliquanren";
-	}
+	
+//	@GetMapping(value = "patent/agmount")
+//	public String agmount(Model model) {
+//		String time = priceMapper.getLatestUpdateTime();
+//		if(time != null) {
+//			List<Price> prices = priceMapper.getPricesByUpdateTime(time);
+//			model.addAttribute("prices", prices);
+//		}else {
+//			model.addAttribute("prices", new ArrayList<String>());
+//		}
+//		List<String> items = priceMapper.getPricesGroupByName();
+//		model.addAttribute("items", items);
+//		return "zhuanlifenxizhuanlishenqingliang";
+//	}
+	
 	@GetMapping(value = "patent/agpeoplecon")
 	public String agpeoplecon() {
 		return "T-hangyeCon";
