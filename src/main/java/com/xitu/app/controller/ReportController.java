@@ -167,6 +167,9 @@ public class ReportController {
 		long totalPages = 0L;
 		List<Report> reportList = new ArrayList<Report>();
 		String view = "qiyezhikufenxibaogaoliebiao";
+		if (front != null) {
+			view = "qiyezhikufenxibaogaoqiantai";
+		}
 		if(esTemplate.indexExists(Report.class)) {
 			if(q == null || q.equals("")) {
 				totalCount = reportRepository.count();
@@ -177,9 +180,6 @@ public class ReportController {
 							.withPageable(pageable).build();
 					Page<Report> reportsPage = reportRepository.search(searchQuery);
 					reportList = reportsPage.getContent();
-					if (front != null) {
-						view = "qiyezhikufenxibaogaoqiantai";
-					}
 					if(totalCount % pageSize == 0){
 						totalPages = totalCount/pageSize;
 					}else{
