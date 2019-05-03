@@ -1121,14 +1121,14 @@ public class PatentController {
 		Random random = new Random();
 		Map<String, String> map = new HashMap<String, String>();
 		int month = 0;
-		while(month<=150) {
+		while(month<=450) {
 //			if(month==10) {
 //				System.out.println();
 //			}
 			System.out.println("已经到了"+month);
 			String date = getLastMonth(month);
 //			map.put("SearchWord", "(ZY:( 生物医药 ) OR MC:( 生物医药 ) OR SMS:(生物医药)) AND GKRQ:(" + date + ")");
-			map.put("SearchWord", "(ZY:( 生物医药 ) OR MC:( 生物医药 ) OR SMS:(生物医药) OR QLYQ (生物医药)) AND GKRQ:(" + date + ")");
+			map.put("SearchWord", "(ZY:( 生物医药 ) OR MC:( 生物医药 ) OR SMS:(生物医药) OR QLYQ (生物医药)) AND GKRQ:( " + date + " )");
 //		map.put("SearchWord", "稀土");
 			map.put("FMZL", "Y");
 			map.put("SYXX", "Y");
@@ -1198,22 +1198,22 @@ public class PatentController {
 							break;
 						}
 						if(patentBlocks.size()>0) {
-//							Elements right = doc.getElementsByClass("right");
-////							System.out.println(right.text());
-//							s:
-//								for(Element e: right) {
-//									Elements ele = e.getElementsByTag("b");
-//									for(Element elet: ele) {
-//										if(!"".equals(elet.text())) {
-//											tail = Integer.valueOf(elet.text());
-//											if(tail > 1000) {
-//												tail = 1000;
-//											}
-//										}
-//										break s;
-//									}
-////									System.out.println(e.text());
-//								}
+							Elements right = doc.getElementsByClass("right");
+//							System.out.println(right.text());
+							s:
+								for(Element e: right) {
+									Elements ele = e.getElementsByTag("b");
+									for(Element elet: ele) {
+										if(!"".equals(elet.text())) {
+											tail = Integer.valueOf(elet.text());
+											if(tail > 1000) {
+												tail = 1000;
+											}
+										}
+										break s;
+									}
+//									System.out.println(e.text());
+								}
 							for(Element patentBlock: patentBlocks) {
 								Document patentDoc = Jsoup.parse(patentBlock.toString());
 								Elements patentTypeElements = patentDoc.getElementsByClass("PatentTypeBlock");
