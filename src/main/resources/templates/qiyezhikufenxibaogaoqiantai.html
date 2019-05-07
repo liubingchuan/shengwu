@@ -7,6 +7,7 @@
 		<link rel="stylesheet" th:href="@{/css/main.css}" />
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/common.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
 	</head>
 	<body>
 		<div class="nyMain">
@@ -21,8 +22,8 @@
 				</a>
 				<div class="left headsuos">
 					<em></em>
-					<input type="button" class="headsuosBtn" value="搜索" />
-					<input type="text" class="headsuosInp" />
+					<input type="button" class="headsuosBtn" value="搜索" onClick="search();"/>
+					<input type="text" class="headsuosInp" th:text="${query}" id="keywords"/>
 				</div>
 				<div th:replace="qiantaidenglu :: myqiantaidenglu"></div>
 			</div>
@@ -61,26 +62,29 @@
 				    <div class="rencaiRt right">
 				    	<form>
 				    		<div class="recaiForm clearfix">
-				    			<select class="left">
+				    			<select class="left" id="unitselect">
 				    				<option>
 				    					全部发布机构
 				    				</option>
+				    				<option th:each="item : ${unit}" th:value="${item.key}" th:text="${item.key}"></option>
 				    			</select>
-				    			<select class="left">
+				    			<select class="left" id="yearselect">
 				    				<option>
 				    					全部发布年份
 				    				</option>
+				    				<option th:each="item : ${year}" th:value="${item.key}" th:text="${item.key}"></option>
 				    			</select>
-				    			<select class="left">
+				    			<select class="left" id="typeselect">
 				    				<option>
 				    					全部报告类型
 				    				</option>
+				    				<option th:each="item : ${type}" th:value="${item.key}" th:text="${item.key}"></option>
 				    			</select>
-				    			<input type="button" class="left shaixuanbtn" value="筛选">
+				    			<input type="button" class="left shaixuanbtn" value="筛选" onClick="shuaixuan();">
 				    		</div>
 				    	</form>
 				       <ul class="clearfix jigouUl fenxiUl">
-				       	<li class="clearfix" th:each="report: ${reportList}">
+				       	<li class="clearfix" th:each="report: ${list}">
 				       		<a href="#" class="left jigouliLf">
 				       			<img th:src="@{/images/fenxi_03.png}" />
 				       		</a>
@@ -95,14 +99,26 @@
 		            				<span>分类：<i class="colorBlue" th:text="${report.type}"></i></span>
 		            			</div>
 		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan">
-		            				生物医药行业研究报告中的生物医药行业数据分析以权威的国家统计数据为基础，采用宏观和微观相结合的分析方式，利用科学的统计分析方法，在描述行业概貌的同时，对生物医药行业进行…
+		            				<span class="jiansuoLiTextSpan" th:text="${report.subject}">
+		            				
 		            				</span>
 		            				
 		            			</div>
 				       		</div>
 				       	</li>
 				       </ul>
+				       <div class="sqPage">
+		            	 <span th:if=" ${totalCount > 0}">
+					    	<span th:text="'共 ' + ${totalCount}+' 条报告信息'">
+					    	</span>
+					    	<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''"  th:href="@{/report/list(q=${query},front=0,pageIndex=0,pageSize=10,unit=${units},year=${years},type=${types})}"><首页</a>
+ 							<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''" th:href="@{/report/list(q=${query},front=0,pageIndex=(${pageIndex}-1),pageSize=10,unit=${units},year=${years},type=${types})}"><上一页</a>
+ 							<!-- <a th:href="@{/jiance/jiancelist(pageIndex=(${pageIndex}),pageSize=10)}" th:text="(${pageIndex}+1) + '/' + ${totalPages}" ></a> -->
+							<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/report/list(q=${query},front=0,pageIndex=(${pageIndex}+1),pageSize=10,unit=${units},year=${years},type=${types})}">下一页<em>></em></a>
+							<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/report/list(q=${query},front=0,pageIndex=(${totalPages}-1),pageSize=10,unit=${units},year=${years},type=${types})}">尾页<em>></em></a>
+		            		<span th:text="'页次：' + (${pageIndex}+1) + '/' + ${totalPages}"></span>
+		            	</span>
+		            	</div>
 				    </div>
 				</div>
 			</div>
@@ -111,9 +127,49 @@
 		
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
 		<script type="text/javascript" th:inline="javascript">
+		var unit =  [[${units}]];
+		var year =  [[${years}]];
+		var type =  [[${types}]];
 		 	$(document).ready(function () {
 				showLoginInfoFrontend();
+				
+				if(type != null){
+			    	document.getElementById('typeselect').value=type;
+			    }
+			    if(unit != null){
+			    	document.getElementById('unitselect').value=unit;
+			    }
+			    if(year != null){
+			    	document.getElementById('yearselect').value=year;
+			    }
 		 	});
+		 	function search(){
+			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
+			     window.location.href="/patent/list?q=" + $("#keywords").val();
+				/* window.location.href="http://47.104.7.73/patent/list?q=" + $("#keywords").val(); */
+			}
+			$("#keywords").keypress(function(e) {
+	            var eCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+	             if (eCode == 13){
+	                 search();
+	             }
+	     	});
+			
+			function shuaixuan(){
+				var unitse = $('#unitselect  option:selected').val();
+				var yearse = $('#yearselect  option:selected').val();
+				var typese = $('#typeselect  option:selected').val();
+				if (unitse != null && unitse == "全部发布机构") {
+					unitse = null;
+				}
+				if (yearse != null && yearse == "全部发布年份") {
+					yearse = null;
+				}
+				if (typese !=null && typese == "全部报告类型") {
+					typese = null;
+				}
+				window.location.href="/report/list?front=0&unit=" + encodeURI(encodeURIComponent(unitse)) + "&year=" + yearse + "&type="+encodeURI(encodeURIComponent(typese));
+			}
 		</script>
 
 	</body>

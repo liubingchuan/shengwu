@@ -1120,7 +1120,7 @@ public class PatentController {
 		List<String> missedList = new ArrayList<String>();
 		Random random = new Random();
 		Map<String, String> map = new HashMap<String, String>();
-		int month = 0;
+		int month = 69;
 		while(month<=450) {
 //			if(month==10) {
 //				System.out.println();
@@ -1128,7 +1128,7 @@ public class PatentController {
 			System.out.println("已经到了"+month);
 			String date = getLastMonth(month);
 //			map.put("SearchWord", "(ZY:( 生物医药 ) OR MC:( 生物医药 ) OR SMS:(生物医药)) AND GKRQ:(" + date + ")");
-			map.put("SearchWord", "(ZY:( 生物医药 ) OR MC:( 生物医药 ) OR SMS:(生物医药) OR QLYQ (生物医药)) AND GKRQ:( " + date + " )");
+			map.put("SearchWord", "(ZY:( 医疗器械 ) OR MC:( 医疗器械 ) OR SMS:(医疗器械) OR QLYQ (医疗器械)) AND GKRQ:( " + date + " )");
 //		map.put("SearchWord", "稀土");
 			map.put("FMZL", "Y");
 			map.put("SYXX", "Y");

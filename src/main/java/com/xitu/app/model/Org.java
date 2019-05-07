@@ -8,23 +8,44 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "orgyiyao", type = "og")
+import com.xitu.app.annotation.AggQuery;
+import com.xitu.app.annotation.CrossQuery;
+import com.xitu.app.annotation.SingleQuery;
+
+@Document(indexName = "org", type = "og")
 public class Org implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private String id;
+	
+	@CrossQuery
 	private String name; // 机构名称
-	private String alias; // 其他名称
+	
+	@Field(type=FieldType.Keyword)
+	private List<String> alias; // 其他名称
+	
 	private String description; // 机构介绍
 	@Field(type=FieldType.Keyword)
 	private List<String> area;  // 研究领域 
+	
+	@AggQuery
+	@SingleQuery
+	@Field(type=FieldType.Keyword)
 	private String type;  // 机构类型
-	private String country; // 国家
+	
+	@AggQuery
+	@SingleQuery
+	@Field(type=FieldType.Keyword)
 	private String link; // 产业链
+	
+	@AggQuery
+	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> classic; // 产品类型
+	
+	private String country; // 国家
 	private String logo; // 机构logo
 	private String professors; // 专家数量
 	private String patents;   // 专利数量
@@ -64,10 +85,11 @@ public class Org implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getAlias() {
+	
+	public List<String> getAlias() {
 		return alias;
 	}
-	public void setAlias(String alias) {
+	public void setAlias(List<String> alias) {
 		this.alias = alias;
 	}
 	public String getDescription() {

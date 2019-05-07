@@ -29,7 +29,15 @@
 			    				其他姓名：
 			    			</span>
 			    			<div class="M_messGpRt">
-			    				<input type="text" class="M_messInp" th:field="*{alias}" />
+			    				<input type="text" class="M_messInp" th:field="*{alias}" placeholder="多个别名之间用分号分隔"/>
+			    			</div>
+			    		</div>
+			    		<div class="M_messGp clearfix">
+			    			<span class="left M_messGpName">
+			    				单位：
+			    			</span>
+			    			<div class="M_messGpRt">
+			    				<input type="text" class="M_messInp" th:field="*{unit}" />
 			    			</div>
 			    		</div>
 			    		<input type="hidden" id="lingyu" name="area" th:field="*{area}"/>

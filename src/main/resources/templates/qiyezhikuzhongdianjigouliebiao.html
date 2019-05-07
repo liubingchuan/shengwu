@@ -16,8 +16,8 @@
 							新增机构
 						</a>
 						<div class="right usermanageOneSS">
-							<input type="text" />
-							<em></em>
+							<input type="text" id="keywords" />
+							<em onClick="search();"></em>
 						</div>
 					</div>
 					
@@ -44,7 +44,7 @@
 		    			</th>
 		    			
 		    		</tr>
-		    		<tr th:each="org : ${orgList}">
+		    		<tr th:each="org : ${list}">
 		    			<td>
 		    				<a th:href="@{/org/get(id=${org.id},disable='0')}" class="colorBlue" th:text="${org.name}">
 		    				</a>
@@ -69,13 +69,21 @@
 		    		</tr>
 		    	    
 		    	</table>
-		        <div class="page">
+		        <!-- <div class="page">
 		        	<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''" th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}" th:href="@{/org/list(token=${cookie.getValue()},pageIndex=0,pageSize=10)}">首页</a>
       				<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''" th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}" th:href="@{/org/list(token=${cookie.getValue()},pageIndex=(${pageIndex}-1),pageSize=10)}">上一页</a>
 		        	<a th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}" th:href="@{/org/list(token=${cookie.getValue()},pageIndex=(${pageIndex}),pageSize=10)}" th:text="(${pageIndex}+1) + '/' + ${totalPages}" ></a>
 		        	<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}" th:href="@{/org/list(token=${cookie.getValue()},pageIndex=(${pageIndex}+1),pageSize=10)}">下一页<em>></em></a>
 		        	<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:each="cookie :${#httpServletRequest.getCookies()}" th:if="${cookie.getName().equals('token')}" th:href="@{/org/list(token=${cookie.getValue()},pageIndex=(${totalPages}-1),pageSize=10)}">尾页<em>></em></a>
-		        </div>
+		        </div> -->
+		        <div class="sqPage">
+			    	<span th:text="'共 ' + ${totalCount}+' 个重点机构'"></span>
+			    	<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''"  th:href="@{/org/list(q=${query},pageIndex=0,pageSize=10)}"><首页</a>
+						<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''" th:href="@{/org/list(q=${query},pageIndex=(${pageIndex}-1),pageSize=10)}"><上一页</a>
+						<!-- <a th:href="@{/jiance/jiancelist(pageIndex=(${pageIndex}),pageSize=10)}" th:text="(${pageIndex}+1) + '/' + ${totalPages}" ></a> -->
+					<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/org/list(q=${query},pageIndex=(${pageIndex}+1),pageSize=10)}">下一页<em>></em></a>
+					<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/org/list(q=${query},pageIndex=(${totalPages}-1),pageSize=10)}">尾页<em>></em></a>
+			    </div>
 		    </div>
 		</div>
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
@@ -83,6 +91,11 @@
  			$(document).ready(function () {
 				showLoginInfo();
 		 	});
+ 			function search(){
+			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
+			    window.location.href="/org/list?q=" + $("#keywords").val();
+				/* window.location.href="http://47.104.7.73/patent/list?q=" + $("#keywords").val(); */
+			}
 		</script>
 	</body>
 </html>

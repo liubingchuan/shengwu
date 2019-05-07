@@ -119,10 +119,19 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	if (type == 2) {
     		sortfield = "now";
 		}
-    	JSONObject order1s = new JSONObject();
-    	order1s.put("order", "desc");
-    	pubtimes.put(sortfield,order1s);
-    	sort.add(pubtimes);
+    	if (type == 4) {
+    		sortfield = "now";
+		}
+    	if (type == 5) {
+    		sortfield = "now";
+		}
+    	if (type == 6) {
+    		sortfield = "now";
+		}
+//    	JSONObject order1s = new JSONObject();
+//    	order1s.put("order", "desc");
+//    	pubtimes.put(sortfield,order1s);
+//    	sort.add(pubtimes);
     	query.put("sort",sort);
 		JSONObject param = new JSONObject();
 		JSONArray should = new JSONArray();
@@ -296,5 +305,39 @@ public abstract class AbstractESHttpService implements ESHttpService {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 	}
+	
+	public static String createQqueryByListIns(List<String> insNamearr,int aggsize,String type){
+    	JSONObject query = new JSONObject();
+    	JSONObject bool1 = new JSONObject();
+    	JSONObject bool2 = new JSONObject();
+    	JSONObject bool3 = new JSONObject();
+    	JSONObject must = new JSONObject();
+    	JSONArray should = new JSONArray();
+    	for(String s:insNamearr){
+    		JSONObject term = new JSONObject();
+        	JSONObject param = new JSONObject();
+        	param.put(type, s);
+        	term.put("match", param);
+        	should.add(term);
+    	}
+    	bool2.put("should", should);
+    	bool3.put("bool", bool2);
+    	must.put("must",bool3);
+    	bool1.put("bool", must);
+    	query.put("query", bool1);
+    	
+    	JSONObject args = new JSONObject();
+    	JSONObject fz = new JSONObject();
+		JSONObject terms = new JSONObject();
+		
+		fz.put("field", type);
+		fz.put("size", aggsize);
+		terms.put("terms", fz);
+		args.put(type, terms);
+		query.put("aggs",args);
+    	//System.out.println("*****"+query.toString());
+    	return query.toString();
+    	
+    }
 
 }

@@ -42,7 +42,9 @@ import com.xitu.app.model.Item;
 import com.xitu.app.model.Org;
 import com.xitu.app.model.OrgVO;
 import com.xitu.app.repository.ExpertRepository;
+import com.xitu.app.service.es.ExpertService;
 import com.xitu.app.utils.BeanUtil;
+import com.xitu.app.utils.ThreadLocalUtil;
 
 
 
@@ -60,6 +62,9 @@ public class ExpertController {
 	
 	@Autowired
     private ItemMapper itemMapper;
+	
+	@Autowired
+	private ExpertService expertService;
 	
 	@PostMapping(value = "expert/save")
 	public String saveExpert(SaveExpertRequest request,Model model) {
@@ -88,7 +93,27 @@ public class ExpertController {
 		expert.setNow(System.currentTimeMillis());
 		expert.setCtime(df.format(new Date()));
 		expert.setTitle(titleList);
-		expert.setUnit("中国科学院青岛生物能源与过程研究所");
+		//expert.setUnit("中国科学院青岛生物能源与过程研究所");
+		expert.setUnit(request.getUnit());
+		List<String> alias = new ArrayList<String>();
+		if (request.getAlias() != null && !request.getAlias().equals("")) {
+			if(request.getAlias().contains(";")){
+				String[] s = request.getAlias().split(";");
+				for(String id:s){
+					alias.add(id);
+				}
+			}else if (request.getAlias().contains("；")) {
+				String[] s = request.getAlias().split("；");
+				for(String id:s){
+					alias.add(id);
+				}
+			}else {
+				alias.add(request.getAlias());
+			}
+			
+			
+		}
+		expert.setAlias(alias);
 		expertRepository.save(expert);
 		return "redirect:/expert/list";
 	}
@@ -156,9 +181,79 @@ public class ExpertController {
 		return view;
 	}
 	
+//	@GetMapping(value = "expert/list")
+//	public String experts(@RequestParam(required=false,value="front") String front,
+//			@RequestParam(required=false,value="q") String q,
+//			@RequestParam(required=false,value="pageSize") Integer pageSize, 
+//			@RequestParam(required=false, value="pageIndex") Integer pageIndex, 
+//			Model model) {
+//		if(pageSize == null) {
+//			pageSize = 10;
+//		}
+//		if(pageIndex == null) {
+//			pageIndex = 0;
+//		}
+//		long totalCount = 0L;
+//		long totalPages = 0L;
+//		List<Expert> expertList = new ArrayList<Expert>();
+//		String view = "qiyezhikuhangyerencailiebiao";
+//		if (front != null) {
+//			view = "qiyezhikuhangyerencaiqiantai";
+//		}
+//		if(esTemplate.indexExists(Expert.class)) {
+//			if(q == null || q.equals("")) {
+//				totalCount = expertRepository.count();
+//				if(totalCount > 0) {
+//					Sort sort = new Sort(Direction.DESC, "now");
+//					Pageable pageable = new PageRequest(pageIndex, pageSize,sort);
+//					SearchQuery searchQuery = new NativeSearchQueryBuilder()
+//							.withPageable(pageable).build();
+//					Page<Expert> expertPage = expertRepository.search(searchQuery);
+//					expertList = expertPage.getContent();
+//					if(totalCount % pageSize == 0){
+//						totalPages = totalCount/pageSize;
+//					}else{
+//						totalPages = totalCount/pageSize + 1;
+//					}
+//				}
+//			}else {
+//				// 分页参数
+//				Pageable pageable = new PageRequest(pageIndex, pageSize);
+//
+//				// 分数，并自动按分排序
+//				FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("name", q)), ScoreFunctionBuilders.weightFactorFunction(1000));
+//
+//				// 分数、分页
+//				SearchQuery searchQuery = new NativeSearchQueryBuilder().withPageable(pageable)
+//						.withQuery(functionScoreQueryBuilder).build();
+//
+//				Page<Expert> searchPageResults = expertRepository.search(searchQuery);
+//				expertList = searchPageResults.getContent();
+//				totalCount = esTemplate.count(searchQuery, Expert.class);
+//				if(totalCount % pageSize == 0){
+//					totalPages = totalCount/pageSize;
+//				}else{
+//					totalPages = totalCount/pageSize + 1;
+//				}
+////				if (front != null) {
+////					view = "qiyezhikuhangyerencaiqiantai";
+////				}
+//			}
+//		}
+//		model.addAttribute("expertList", expertList);
+//		model.addAttribute("pageSize", pageSize);
+//		model.addAttribute("pageIndex", pageIndex);
+//		model.addAttribute("totalCount", totalCount);
+//		model.addAttribute("totalPages", totalPages);
+//			
+//		return view;
+//	}
 	@GetMapping(value = "expert/list")
-	public String experts(@RequestParam(required=false,value="front") String front,
+    public String experts(@RequestParam(required=false,value="front") String front,
 			@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="unit") String unit,
+			@RequestParam(required=false,value="area") String area,
+			@RequestParam(required=false,value="duty") String duty,
 			@RequestParam(required=false,value="pageSize") Integer pageSize, 
 			@RequestParam(required=false, value="pageIndex") Integer pageIndex, 
 			Model model) {
@@ -168,59 +263,17 @@ public class ExpertController {
 		if(pageIndex == null) {
 			pageIndex = 0;
 		}
-		long totalCount = 0L;
-		long totalPages = 0L;
-		List<Expert> expertList = new ArrayList<Expert>();
+		model.addAttribute("pageIndex", pageIndex);
+		model.addAttribute("pageSize", pageSize);
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		ThreadLocalUtil.set(model);
+		expertService.execute(pageIndex, pageSize, i,q,unit,area,duty);
+		ThreadLocalUtil.remove();
 		String view = "qiyezhikuhangyerencailiebiao";
 		if (front != null) {
 			view = "qiyezhikuhangyerencaiqiantai";
 		}
-		if(esTemplate.indexExists(Expert.class)) {
-			if(q == null || q.equals("")) {
-				totalCount = expertRepository.count();
-				if(totalCount > 0) {
-					Sort sort = new Sort(Direction.DESC, "now");
-					Pageable pageable = new PageRequest(pageIndex, pageSize,sort);
-					SearchQuery searchQuery = new NativeSearchQueryBuilder()
-							.withPageable(pageable).build();
-					Page<Expert> expertPage = expertRepository.search(searchQuery);
-					expertList = expertPage.getContent();
-					if(totalCount % pageSize == 0){
-						totalPages = totalCount/pageSize;
-					}else{
-						totalPages = totalCount/pageSize + 1;
-					}
-				}
-			}else {
-				// 分页参数
-				Pageable pageable = new PageRequest(pageIndex, pageSize);
-
-				// 分数，并自动按分排序
-				FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("name", q)), ScoreFunctionBuilders.weightFactorFunction(1000));
-
-				// 分数、分页
-				SearchQuery searchQuery = new NativeSearchQueryBuilder().withPageable(pageable)
-						.withQuery(functionScoreQueryBuilder).build();
-
-				Page<Expert> searchPageResults = expertRepository.search(searchQuery);
-				expertList = searchPageResults.getContent();
-				totalCount = esTemplate.count(searchQuery, Expert.class);
-				if(totalCount % pageSize == 0){
-					totalPages = totalCount/pageSize;
-				}else{
-					totalPages = totalCount/pageSize + 1;
-				}
-//				if (front != null) {
-//					view = "qiyezhikuhangyerencaiqiantai";
-//				}
-			}
-		}
-		model.addAttribute("expertList", expertList);
-		model.addAttribute("pageSize", pageSize);
-		model.addAttribute("pageIndex", pageIndex);
-		model.addAttribute("totalCount", totalCount);
-		model.addAttribute("totalPages", totalPages);
-			
 		return view;
 	}
 	

@@ -40,7 +40,6 @@ import com.xitu.app.model.Task;
 import com.xitu.app.repository.JianceRepository;
 import com.xitu.app.repository.PaperRepository;
 import com.xitu.app.service.es.JianceService;
-import com.xitu.app.test.DataDiscoveryServiceImpl;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
