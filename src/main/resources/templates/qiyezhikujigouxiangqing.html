@@ -103,7 +103,7 @@
 		            		<a href="javascript:getPaper(0)" id="paper">
 		            			相关论文
 		            		</a>
-		            		<a href="javascript:;">
+		            		<a href="javascript:getJiance(0)" id="jiance">
 		            			相关信息
 		            		</a>
 		            	</div>
@@ -124,9 +124,12 @@
 					            	 
 					            </div>
 		            		</div>
-		            	    <div class="zhuanliConThreeM">
-		            			<ul class="jiansuoUl" >
-		            		    </ul>
+		            	    <div class="zhuanliConThreeM" id="jianInfo">
+		            			<ul class="jiansuoUl" id="jianceInfo">
+		            			</ul>
+		            			<div class="sqPage" id="jiancesqPage">
+					            	 
+					            </div>
 		            	
 		            		</div>
 		            	</div>
@@ -165,7 +168,7 @@
 							$.each(items,function(index,value){
 								let div1 = $('<div class=\"swiper-slide\"></div>');
 								let div2 = $('<div class=\"ysPer\"></div>');
-								let a2 = $('<a href=\"javascript:;\"></a>');
+								let a2 = $('<a href=\"/expert/get?front=0&id=' + value.id + '\"></a>');
 								let img = $('<img src=\"/images/10.png\" />');
 								let p1 = $('<p class=\"ysName\">' + value.name+ '</p>');
 								let p2 = $('<p>' + value.duty+ '</p>');
@@ -274,7 +277,7 @@
 							$.each(items,function(index,value){
 								let li = $('<li></li>');
 								let div1 = $('<div class=\"jiansuoLiTL\"></div>');
-								let a1 = $('<a href=\"/patent/get?id=' + value.id + '\">'+ value.title + '</a>');
+								let a1 = $('<a href=\"/paper/get?id=' + value.id + '\">'+ value.title + '</a>');
 								div1.append(a1);
 								let div2 = $('<div class=\"jiansuoLiTag\"></div>');
 								let span1 = $('<span>出处：' + value.journal+ '</span>');
@@ -321,6 +324,84 @@
 						}
 					}); 
 			}
+			function getJiance(index) {
+				 $("#patent").removeClass("ahover");
+				 $("#paper").removeClass("ahover");
+				 $("#paInfo").removeClass("active");
+				 $("#parInfo").removeClass("active");
+				 $("#jianInfo").addClass("active");
+				 $("#jiance").addClass("ahover");
+				 
+				 
+				var param = {
+						'insname' : namebieming,
+						'pageIndex' : index
+					};
+					 $.ajax({
+						url : "/jiance/jianceInsList",
+						data : JSON.stringify(param),
+						dataType : 'json',
+						type : 'post',
+						contentType: "application/json; charset=utf-8",
+						success : function(data) {
+							let items = data.list;
+							if(JSON.stringify(items) === '[]') {
+								return;
+							}
+							$("#jianceInfo").html('');
+							$.each(items,function(index,value){
+								let li = $('<li></li>');
+								let div1 = $('<div class=\"jiansuoLiTL\"></div>');
+								let a1 = $('<a href=\"/jiance/get?id=' + value.id + '\">'+ value.title + '</a>');
+								div1.append(a1);
+								let div2 = $('<div class=\"jiansuoLiTag\"></div>');
+								let span1 = $('<span>发布日期：' + value.pubtime+ '</span>');
+								let span2 = $('<span>来源机构：' + value.institution+ '</span>');
+								let span4 = $('<span>栏目分类：' + value.lanmu+ '</span>');
+								div2.append(span1);
+								div2.append(span2);
+								div2.append(span4);
+								let div3 = $('<div class=\"jiansuoLiText\"></div>');
+								let span3 = $('<span class=\"jiansuoLiTextSpan\">' + value.description+ '</span>');
+								let a2 = $('<a href=\"javascript:;\" class=\"jiansuoLImore\">展开更多</a>');
+								div3.append(span3);
+								div3.append(a2);
+//	 							input.attr("id",index);
+//	 							input.attr("value",value);
+//	 							let label = $('<label></label>');
+//	 							label.attr("for",index);
+//	 							label.text(" " + value)
+								li.append(div1);
+								li.append(div2);
+								li.append(div3);
+								$("#jianceInfo").append(li);
+							});
+							var totalPages = data.totalPages;
+							var totalCount = data.totalCount;
+							var pageIndex = data.pageIndex;
+							if(totalCount > 0){
+								var pagecontent = "<span>";
+								pagecontent += "<span>共 "+totalCount+" 条论文</span>";
+								
+								if(pageIndex+1 != 1){
+									var px = pageIndex-1;
+									pagecontent += "<a href=\"javascript:getJiance(0)\"><首页</a>";
+									pagecontent += "<a href=\"javascript:getJiance("+px+")\"><上一页</a>";
+								}
+								if(pageIndex+1 != totalPages){
+									var px = pageIndex+1;
+									var pt = totalPages-1;
+									pagecontent += "<a href=\"javascript:getJiance("+px+")\">下一页<em>></em></a>";
+									pagecontent += "<a href=\"javascript:getJiance("+pt+")\">尾页<em>></em></a>";
+								}
+								pagecontent+="</span>";
+								$("#jiancesqPage").html(pagecontent);
+							}
+							
+						}
+					}); 
+			}
+			
 		</script>
 
 	</body>
