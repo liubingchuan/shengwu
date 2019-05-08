@@ -199,7 +199,7 @@
 		            	<ul class="jiansuoUl">
 		            		<li th:each="project: ${list}">
 		            			<div class="jiansuoLiTL">
-		            				<a th:href="@{/project/get(id=${project.id},front=0)}" th:text="${project.name}">
+		            				<a th:href="@{/project/get(id=${project.id},front=0,q=${query})}" th:text="${project.name}">
 		            				</a>
 		            			</div>
 		            			<div class="jiansuoLiTag">

@@ -44,6 +44,11 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		return convertIns(getHttpClient().execute(composeInsDSL(insNamearr,pageIndex, pageSize, field, type)),pageSize);
 	}
 	
+	@Override
+	public JSONObject executeXiangguan(int pageIndex, int pageSize,int type,String...args) {
+		return convertIns(getHttpClient().execute(composeXiangguanDSL(pageIndex, pageSize, type,args)),pageSize);
+	}
+	
 	public ESHttpClient getHttpClient() {
 		String url = endpoint;
 		String indexName = "";
@@ -414,6 +419,93 @@ public abstract class AbstractESHttpService implements ESHttpService {
 //		args.put(field, terms);
 //		query.put("aggs",args);
     	//System.out.println("*****"+query.toString());
+    	return query.toString();
+	}
+	public String composeXiangguanDSL(int pageIndex, int pageSize,int type,String...args) {
+		List<Field> fields = getFields(getEntityClass());
+		List<String> crossedFields = new ArrayList<String>();
+		
+		JSONObject query = new JSONObject();
+		
+		for (Field f : fields) {
+			
+			CrossQuery crossQuery = f.getAnnotation(CrossQuery.class);
+			
+			String fieldName = f.getName();
+			 
+			if (crossQuery != null) {
+				crossedFields.add(fieldName);
+			} 
+			
+		}
+		
+    	JSONArray sort = new JSONArray();
+    	JSONObject _score = new JSONObject();
+    	JSONObject order = new JSONObject();
+    	order.put("order", "desc");//method=desc
+    	_score.put("_score",order);//orderby=_score
+    	sort.add(_score);
+    	JSONObject pubtimes = new JSONObject();
+    	String sortfield ="";
+    	if (type == 3) {
+    		sortfield = "pubtime";
+		}
+    	if (type == 0) {
+    		sortfield = "publictime";
+		}
+    	if (type == 1) {
+    		sortfield = "year";
+		}
+    	if (type == 2) {
+    		sortfield = "now";
+		}
+    	if (type == 4) {
+    		sortfield = "now";
+		}
+    	if (type == 5) {
+    		sortfield = "now";
+		}
+    	if (type == 6) {
+    		sortfield = "now";
+		}
+//    	JSONObject order1s = new JSONObject();
+//    	order1s.put("order", "desc");
+//    	pubtimes.put(sortfield,order1s);
+//    	sort.add(pubtimes);
+    	query.put("sort",sort);
+		JSONObject param = new JSONObject();
+		JSONArray should = new JSONArray();
+		JSONObject multi_match = new JSONObject();
+		JSONObject match_all = new JSONObject();
+		JSONArray must = new JSONArray();
+		JSONObject bool1 = new JSONObject();
+    	JSONObject bool2 = new JSONObject();
+		JSONObject bool4 = new JSONObject();
+    	JSONObject bool3 = new JSONObject();
+    	Model model = ThreadLocalUtil.get();
+		if (args == null || args.length==0 || args[0] == null || "".equals(args[0]) || "null".equals(args[0])) {
+		    match_all.put("match_all", param);
+		    must.add(match_all);
+		}else {
+			param.put("query", args[0]);
+			
+			param.put("operator", "and");
+			param.put("type", "cross_fields");
+			param.put("fields", crossedFields.toArray());
+			//param.put("type", "best_fields");
+			multi_match.put("multi_match", param);
+			should.add(multi_match);
+			bool4.put("should", should);
+			bool3.put("bool", bool4);
+			must.add(bool3);
+		}
+		
+    	bool2.put("must",must);
+    	bool1.put("bool", bool2);
+    	query.put("query", bool1);
+    	query.put("from",pageIndex*pageSize);
+    	query.put("size", pageSize);
+    	System.out.println("query ---  " + query.toString());
     	return query.toString();
 	}
 }

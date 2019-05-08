@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.security.auth.Subject;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -88,12 +90,13 @@ public class PaperController {
 	
 	
 	@GetMapping(value = "paper/get")
-	public String getPaper(@RequestParam(required=false,value="id") String id, Model model) {
+	public String getPaper(@RequestParam(required=false,value="id") String id,@RequestParam(required=false,value="q") String q, Model model) {
 		Paper paper = new Paper();
 		if(id != null) {
 			paper = paperRepository.findById(id).get();
 		}
 		model.addAttribute("paper", paper);
+		model.addAttribute("query", q);
 		Integer pageIndex = 0;
 		Integer pageSize = 10;
 		long totalCount = 0L;
@@ -1128,6 +1131,22 @@ public class PaperController {
 		// TODO 静态变量未环绕需调整
 		JSONObject rs = new JSONObject();
 		rs = paperService.executeIns(insname.getString("insname"),pageIndex, pageSize, "author",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
+    
+    @ResponseBody
+	@RequestMapping(value = "paper/xiangguanpaperList", method = RequestMethod.POST,consumes = "application/json")
+	public R xiangguanpaperList(@RequestBody JSONObject insname) {
+    	int pageSize = 10;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+    	String query = (String) insname.get("query");
+		int i = 1;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		rs = paperService.executeXiangguan(pageIndex, pageSize, i,query);
 		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
     }
 	
