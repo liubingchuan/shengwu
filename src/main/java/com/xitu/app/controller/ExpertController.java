@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
@@ -29,11 +31,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
 import com.xitu.app.common.R;
+import com.xitu.app.common.request.PatentPageListRequest;
 import com.xitu.app.common.request.SaveExpertRequest;
 import com.xitu.app.mapper.ItemMapper;
 import com.xitu.app.model.Expert;
@@ -136,6 +143,16 @@ public class ExpertController {
 		Expert expert = new Expert();
 		if(id != null) {
 			expert = expertRepository.findById(id).get();
+			String name = expert.getName();
+			String bieming = null;
+			List<String> alias = expert.getAlias();
+			if (alias != null && alias.size() > 0) {
+				bieming =  StringUtils.join(alias.toArray(), ",");
+			}
+			if (bieming != null) {
+				name = name+","+bieming;
+			}
+			model.addAttribute("namebieming", name);
 			model.addAttribute("frontendId", "".equals(expert.getFrontend())?null:expert.getFrontend());
 			model.addAttribute("frontendFileName", "".equals(expert.getFrontendFileName())?null:expert.getFrontendFileName());
 			model.addAttribute("frontendSize", "".equals(expert.getFrontendSize())?null:expert.getFrontendSize());
@@ -320,6 +337,21 @@ public class ExpertController {
 		}
     	return R.ok();
     }
-	
+    @ResponseBody
+	@RequestMapping(value = "expert/expertInsList", method = RequestMethod.POST,consumes = "application/json")
+	public R expertInsList(@RequestBody JSONObject insname) {
+    	int pageSize = 20;
+		//if(pageIndex == null) {
+		int pageIndex = 0;
+		//}
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		//rs.put("list", sources);
+		//rs.put("totalPages", totalPages);
+		//rs.put("totalCount", totalCount);
+		rs = expertService.executeIns(insname.getString("insname"),0, pageSize, "unit",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount"));
+    }
 	
 }

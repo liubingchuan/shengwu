@@ -49,8 +49,8 @@ public class FileController {
         }
         String fileName = file.getOriginalFilename();
         UUID uuid = UUID.randomUUID();
-        String path = this.fileRootPath ;
-        //path = "C:\\Users";
+        //String path = this.fileRootPath ;
+        String path = "C:\\Users";
         File dest = new File(path + File.separator + uuid + "_" + fileName);
         System.out.println("ssssssss" + path + File.separator + uuid + "_" + fileName);
         if(!dest.getParentFile().exists()){ //判断文件父目录是否存在
@@ -103,9 +103,9 @@ public class FileController {
         OutputStream os = null;  
         try {  
         	System.out.println(filename);
-            fis = new FileInputStream(this.fileRootPath + File.separator + filename);  
-        	//String path = "C:\\Users\\";
-        	//fis = new FileInputStream(path + filename); 
+            //fis = new FileInputStream(this.fileRootPath + File.separator + filename);  
+        	String path = "C:\\Users\\";
+        	fis = new FileInputStream(path + filename); 
             os = response.getOutputStream();  
             int count = 0;  
             byte[] buffer = new byte[1024 * 8];  

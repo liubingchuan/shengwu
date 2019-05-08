@@ -62,6 +62,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xitu.app.common.R;
 import com.xitu.app.common.request.AgPersonRequest;
 import com.xitu.app.common.request.AgTypeRequest;
@@ -1479,5 +1480,35 @@ public class PatentController {
 		}
 		return list;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/patentInsList", method = RequestMethod.POST,consumes = "application/json")
+	public R expertInsList(@RequestBody JSONObject insname) {
+    	int pageSize = 2;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		rs = patentService.executeIns(insname.getString("insname"),pageIndex, pageSize, "person",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/patentExpList", method = RequestMethod.POST,consumes = "application/json")
+	public R expertpatentList(@RequestBody JSONObject insname) {
+    	int pageSize = 2;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		rs = patentService.executeIns(insname.getString("insname"),pageIndex, pageSize, "creator",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
 	
 }

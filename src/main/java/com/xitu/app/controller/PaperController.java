@@ -48,12 +48,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
 import com.xitu.app.common.R;
 import com.xitu.app.common.request.SavePaperRequest;
@@ -1097,7 +1099,36 @@ public class PaperController {
 		}
     	return R.ok();
     }
-
-	
+    @ResponseBody
+	@RequestMapping(value = "paper/paperInsList", method = RequestMethod.POST,consumes = "application/json")
+	public R expertInsList(@RequestBody JSONObject insname) {
+    	int pageSize = 2;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		//rs.put("list", sources);
+		//rs.put("totalPages", totalPages);
+		//rs.put("totalCount", totalCount);
+		rs = paperService.executeIns(insname.getString("insname"),pageIndex, pageSize, "institution",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
+    @ResponseBody
+	@RequestMapping(value = "paper/paperExpList", method = RequestMethod.POST,consumes = "application/json")
+	public R expertpaperList(@RequestBody JSONObject insname) {
+    	int pageSize = 2;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+		int i = 5;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		rs = paperService.executeIns(insname.getString("insname"),pageIndex, pageSize, "author",i);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
 	
 }

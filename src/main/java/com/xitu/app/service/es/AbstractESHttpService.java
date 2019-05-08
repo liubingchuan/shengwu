@@ -38,7 +38,12 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	public void execute(int pageIndex, int pageSize, int type,String...args) {
 		convert(getHttpClient().execute(composeDSL(pageIndex, pageSize, type,args)));
 	}
-
+	
+	@Override
+	public JSONObject executeIns(String insNamearr,int pageIndex, int pageSize, String field, int type) {
+		return convertIns(getHttpClient().execute(composeInsDSL(insNamearr,pageIndex, pageSize, field, type)),pageSize);
+	}
+	
 	public ESHttpClient getHttpClient() {
 		String url = endpoint;
 		String indexName = "";
@@ -301,6 +306,36 @@ public abstract class AbstractESHttpService implements ESHttpService {
 			model.addAttribute(key, agg.get("buckets"));
 		}
 	}
+	
+	public JSONObject convertIns(JSONObject response,int pageSize) {
+		JSONObject hits = response.getJSONObject("hits");
+		Integer totalCount = hits.getInteger("total"); 
+		JSONArray list = hits.getJSONArray("hits");
+		List sources = new LinkedList();
+		for(int i=0;i<list.size();i++) {
+			JSONObject obj = list.getJSONObject(i);
+			JSONObject source = (JSONObject) obj.get("_source");
+			sources.add(source);
+		}
+		Model model = ThreadLocalUtil.get();
+		//model.addAttribute("list", sources);
+		//model.addAttribute("totalCount", totalCount);
+		long totalPages = 0L;
+		if (totalCount > 0) {
+			if(totalCount % pageSize == 0){
+				totalPages = totalCount/pageSize;
+			}else{
+				totalPages = totalCount/pageSize + 1;
+			}
+		}
+		//model.addAttribute("totalPages", totalPages);
+		JSONObject rs = new JSONObject();
+		rs.put("list", sources);
+		rs.put("totalPages", totalPages);
+		rs.put("totalCount", totalCount);
+		return rs;
+	}
+	
 	public static void main(String[] args) { 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
@@ -339,5 +374,46 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	return query.toString();
     	
     }
-
+	public String composeInsDSL(String insNamearr,int pageIndex, int pageSize, String field, int type){
+		JSONObject query = new JSONObject();
+    	JSONObject bool1 = new JSONObject();
+    	JSONObject bool2 = new JSONObject();
+    	JSONObject bool3 = new JSONObject();
+    	JSONObject must = new JSONObject();
+    	JSONArray should = new JSONArray();
+    	if (insNamearr.contains(",")) {
+    		for(String s:insNamearr.split(",")){
+	    		JSONObject term = new JSONObject();
+	        	JSONObject param = new JSONObject();
+	        	param.put(field, s);
+	        	term.put("match", param);
+	        	should.add(term);
+    	    }
+		}else {
+			JSONObject term = new JSONObject();
+        	JSONObject param = new JSONObject();
+        	param.put(field, insNamearr);
+        	term.put("match", param);
+        	should.add(term);
+		}
+    	
+    	bool2.put("should", should);
+    	bool3.put("bool", bool2);
+    	must.put("must",bool3);
+    	bool1.put("bool", must);
+    	query.put("query", bool1);
+    	query.put("from",pageIndex*pageSize);
+    	query.put("size", pageSize);
+//    	JSONObject args = new JSONObject();
+//    	JSONObject fz = new JSONObject();
+//		JSONObject terms = new JSONObject();
+//		
+//		fz.put("field", type);
+//		fz.put("size", 15);
+//		terms.put("terms", fz);
+//		args.put(field, terms);
+//		query.put("aggs",args);
+    	//System.out.println("*****"+query.toString());
+    	return query.toString();
+	}
 }
