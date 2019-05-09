@@ -45,8 +45,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	}
 	
 	@Override
-	public JSONObject executeXiangguan(int pageIndex, int pageSize,int type,String...args) {
-		return convertIns(getHttpClient().execute(composeXiangguanDSL(pageIndex, pageSize, type,args)),pageSize);
+	public JSONObject executeXiangguan(int pageIndex, int pageSize,int type,String uuid,List<String> args) {
+		return convertIns(getHttpClient().execute(composeXiangguanDSL(pageIndex, pageSize, type,uuid,args)),pageSize);
 	}
 	
 	public ESHttpClient getHttpClient() {
@@ -421,7 +421,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	//System.out.println("*****"+query.toString());
     	return query.toString();
 	}
-	public String composeXiangguanDSL(int pageIndex, int pageSize,int type,String...args) {
+	public String composeXiangguanDSL(int pageIndex, int pageSize,int type,String uuid,List<String> args) {
 		List<Field> fields = getFields(getEntityClass());
 		List<String> crossedFields = new ArrayList<String>();
 		
@@ -473,34 +473,47 @@ public abstract class AbstractESHttpService implements ESHttpService {
 //    	pubtimes.put(sortfield,order1s);
 //    	sort.add(pubtimes);
     	query.put("sort",sort);
-		JSONObject param = new JSONObject();
+		
 		JSONArray should = new JSONArray();
-		JSONObject multi_match = new JSONObject();
+		//JSONObject multi_match = new JSONObject();
 		JSONObject match_all = new JSONObject();
 		JSONArray must = new JSONArray();
 		JSONObject bool1 = new JSONObject();
     	JSONObject bool2 = new JSONObject();
 		JSONObject bool4 = new JSONObject();
     	JSONObject bool3 = new JSONObject();
-    	Model model = ThreadLocalUtil.get();
-		if (args == null || args.length==0 || args[0] == null || "".equals(args[0]) || "null".equals(args[0])) {
+		if (args == null || args.size()==0 ) {
+			JSONObject param = new JSONObject();
 		    match_all.put("match_all", param);
 		    must.add(match_all);
 		}else {
-			param.put("query", args[0]);
 			
-			param.put("operator", "and");
-			param.put("type", "cross_fields");
-			param.put("fields", crossedFields.toArray());
-			//param.put("type", "best_fields");
-			multi_match.put("multi_match", param);
-			should.add(multi_match);
+			for(int i=0;i<args.size();i++) {
+				JSONObject multi_match = new JSONObject();
+				JSONObject param = new JSONObject();
+				param.put("query", args.get(i));
+				
+				param.put("operator", "and");
+				param.put("type", "cross_fields");
+				param.put("fields", crossedFields.toArray());
+				//param.put("type", "best_fields");
+				multi_match.put("multi_match", param);
+				should.add(multi_match);
+			}
+			
 			bool4.put("should", should);
 			bool3.put("bool", bool4);
 			must.add(bool3);
 		}
 		
     	bool2.put("must",must);
+    	
+    	JSONObject must_not = new JSONObject();
+    	JSONObject term = new JSONObject();
+    	must_not.put("term", term);
+    	term.put("id", uuid);
+    	bool2.put("must_not",must_not);
+    	
     	bool1.put("bool", bool2);
     	query.put("query", bool1);
     	query.put("from",pageIndex*pageSize);

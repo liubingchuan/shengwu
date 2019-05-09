@@ -102,6 +102,7 @@ public class ProjectController {
 			project = projectRepository.findById(id).get();
 		}
 		model.addAttribute("project", project);
+		model.addAttribute("id", id);
 		model.addAttribute("query", q);
 		if(disable !=null) {
 			model.addAttribute("disable", "0");
@@ -318,10 +319,13 @@ public class ProjectController {
 //		}
     	int pageIndex = (int) insname.get("pageIndex");
     	String query = (String) insname.get("query");
+    	String id = (String) insname.get("id");
 		int i = 1;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
 		// TODO 静态变量未环绕需调整
 		JSONObject rs = new JSONObject();
-		rs = projectService.executeXiangguan(pageIndex, pageSize, i,query);
+		List<String> ss = new ArrayList<String>();
+		ss.add(query);
+		rs = projectService.executeXiangguan(pageIndex, pageSize, i,id,ss);
 		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
     }
 	

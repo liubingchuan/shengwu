@@ -147,6 +147,9 @@
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
 		<script type="text/javascript" th:inline="javascript">
 		var query = [[${query}]];
+		var id = [[${id}]];
+		var keywords = [[${keywords}]];
+		var title = [[${title}]];
 		$(document).ready(function () {
 			showLoginInfoFrontend();
 			getPaper(0);
@@ -180,7 +183,10 @@
 				 
 				var param = {
 						'query' : query,
-						'pageIndex' : index
+						'pageIndex' : index,
+						'id':id,
+						'keywords':keywords,
+						'title':title
 					};
 					 $.ajax({
 						url : "/paper/xiangguanpaperList",

@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -59,6 +60,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.xitu.app.common.R;
 import com.xitu.app.common.request.SavePaperRequest;
 import com.xitu.app.mapper.PatentMapper;
@@ -95,8 +97,18 @@ public class PaperController {
 		if(id != null) {
 			paper = paperRepository.findById(id).get();
 		}
+		if(paper != null) {
+			List<String> keywords = paper.getKeywords();
+			if (keywords != null && keywords.size() > 0) {
+				String str = StringUtils.join(keywords, ",");
+		        System.out.println("第一种方法" + str);
+		        model.addAttribute("keywords", str);
+			}
+			model.addAttribute("title", paper.getTitle());
+		}
 		model.addAttribute("paper", paper);
 		model.addAttribute("query", q);
+		model.addAttribute("id", id);
 		Integer pageIndex = 0;
 		Integer pageSize = 10;
 		long totalCount = 0L;
@@ -1143,10 +1155,27 @@ public class PaperController {
 //		}
     	int pageIndex = (int) insname.get("pageIndex");
     	String query = (String) insname.get("query");
+    	String id=(String) insname.get("id");
+    	String keywords=(String) insname.get("keywords");
+    	String title=(String) insname.get("title");
+    	List<String> ss = new ArrayList<String>();
+    	if (keywords != null && keywords.length() >0) {
+			if (keywords.contains(",")) {
+				for(String key : keywords.split(",")){
+					ss.add(key);
+				}
+			}else {
+				ss.add(keywords);
+			}
+    	}else if (query != null && query.length() > 0 ) {
+    		ss.add(query);
+		}else {
+			ss.add(title);
+		}
 		int i = 1;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
 		// TODO 静态变量未环绕需调整
 		JSONObject rs = new JSONObject();
-		rs = paperService.executeXiangguan(pageIndex, pageSize, i,query);
+		rs = paperService.executeXiangguan(pageIndex, pageSize, i,id,ss);
 		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
     }
 	
