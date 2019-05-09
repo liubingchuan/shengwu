@@ -32,7 +32,7 @@
 		</div>              
 		    <div class="chaxinOne">
 		    	<h1>
-		    		科技查新
+		    		文献传递
 		    	</h1>
 		    	<div class="chaxinOneText">
 		    	调研国内外领域/研究方向的科技政策，综合分析国家/机构中长期发展计划、科技前沿动态、行业报告与咨询报告，追踪研判国际年度重点农业政策，并进行解读解析，为我国机构、科研团队、科技政策制定部门、资金资助部门和贸易合作决策部门等提供支撑服务
@@ -145,147 +145,79 @@
 							</a> 
 							<div class="chaxinK">
 								<div class="chaxinTwoTl">
-								项目信息
+								文献信息
 								</div>
 								<div class="chaxinTwoB">
-									<div class="chaxinMB chaxinw-one">
-										       <p class="chaxinName">
-												项目名称<span class="colorRed">*</span>
+									<div class="clearfix">
+											<div class="left chaxingpLf">
+												<p class="chaxinName">
+												书刊名称<span class="colorRed">*</span>
+												</p>
+												<input type="text" class="chaxingpInp" id="chaxinfanwei" th:field="*{chaxinfanwei}"/>
+												<div class="erroText" id="chaxinfanweier">
+	    				                                                书刊名称不能为空
+	    			                            </div>
+											</div>
+											<div class="right chaxingpRt">
+												<p class="chaxinName">
+												文章标题<span class="colorRed">*</span>
 												</p>
 												<input type="text" class="chaxingpInp" id="title" th:field="*{title}"/>
 												<div class="erroText" id="titleer">
-	    				                                               项目名称不能为空
+	    				                                                文章标题不能为空
 	    			                            </div>
-									</div>
-								    <div class="clearfix">
-								    	<div class="left chaxinMB chaxinw-two">
-								    		<p class="chaxinName">
-												查新范围
+											</div>
+										</div>
+										<div class="clearfix">
+											<div class="left chaxingpLf">
+												<p class="chaxinName">
+												文章作者 
 												</p>
-												<select class="chaxinselect"  th:field="*{chaxinfanwei}">
-													<option value ="请选择查新范围">请选择查新范围</option>
-													<option value ="国内">国内</option>
-													<option value ="国外">国外</option>
-												</select>
+												<input type="text" class="chaxingpInp" th:field="*{mudi}"/>
 												<!-- <div class="erroText">
 	    				                                                输入错误
 	    			                            </div> -->
-								    	</div>
-								    	<div class="left chaxinMB chaxinw-three ml21">
-								    		<p class="chaxinName">
-												项目目的
+											</div>
+											<div class="right chaxingpRt">
+												<p class="chaxinName">
+												出版年<span class="colorRed">*</span>
 												</p>
-												<select class="chaxinselect" th:field="*{mudi}">
-													<option value="请选择项目目的">请选择项目目的</option>
-													<option value="项目评审">项目评审</option>
-												</select>
-												<!-- <div class="erroText">
-	    				                                                输入错误
-	    			                            </div> -->
-								    	</div>
-								    </div>
-								    <div class="chaxinMB">
-										       <p class="chaxinName">
-												项目科学要点<span class="colorRed">*</span>
-												</p>
-												<textarea class="chaxintextarea" id="kexueyaodian" th:field="*{kexueyaodian}" placeholder="充分反映出查新项目的概貌，简述项目的背景、技术问题、解决技术问题所采用的方案、主要技术特征、技术参数或指标、应用范围等相关技术内容。"></textarea>
+												<input type="text" class="chaxingpInp" id="kexueyaodian" th:field="*{kexueyaodian}"/>
 												<div class="erroText" id="kexueyaodianer">
-	    				                                            项目科学要点不能为空
+	    				                                                出版年不能为空
 	    			                            </div>
-									</div>
-								    <div class="chaxinzj">
-								    	<div class="clearfix chaxinzjGp">
-								    	<div class="chaxinMB chaxinw-four left">
-										       <p class="chaxinName">
-												检索点<span class="colorRed">*</span>
+											</div>
+										</div>
+										<div class="clearfix">
+											<div class="left chaxingpLf">
+												<p class="chaxinName">
+													卷期 
 												</p>
-												<input type="text" id="jiansuodian" placeholder="多个检索点之间请用分号分隔" class="chaxingpInp" th:field="*{jiansuodian}"/>
-												<div class="erroText" id="jiansuodianer">
-	    				                                             检索点不能为空
-	    			                            </div>
-									    </div>
-									    <!-- <a href="javascript:;" class="left chaxinbtn chaxinzjADD">
-									    	<img th:src="@{/images/Sketchchaxin_13.png}"/>
-									    </a>
-									    <a href="javascript:;" class="left chaxinbtn chaxinzjdel">
-									    	<img th:src="@{/images/Sketchchaxin_15.png}" />
-									    </a> -->
-								        </div>
-								    </div>
-								    <div class="chaxinzj">
-								    	<div class="clearfix chaxinzjGp">
-								    	<div class="chaxinMB chaxinw-four left">
-										       <p class="chaxinName">
-												参考检索词<span class="colorRed">*</span>
-												</p>
-												<input type="text" id="jiansuoci" placeholder="多个参考检索词之间请用分号分隔" class="chaxingpInp" th:field="*{jiansuoci}"/>
-												<div class="erroText" id="jiansuocier">
-	    				                                               参考检索词不能为空
-	    			                            </div>
-									    </div>
-									  <!--   <a href="javascript:;" class="left chaxinbtn chaxinzjADD">
-									    	<img th:src="@{/images/Sketchchaxin_13.png}"/>
-									    </a>
-									    <a href="javascript:;" class="left chaxinbtn chaxinzjdel">
-									    	<img th:src="@{/images/Sketchchaxin_15.png}" />
-									    </a> -->
-								        </div>
-								    </div>
-								    <div class="clearfix">
-								    	<div class="left chaxinMB chaxinw-two">
-								    		<p class="chaxinName">
-												学科分类
-												</p>
-												<select class="chaxinselect" th:field="*{xueke}">
-													<option value="请选择学科分类">请选择学科分类</option>
-													<option value="遗传学">遗传学</option>
-												</select>
+												<input type="text" class="chaxingpInp" id="jiansuodian" th:field="*{jiansuodian}"/>
 												<!-- <div class="erroText">
 	    				                                                输入错误
 	    			                            </div> -->
-								    	</div>
-								    	<div class="left chaxinMB  chaxinw-two ml21">
-								    		<p class="chaxinName">
-												产业分类
+											</div>
+											<div class="right chaxingpRt">
+												<p class="chaxinName">
+													起止页码
 												</p>
-												<select class="chaxinselect" th:field="*{chanye}">
-													<option value="请选择产业分类">请选择产业分类</option>
-													<option value="生物医药">生物医药</option>
-												</select>
+												<input type="text" class="chaxingpInp" id="jiansuoci" th:field="*{jiansuoci}"/>
 												<!-- <div class="erroText">
 	    				                                                输入错误
 	    			                            </div> -->
-								    	</div>
-								    </div>
+											</div>
+										</div>
 								    <div class="chaxinMB">
 										       <p class="chaxinName">
-												说明
+												备注 
 												</p>
-												<div class="chaxinUp">
-													<textarea class="chaxintextarea1" th:field="*{beizhu}">
-														
-													</textarea>
-													<div class="chaxinUpNrLIST">
-														<div id="fujian">
-															
-														</div>
-														
-														
-													    <div class="chaxinupBtn">
-													    	<a href="javascript:;">
-													    		+ 点此上传附件
-													    		<input id="frontendFile" type="file" name="frontendFile"/>
-			    												<input id="frontendFileHidden" type="hidden" />
-			    												<input id="frontendFileNameHidden" type="hidden" />
-			    												<input id="frontendSizeHidden" type="hidden" />
-			    												<input type="hidden" class="chaxingpInp" id="shenqingfujianId" th:field="*{shenqingfujianId}"/>
-													    	</a>
-													    </div>
-													    
-													    
-													</div>
-												</div>
+												<textarea class="chaxintextarea" th:field="*{beizhu}"></textarea>
+												<!-- <div class="erroText">
+	    				                                                输入错误
+	    			                            </div> -->
 									</div>
+								    
 								</div>
 							</div>
 							<!-- <div class="huakuai">
@@ -298,6 +230,10 @@
             <div class="inner">&gt;&gt;</div>
         </div>
 							</div> -->
+							<div class="gouxuan wenxian-gx">
+								<input type="checkbox" id="chengnuo"/>
+								<label for="50">同意<a href="#">《文献传递合理使用》</a>用户承诺书</label>
+							</div>
 							<div class="huakuai" id="mpanel1">
 							</div>
 							<div class="erroText" id="yanzheng">
@@ -308,34 +244,34 @@
 					</div>
 				    <div class="right chaxinRt">
 				    	<div class="chaxinRtTl">
-				    		<a th:href="@{/zhishifuwu/wenxianchuandi}" class="chaxinRtTl">申请文献传递</a>
+				    		<a th:href="@{/zhishifuwu/zhishifuwu}" class="chaxinRtTl">申请科技查新</a>
 				    	</div>
 				    	<div class="chaxinfwTl">
 				    		服务说明
 				    	</div>
 				    	<div class="chaxinfwgp">
 				    		<div class="chaxinfwgpTl">
-				    			国内查新服务 
+				    		普通文献 
 				    		</div>
-				    		<P>费用：1000元/项</P>
-				    		<P> 时间：7个工作日 </P>
-				    		 <P>每项委托包含1个查新点。国内查新每增加1个查新点，查新费用增加300元，工作时间增加1个工作日； </P>
+				    		<P>服务费用：2元/篇</P>
+				    		<P>复制费用：0.3元／页</P>
+				    		 <P> 版权费用：5-10元／篇 </P>
 				    	</div>
 				    	<div class="chaxinfwgp">
 				    		<div class="chaxinfwgpTl">
-				    			国内查新服务 
+				    		专利文献 
 				    		</div>
-				    		<P>费用：2000元/项</P>
-				    		<P>时间：10个工作日</P>
-				    		 <P>国内外查新每增加1个查新点，查新费用增加600元，工作时间增加3个工作日。</P>
+				    		<P>服务费用：2元/篇</P>
+				    		<P>复制费用：5元／篇</P>
 				    	</div>
 				    	<div class="chaxinfwgp">
 				    		<div class="chaxinfwgpTl">
-				    			说明 
+				    		其他说明 
 				    		</div>
-				    		<P>如需加急，按查新实际时间计算； </P>
-				    		<P>每项查新提交用户一式2份查新报告原件，每增加1份报告30元；</P>
-				    		 <P> 邮寄查新报告另收邮费及长话费50元。 </P>
+				    		<p>服务时间：2个工作日</p>
+				    		<P>加急费用：10元／篇</P>
+				    		<P>外文文献收取版权费；版权费收取标准：外文期刊、外文会议文献、外文文集汇编：5元/篇；外文学位论文和国外科技报告：10元/篇。</P>
+				    		<P>NSTL机构外获取文献及国际代查收费标准，视实际情况而定；</P>
 				    	</div>
 				    	
 				    </div>
@@ -355,7 +291,7 @@
 	    		<a href="/">
 	    			返回首页
 	    		</a>
-	    		<a th:href="@{/zhishifuwu/zhishifuwu}" class="alertxuqaNext">
+	    		<a th:href="@{/zhishifuwu/wenxianchuandi}" class="alertxuqaNext">
 	    			继续申请
 	    		</a>
 	    	</div>
@@ -467,6 +403,12 @@
 			         }
 					document.getElementById('telephoneer').style.display='none';
 				}
+				if($("#chaxinfanwei").val() == ''){
+					document.getElementById('chaxinfanweier').style.display='block';
+					return null;
+				}else{
+					document.getElementById('chaxinfanweier').style.display='none';
+				}
 				if($("#title").val() == ''){
 					document.getElementById('titleer').style.display='block';
 					return null;
@@ -479,25 +421,18 @@
 				}else{
 					document.getElementById('kexueyaodianer').style.display='none';
 				}
-				if($("#jiansuodian").val() == ''){
-					document.getElementById('jiansuodianer').style.display='block';
+				if(!document.getElementById('chengnuo').checked){
 					return null;
-				}else{
-					document.getElementById('jiansuodianer').style.display='none';
 				}
-				if($("#jiansuoci").val() == ''){
-					document.getElementById('jiansuocier').style.display='block';
-					return null;
-				}else{
-					document.getElementById('jiansuocier').style.display='none';
-				}
+				
 				if(yanzheng != 1){
 					document.getElementById('yanzheng').style.display='block';
 					return null;
 				}else{
 					document.getElementById('yanzheng').style.display='none';
 				}
-				$("#ordernumber").val("科技查新");
+				
+				$("#ordernumber").val("文献传递");
 				$("form[name='saveForm']").submit();
 			}
 			

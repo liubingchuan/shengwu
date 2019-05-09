@@ -20,12 +20,13 @@
 				</a>
 				<div class="left menu clearfix">
 					<a href="/">平台首页</a>
-					<a th:href="@{/jiance/jiancelist}">产业监测</a>
-					<a th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}">企业智库</a>
+					<a id="chanyejiance" th:href="@{/jiance/jiancelist}">产业监测</a>
+					<a id="xituzhiku" th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}">企业智库</a>
 					<a id="zhishifuwu" th:href="@{/zhishifuwu/zhishifuwu}">知识服务</a>
 					<a th:href="@{/patent/agmount}">专利分析</a>
 					<a href="#">园区介绍</a>
 					<a href="#">关于我们</a>
+					
 				</div>
 				<div th:replace="qiantaidenglu :: myqiantaidenglu"></div>
 			</div>
@@ -165,7 +166,7 @@
 	    		    				</li>
 	    		    				
 	    		    			</ul>
-	    		    			<a href="#" class="btnYellow indexLFA">
+	    		    			<a id="zhishifuwu2" th:href="@{/zhishifuwu/zhishifuwu}" class="btnYellow indexLFA">
 	    		    				开始委托>>
 	    		    			</a>
 	    		    		</div>
@@ -187,7 +188,7 @@
 	    		    					行业分析报告数据
 	    		    				</li>
 	    		    			</ul>
-	    		    			<a href="#" class="btnYellow indexLFA">
+	    		    			<a th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}" class="btnYellow indexLFA">
 	    		    				进入智库>>
 	    		    			</a>
 	    		    		</div>
@@ -453,6 +454,7 @@
 					document.getElementById("xituzhiku").removeAttribute("href");
 					document.getElementById("chanyejiance").removeAttribute("href");
 					document.getElementById("zhishifuwu").removeAttribute("href");
+					document.getElementById("zhishifuwu2").removeAttribute("href");
 					
 				}
 				if($.cookie("role")!=null && $.cookie("role")==="管理员"){

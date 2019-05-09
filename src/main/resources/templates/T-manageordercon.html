@@ -34,6 +34,7 @@
 									
 								</div>
 							</div>
+							<div th:if="${order.ordernumber == '科技查新'}">
 							<div class="orderconTextGp clearfix">
 								<span class="left orderconTextGpName">
 									项目名称：
@@ -117,6 +118,58 @@
 										
 									</p>
 								</div>
+							</div>
+							</div>
+							<div th:if="${order.ordernumber == '文献传递'}">
+								<div class="orderconTextGp clearfix">
+								<span class="left orderconTextGpName">
+									文章标题：
+								</span>
+								<div class="orderconTextGpRt" th:text="*{title}">
+									
+								</div>
+								</div>
+								<div class="orderconTextGp clearfix">
+									<span class="left orderconTextGpName">
+										书刊名称：
+									</span>
+									<div class="orderconTextGpRt" th:text="*{chaxinfanwei}">
+										
+									</div>
+								</div>
+								<div class="orderconTextGp clearfix">
+									<span class="left orderconTextGpName">
+										 文章作者：
+									</span>
+									<div class="orderconTextGpRt" th:text="*{mudi}">
+										
+									</div>
+								</div>
+								<div class="orderconTextGp clearfix">
+									<span class="left orderconTextGpName">
+										出版年：
+									</span>
+									<div class="orderconTextGpRt" th:text="*{kexueyaodian}">
+										
+									</div>
+								</div>
+								<div class="orderconTextGp clearfix">
+									<span class="left orderconTextGpName">
+										卷期：
+									</span>
+									<div class="orderconTextGpRt" th:text="*{jiansuodian}">
+										
+									</div>
+								</div>
+								<div class="orderconTextGp clearfix">
+									<span class="left orderconTextGpName">
+										起止页码：
+									</span>
+									<div class="orderconTextGpRt" th:text="*{jiansuoci}">
+										
+									</div>
+								</div>
+								
 							</div>
 			    		   <div class="orderconTextGp clearfix">
 								<span class="left orderconTextGpName">

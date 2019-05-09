@@ -56,10 +56,16 @@ public class ZhishifuwuController {
     private ZhishifuwuMapper zhishifuwuMapper;
 	
 	@GetMapping(value = "zhishifuwu/zhishifuwu")
-	public String WenxianChuandi(Model model) {
+	public String Kejichaxin(Model model) {
 		SaveOrderRequest saveOrderRequest = new SaveOrderRequest();
 		model.addAttribute("saveOrderRequest", saveOrderRequest);
 		return "T-zhishi";
+	}
+	@GetMapping(value = "zhishifuwu/wenxianchuandi")
+	public String WenxianChuandi(Model model) {
+		SaveOrderRequest saveOrderRequest = new SaveOrderRequest();
+		model.addAttribute("saveOrderRequest", saveOrderRequest);
+		return "T_wenxian";
 	}
 	
 	@PostMapping(value = "order/save")
@@ -70,6 +76,9 @@ public class ZhishifuwuController {
 		}
 		if (request.getUserId() != null) {
 			order.setUserId(request.getUserId());
+		}
+		if (request.getOrdernumber() != null) {
+			order.setOrdernumber(request.getOrdernumber());
 		}
 		if (request.getChaxinfanwei() != null && !request.getChaxinfanwei().equals("请选择查新范围")) {
 			order.setChaxinfanwei(request.getChaxinfanwei());

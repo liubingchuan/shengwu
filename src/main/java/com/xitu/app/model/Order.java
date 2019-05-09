@@ -12,16 +12,16 @@ public class Order {
 	
 	@IdFlag
 	private Integer id;
-	private String ordernumber;
-	private String title;
-	private String chaxinfanwei;
-	private String mudi;
-	private String kexueyaodian;
-	private String jiansuodian;
-	private String jiansuoci;
+	private String ordernumber; //服务类型：知识服务；服务类型：科技查新和文献传递
+	private String title; //项目名称 ；文章标题
+	private String chaxinfanwei;//查新范围；书刊名称
+	private String mudi;  //查新目的；文章作者
+	private String kexueyaodian; //科学要点；出版年
+	private String jiansuodian;//检索点；卷期
+	private String jiansuoci;//检索词；起止页码
 	private String xueke;
 	private String chanye;
-	private String beizhu;
+	private String beizhu;//备注；备注
 	private String shenqingfujianId;
 	private String shenqingshijian;
 	private String chulishijian;
@@ -29,9 +29,9 @@ public class Order {
 	private String chuliren;
 	private String chuliyijian;
 	private String institution;
-	private String chulirenfujianId;
+	private String chulirenfujianId;//处理附件；处理附件
 	private String userId;
-	private String uuid;
+	private String uuid;//订单编号；订单编号
 	public Integer getId() {
 		return id;
 	}
