@@ -95,6 +95,7 @@
 		            				<span>相关成果：专家 <i class="colorBlue" th:id = "ex+${org.name}"></i>人 </span>
 		            				<span>专利：<i class="colorBlue" th:id = "pa+${org.name}"></i>件 </span>
 		            				<span>文献：<i class="colorBlue" th:id = "par+${org.name}"></i>条</span>
+		            				<span>报道：<i class="colorBlue" th:id = "jc+${org.name}"></i>条</span>
 		            			</div>
 		            			<div class="jiansuoLiText">
 		            				<span class="jiansuoLiTextSpan" th:utext="${org.description}">
@@ -196,6 +197,11 @@
 						for(var s in data.PaperNum){
 							var countcgs =  data.PaperNum[s];
 							var ss = "#par"+s;
+							$(ss).html(" "+countcgs+" "); 
+						}
+						for(var s in data.JianceNum){
+							var countcgs =  data.JianceNum[s];
+							var ss = "#jc"+s;
 							$(ss).html(" "+countcgs+" "); 
 						}
 						

@@ -372,6 +372,13 @@ public class ESHttpClient implements Serializable {
 	    JSONObject json = indexer.execute(conn);
 	    return json;
 	}
+	 
+	 public static JSONObject conjianceESIns(String conn){
+			ESHttpClient indexer = new ESHttpClient("45.77.86.209:9200", "jiance","jc");
+			ESHttpClient.debug = true;
+		    JSONObject json = indexer.execute(conn);
+		    return json;
+		}
     
    
     

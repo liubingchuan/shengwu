@@ -80,19 +80,9 @@
 	    			 
                    	 				</div>
 	    						</div>
-	    						<div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-			    			     <script>
-    var swiper = new Swiper('.ysLb1 .swiper-container', {
-      slidesPerView:5,
-      spaceBetween: 18,
-     navigation: {
-								nextEl: '.ysLb1 .swiper-button-next',
-								prevEl: '.ysLb1 .swiper-button-prev',
-							},
-    });
-    
-  </script>
+	    						<div class="swiper-button-next" id="next" style="display:none"></div>
+                                <div class="swiper-button-prev" id="prev" style="display:none"></div>
+			    			     
 			    			</div>
 			    		    </div>
 		            	</div>
@@ -147,7 +137,6 @@
 				getExpert();
 				getPatent(0);
 		 	});
-		 	
 
 			function getExpert() { 
 				var param = {
@@ -177,12 +166,23 @@
 								a2.append(p2);
 								div2.append(a2);
 								div1.append(div2);
-								$("#expertinfo").append(div1)
+								$("#expertinfo").append(div1);
+								document.getElementById("next").style="display:block";
+								document.getElementById("prev").style="display:block";
+							});
+							var swiper = new Swiper('.ysLb1 .swiper-container', {
+								slidesPerView:5,
+								spaceBetween: 18,
+								navigation: {
+									nextEl: '.ysLb1 .swiper-button-next',
+									prevEl: '.ysLb1 .swiper-button-prev',
+								},
 							});
 							//pageIndex = pageIndex + 1;
 							
 						}
 					}); 
+					 
 			}
 			function getPatent(index) { 
 				var param = {

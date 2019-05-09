@@ -461,6 +461,33 @@ public class OrgController {
     		}
     		reData.put("PaperNum", paperinscountMap);
     		
+    		Map<String, Integer> jianceaggcountMap = new HashMap<String, Integer>();
+        	Map<String, Integer> jianceinscountMap = new HashMap<String, Integer>();
+    		JSONObject jianceInsName = ESHttpClient.conjianceESIns(orgService.createQqueryByListIns(insNamearr,aggsize,"institution"));
+    		
+    		JSONObject jianceaggregations = jianceInsName.getJSONObject("aggregations");
+    		JSONObject jianceagg = (JSONObject) jianceaggregations.get("institution");
+    		for(Object s:(JSONArray)jianceagg.get("buckets")){
+    			JSONObject ss = (JSONObject) s;
+    			jianceaggcountMap.put(ss.getString("key"), Integer.valueOf(ss.getString("doc_count")));
+    		}
+    		for(Map.Entry<String, Object> entry: map.entrySet()) {
+    			String name = entry.getKey();
+    			List<String> bieming = (List<String>) entry.getValue();
+    			//bieming.add(name);
+    			int count = 0;
+    			for (String ns:bieming) {
+					if (jianceaggcountMap.containsKey(ns)) {
+						count += jianceaggcountMap.get(ns);
+					}
+				}
+    			if (jianceaggcountMap.containsKey(name)) {
+					count += jianceaggcountMap.get(name);
+				}
+    			jianceinscountMap.put(name, count);
+    		}
+    		reData.put("JianceNum", jianceinscountMap);
+    		
     	}
 		return reData;
 		
