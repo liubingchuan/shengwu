@@ -35,8 +35,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xitu.app.common.R;
 import com.xitu.app.common.request.SaveProjectRequest;
 import com.xitu.app.mapper.ItemMapper;
 import com.xitu.app.model.Item;
@@ -88,6 +94,7 @@ public class ProjectController {
 	@GetMapping(value = "project/get")
 	public String getProject(@RequestParam(required=false,value="id") String id, 
 			@RequestParam(required=false,value="front") String front,
+			@RequestParam(required=false,value="q") String q,
 			@RequestParam(required=false,value="disable") String disable,
 			Model model) {
 		Project project = new Project();
@@ -95,6 +102,7 @@ public class ProjectController {
 			project = projectRepository.findById(id).get();
 		}
 		model.addAttribute("project", project);
+		model.addAttribute("query", q);
 		if(disable !=null) {
 			model.addAttribute("disable", "0");
 		}else {
@@ -301,6 +309,20 @@ public class ProjectController {
 		
 		return "redirect:/project/list";
 	}
-	
+	@ResponseBody
+	@RequestMapping(value = "project/xiangguanprojectList", method = RequestMethod.POST,consumes = "application/json")
+	public R xiangguanpaperList(@RequestBody JSONObject insname) {
+    	int pageSize = 10;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	int pageIndex = (int) insname.get("pageIndex");
+    	String query = (String) insname.get("query");
+		int i = 1;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		JSONObject rs = new JSONObject();
+		rs = projectService.executeXiangguan(pageIndex, pageSize, i,query);
+		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
+    }
 	
 }

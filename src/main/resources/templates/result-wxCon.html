@@ -31,12 +31,12 @@
 			</div>
 		</div>              
 		    <div class="jiansuoNR">
-		    	<div class="jiansuoOne clearfix">
+		    	<!-- <div class="jiansuoOne clearfix">
 		    		<div class="left jiansuoOnelf">
-		    			<!-- 检索结果：43,345 -->
+		    			检索结果：43,345
 		    		</div>
 		    		<div class="jiansuoOneRt">
-		    			<!-- <a href="#">
+		    			<a href="#">
 		    				专利
 		    			</a>
 		    			<a href="#">
@@ -44,12 +44,12 @@
 		    			</a>
 		    			<a href="#">
 		    				项目
-		    			</a> -->
+		    			</a>
 		    		</div>
-		    		<!-- <em class="jiansuoOneIco">
+		    		<em class="jiansuoOneIco">
 		    			<a th:href="@{/patent/agmount}">进入稀土智库</a>
-		    		</em> -->
-		    	</div>
+		    		</em>
+		    	</div> -->
 		        <div class="jiansuoCon clearfix" th:object="${paper}">
 		        	<div class="left jiansuoLf">
 		        		<div class="jiansuoTl">
@@ -129,26 +129,12 @@
 		            		
 		            	</div>
 		            	<div class="zhuanliConThree">
-		            		<div class="zhuanliConThreeM active">
-		            			<ul class="jiansuoUl">
-		            		<li th:each="paper: ${paperList}">
-		            			<div class="jiansuoLiTL">
-		            				<a href="#" th:text="${paper.title}">
-		            				</a>
-		            			</div>
-		            			<div class="jiansuoLiTag">
-		            				<span th:text="'出处：' + ${paper.journal}"></span>
-		            				<span th:text="'出版年：' + ${paper.year}"></span>
-		            			</div>
-		            			<div class="jiansuoLiText">
-		            				<span class="jiansuoLiTextSpan" th:utext="${paper.subject}">
-		            				</span>
-		            				<a href="javascript:;" class="jiansuoLImore">
-		            					展开更多
-		            				</a>
-		            			</div>
-		            		</li>
-		            	</ul>
+		            		<div class="zhuanliConThreeM active" id="parInfo">
+		            			<ul class="jiansuoUl" id="paperInfo">
+		            			</ul>
+		            			<div class="sqPage" id="papersqPage">
+					            	 
+					            </div>
 		            		</div>
 		            		
 		            	</div>
@@ -160,9 +146,10 @@
 			<div th:replace="footer :: myfooter"></div>
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
 		<script type="text/javascript" th:inline="javascript">
-		    
+		var query = [[${query}]];
 		$(document).ready(function () {
 			showLoginInfoFrontend();
+			getPaper(0);
 		});
 		
 			function search(){
@@ -187,6 +174,75 @@
 				if($("#keywords").val() != "") {
 			    	window.location.href="/paper/list?q=" + $("#keywords").val() + "&" + uri;
 				}
+			}
+			
+			function getPaper(index) {
+				 
+				var param = {
+						'query' : query,
+						'pageIndex' : index
+					};
+					 $.ajax({
+						url : "/paper/xiangguanpaperList",
+						data : JSON.stringify(param),
+						dataType : 'json',
+						type : 'post',
+						contentType: "application/json; charset=utf-8",
+						success : function(data) {
+							let items = data.list;
+							if(JSON.stringify(items) === '[]') {
+								return;
+							}
+							$("#paperInfo").html('');
+							$.each(items,function(index,value){
+								let li = $('<li></li>');
+								let div1 = $('<div class=\"jiansuoLiTL\"></div>');
+								let a1 = $('<a href=\"/paper/get?id=' + value.id + '\">'+ value.title + '</a>');
+								div1.append(a1);
+								let div2 = $('<div class=\"jiansuoLiTag\"></div>');
+								let span1 = $('<span>出处：' + value.journal+ '</span>');
+								let span2 = $('<span>出版年：' + value.year+ '</span>');
+								div2.append(span1);
+								div2.append(span2);
+								let div3 = $('<div class=\"jiansuoLiText\"></div>');
+								let span3 = $('<span class=\"jiansuoLiTextSpan\">' + value.subject+ '</span>');
+								let a2 = $('<a href=\"javascript:;\" class=\"jiansuoLImore\">展开更多</a>');
+								div3.append(span3);
+								div3.append(a2);
+//	 							input.attr("id",index);
+//	 							input.attr("value",value);
+//	 							let label = $('<label></label>');
+//	 							label.attr("for",index);
+//	 							label.text(" " + value)
+								li.append(div1);
+								li.append(div2);
+								li.append(div3);
+								$("#paperInfo").append(li);
+							});
+							var totalPages = data.totalPages;
+							var totalCount = data.totalCount;
+							var pageIndex = data.pageIndex;
+							if(totalCount > 0){
+								var pagecontent = "<span>";
+								pagecontent += "<span>共 "+totalCount+" 条相关论文</span>";
+								
+								if(pageIndex+1 != 1){
+									var px = pageIndex-1;
+									pagecontent += "<a href=\"javascript:getPaper(0)\"><首页</a>";
+									pagecontent += "<a href=\"javascript:getPaper("+px+")\"><上一页</a>";
+								}
+								if(pageIndex+1 != totalPages){
+									var px = pageIndex+1;
+									var pt = totalPages-1;
+									pagecontent += "<a href=\"javascript:getPaper("+px+")\">下一页<em>></em></a>";
+									pagecontent += "<a href=\"javascript:getPaper("+pt+")\">尾页<em>></em></a>";
+								}
+								pagecontent+="</span>";
+								$("#papersqPage").html(pagecontent);
+							}
+							
+						}
+					}); 
 			}
 				</script>
 		

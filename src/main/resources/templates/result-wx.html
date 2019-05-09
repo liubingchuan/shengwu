@@ -242,7 +242,7 @@
 		            	<ul class="jiansuoUl">
 		            		<li th:each="paper: ${list}">
 		            			<div class="jiansuoLiTL">
-		            				<a th:href="@{/paper/get(id=${paper.id})}" th:text="${paper.title}">
+		            				<a th:href="@{/paper/get(id=${paper.id},q=${query})}" th:text="${paper.title}">
 		            				</a>
 		            			</div>
 		            			<div class="jiansuoLiTag">
@@ -278,7 +278,7 @@
 			<div th:replace="footer :: myfooter"></div>
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
 		<script type="text/javascript" th:inline="javascript">
-		    
+		
 			$(document).ready(function () {
 				showLoginInfoFrontend();
 			});

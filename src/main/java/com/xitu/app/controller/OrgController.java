@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
@@ -133,6 +134,16 @@ public class OrgController {
 		Org org = new Org();
 		if(id != null) {
 			org = orgRepository.findById(id).get();
+			String name = org.getName();
+			String bieming = null;
+			List<String> alias = org.getAlias();
+			if (alias != null && alias.size() > 0) {
+				bieming =  StringUtils.join(alias.toArray(), ",");
+			}
+			if (bieming != null) {
+				name = name+","+bieming;
+			}
+			model.addAttribute("namebieming", name);
 			model.addAttribute("frontendId", "".equals(org.getFrontend())?null:org.getFrontend());
 			model.addAttribute("frontendFileName", "".equals(org.getFrontendFileName())?null:org.getFrontendFileName());
 			model.addAttribute("frontendSize", "".equals(org.getFrontendSize())?null:org.getFrontendSize());
@@ -426,6 +437,7 @@ public class OrgController {
     		Map<String, Integer> paperaggcountMap = new HashMap<String, Integer>();
         	Map<String, Integer> paperinscountMap = new HashMap<String, Integer>();
     		JSONObject paperInsName = ESHttpClient.conpaperESIns(orgService.createQqueryByListIns(insNamearr,aggsize,"institution"));
+    		
     		JSONObject paperaggregations = paperInsName.getJSONObject("aggregations");
     		JSONObject paperagg = (JSONObject) paperaggregations.get("institution");
     		for(Object s:(JSONArray)paperagg.get("buckets")){
