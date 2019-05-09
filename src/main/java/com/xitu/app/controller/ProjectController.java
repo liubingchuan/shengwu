@@ -78,7 +78,7 @@ public class ProjectController {
 		Project project = new Project();
 		BeanUtil.copyBean(request, project);
 		if(project.getId() == null || "".equals(project.getId())) {
-			project.setId(UUID.randomUUID().toString());
+			project.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
 		}
 		project.setDescription(request.getInfo());
 		project.setNow(System.currentTimeMillis());
