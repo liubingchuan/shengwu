@@ -3,12 +3,17 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<link rel="stylesheet" th:href="@{/css/xinit.css}" />
-		<link rel="stylesheet" th:href="@{/css/xmain.css}" />
+		<link rel="stylesheet" th:href="@{/css/init.css}" />
+		<link rel="stylesheet" th:href="@{/css/main.css}" />
 		<script type="text/javascript" th:src="@{/js/jquery-1.7.2.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/jquery.media.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/jquery.cookie.js}" ></script>
 		<script type="text/javascript" th:src="@{/js/common.js}" ></script>
+		<script type="text/javascript" th:src="@{/js/pdfobject.js}" ></script>
+		<!-- <style>
+			.pdfobject-container{height:1000px;}
+			.pdfobject{border:1px solid #666;}
+		</style> -->
 	</head>
 	<body>
 		<div class="nyMain">
@@ -38,9 +43,11 @@
 						<div class="rencaiLFmess">
 							<div class="jiansuoTl" style="border-bottom: none;">
 		        	
-		        			<a href="#">稀土智库</a>&gt;<span>行业报告</span>
+		        			<a th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}">企业智库</a>&gt;<span>行业报告</span>
 		        		    </div>
-							<img id="frontendImg" th:src="@{/images/hangye_03.png}" />
+							<!-- <img id="frontendImg" th:src="@{/images/hangye_03.png}" /> -->
+							<img th:if=" ${report.frontend !=null && report.frontend != ''}" th:src="@{/file/fileDownload(filename=${report.frontend})}" />
+				        	<img th:if=" ${report.frontend ==null || report.frontend == ''}" th:src="@{/images/fenxi_03.png}" />
 							<div class="rencaiLFmessText">
 								<p class="rencaiLFmessName">
 									报告作者：  
@@ -72,12 +79,11 @@
 		            	<div class="zhuanliConOne">
 		            	 <P th:utext="*{subject}"></P>
 		            	</div>
-		            	<div class="hangyeContlSmall">
+		            	<div class="hangyeContlSmall" id="yulan" style = "display:none">
 		            		报告预览:
 		            	</div>
-		            	<div class="huandengpian">
-<!-- 		            		<img th:src="@{/images/hangye_05.png}" style="width: 100%;" /> -->
-							<a id="pdfImg" href="guice.pdf"></a>
+		            	<div id="pdf">
+		            		
 		            	</div>
 				    </div>
 				</div>
@@ -91,12 +97,24 @@
 			var frontendId =  [[${frontendId}]];
 			var pdfId =  [[${pdfId}]];
 			
-			$(document).ready(function () {
+			
 				$(document).ready(function () {
 					showLoginInfoFrontend();
-			 	});
-			});
+					if(pdfId != null && pdfId != ''){
+						
+						document.getElementById('yulan').style.display='block';
+						var pdfcon = "<object data=\"/file/fileDownload?filename="+pdfId+"\" type=\"application/pdf\" width=\"100%\" height=\"500px\" internalinstanceid=\"6\"></object>";
+						$("#pdf").html(pdfcon);
+					}
+				});
 			
+			 /* window.onload = function (){
+				 	if(pdfId != null && pdfId != ''){
+				 		document.getElementById('yulan').style.display='block';
+				 		var myPDF = new PDFObject({ url: "/file/fileDownload?filename="+pdfId }).embed("pdf");
+				 	}
+			        
+			 }; */
 			
 			function search(){
 				    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */

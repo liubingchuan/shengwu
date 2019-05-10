@@ -35,7 +35,9 @@
 				<div class="rencaiNr clearfix" th:object="${expert}">
 					<div class="rencaiLf left">
 						<div class="rencaiLFmess">
-							<img th:src="@{/images/per.png}" />
+							<!-- <img th:src="@{/file/fileDownload(filename=${expert.frontend})}" /> -->
+							<img th:if=" ${expert.frontend !=null && expert.frontend != ''}" th:src="@{/file/fileDownload(filename=${expert.frontend})}" />
+				        	<img th:if=" ${expert.frontend ==null || expert.frontend == ''}" th:src="@{/images/slider.png}" />
 							<div class="rencaiLFmessText">
 								<p class="rencaiLFmessName">
 									姓名： 
