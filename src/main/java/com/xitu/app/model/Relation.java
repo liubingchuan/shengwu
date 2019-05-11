@@ -3,7 +3,7 @@ package com.xitu.app.model;
 import com.xitu.app.annotation.IdFlag;
 import com.xitu.app.annotation.TableName;
 
-@TableName("xitu_relation")
+@TableName("yiyao_relation")
 public class Relation {
 
 	public Relation() {

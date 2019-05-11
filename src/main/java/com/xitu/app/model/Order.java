@@ -3,7 +3,7 @@ package com.xitu.app.model;
 import com.xitu.app.annotation.IdFlag;
 import com.xitu.app.annotation.TableName;
 
-@TableName("xitu_order")
+@TableName("yiyao_order")
 public class Order {
 
 	public Order() {

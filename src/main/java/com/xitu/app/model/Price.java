@@ -3,7 +3,7 @@ package com.xitu.app.model;
 import com.xitu.app.annotation.IdFlag;
 import com.xitu.app.annotation.TableName;
 
-@TableName("xitu_price")
+@TableName("yiyao_price")
 public class Price {
 
 	public Price() {
