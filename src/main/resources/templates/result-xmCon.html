@@ -239,8 +239,17 @@
 								if(pageIndex+1 != totalPages){
 									var px = pageIndex+1;
 									var pt = totalPages-1;
-									pagecontent += "<a href=\"javascript:getProject("+px+")\">下一页<em>></em></a>";
-									pagecontent += "<a href=\"javascript:getProject("+pt+")\">尾页<em>></em></a>";
+									//pagecontent += "<a href=\"javascript:getProject("+px+")\">下一页<em>></em></a>";
+									//pagecontent += "<a href=\"javascript:getProject("+pt+")\">尾页<em>></em></a>";
+									if(pageIndex < 999){
+										pagecontent += "<a href=\"javascript:getProject("+px+")\">下一页<em>></em></a>";
+									}
+									if(totalPages < 1000){
+										pagecontent += "<a href=\"javascript:getProject("+pt+")\">尾页<em>></em></a>";
+									}
+									if(totalPages >= 1000){
+										pagecontent += "<a href=\"javascript:getProject("+999+")\">尾页<em>></em></a>";
+									}
 								}
 								pagecontent+="</span>";
 								$("#papersqPage").html(pagecontent);

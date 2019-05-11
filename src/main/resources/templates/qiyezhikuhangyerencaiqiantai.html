@@ -111,8 +111,9 @@
 					    	<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''"  th:href="@{/expert/list(q=${query},front=0,pageIndex=0,pageSize=10,unit=${units},area=${areas},duty=${dutys})}"><首页</a>
  							<a th:style="'display:' + @{((${pageIndex}+1) == 1 ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=(${pageIndex}-1),pageSize=10,unit=${units},area=${areas},duty=${dutys})}"><上一页</a>
  							<!-- <a th:href="@{/jiance/jiancelist(pageIndex=(${pageIndex}),pageSize=10)}" th:text="(${pageIndex}+1) + '/' + ${totalPages}" ></a> -->
-							<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=(${pageIndex}+1),pageSize=10,unit=${units},area=${areas},duty=${dutys})}">下一页<em>></em></a>
-							<a th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=(${totalPages}-1),pageSize=10,unit=${units},area=${areas},duty=${dutys})}">尾页<em>></em></a>
+							<a th:if="${pageIndex < 999 }" th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=(${pageIndex}+1),pageSize=10,unit=${units},area=${areas},duty=${dutys})}">下一页<em>></em></a>
+							<a th:if="${totalPages <= 1000 }" th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=(${totalPages}-1),pageSize=10,unit=${units},area=${areas},duty=${dutys})}">尾页<em>></em></a>
+							<a th:if="${totalPages > 1000 }" th:style="'display:' + @{((${pageIndex}+1) == ${totalPages} ? 'none' : 'inline-block')} + ''" th:href="@{/expert/list(q=${query},front=0,pageIndex=999,pageSize=10,unit=${units},area=${areas},duty=${dutys})}">尾页<em>></em></a>
 		            		<span th:text="'页次：' + (${pageIndex}+1) + '/' + ${totalPages}"></span>
 		            	</span>
 		            	</div>
