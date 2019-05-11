@@ -29,7 +29,7 @@ function showLoginInfo(){
 }
 
 function showLoginInfoFrontend(){
-	$.cookie("openId","1");
+	//$.cookie("openId","1");
 	if($.cookie("openId")!=null) {
 		$("#headImg").attr("src", $.cookie("headImg"));
 		if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
