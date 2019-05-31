@@ -79,7 +79,7 @@ public class ExpertController {
 		Expert expert = new Expert();
 		BeanUtil.copyBean(request, expert);
 		if(expert.getId() == null || "".equals(request.getId())) {
-			expert.setId(UUID.randomUUID().toString());
+			expert.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
 		}
 		List<String> areaList =new ArrayList<String>();
 		List<String> dutyList =new ArrayList<String>();

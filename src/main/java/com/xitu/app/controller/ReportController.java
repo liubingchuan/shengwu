@@ -78,7 +78,7 @@ public class ReportController {
 		Report report = new Report();
 		BeanUtil.copyBean(request, report);
 		if(report.getId() == null || "".equals(report.getId())) {
-			report.setId(UUID.randomUUID().toString());
+			report.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
 		}
 		report.setNow(System.currentTimeMillis());
 		report.setYear(request.getPtime().substring(0, 4));
