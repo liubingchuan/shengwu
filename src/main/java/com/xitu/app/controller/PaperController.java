@@ -1117,7 +1117,7 @@ public class PaperController {
     @ResponseBody
 	@RequestMapping(value = "paper/paperInsList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertInsList(@RequestBody JSONObject insname) {
-    	int pageSize = 2;
+    	int pageSize = 10;
 //		if(pageIndex == null) {
 //		   pageIndex = 0;
 //		}
@@ -1134,7 +1134,7 @@ public class PaperController {
     @ResponseBody
 	@RequestMapping(value = "paper/paperExpList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertpaperList(@RequestBody JSONObject insname) {
-    	int pageSize = 2;
+    	int pageSize = 10;
 //		if(pageIndex == null) {
 //		   pageIndex = 0;
 //		}

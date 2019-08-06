@@ -389,7 +389,7 @@ public class JianceController {
 	@ResponseBody
 	@RequestMapping(value = "jiance/jianceInsList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertInsList(@RequestBody JSONObject insname) {
-    	int pageSize = 2;
+    	int pageSize = 10;
 //		if(pageIndex == null) {
 //		   pageIndex = 0;
 //		}

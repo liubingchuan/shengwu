@@ -562,7 +562,18 @@ public class PatentController {
 		return "zhuanlifenxizhuanlishenqingguo";
 	}
 	@GetMapping(value = "patent/agpeople")
-	public String agpeople() {
+	public String agpeople(Model model) {
+		
+		int pageSize = 10;
+		int pageIndex = 0;
+		
+		//model.addAttribute("pageIndex", pageIndex);
+		//model.addAttribute("pageSize", pageSize);
+		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测
+		// TODO 静态变量未环绕需调整
+		ThreadLocalUtil.set(model);
+		patentService.executefamingren(pageIndex, pageSize, i,null,"person","creator");
+		ThreadLocalUtil.remove();
 		return "zhuanlifenxifamingrenjizhuanliquanren";
 	}
 	
@@ -1484,7 +1495,7 @@ public class PatentController {
 	@ResponseBody
 	@RequestMapping(value = "patent/patentInsList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertInsList(@RequestBody JSONObject insname) {
-    	int pageSize = 2;
+    	int pageSize = 10;
 //		if(pageIndex == null) {
 //		   pageIndex = 0;
 //		}
@@ -1499,7 +1510,7 @@ public class PatentController {
 	@ResponseBody
 	@RequestMapping(value = "patent/patentExpList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertpatentList(@RequestBody JSONObject insname) {
-    	int pageSize = 2;
+    	int pageSize = 10;
 //		if(pageIndex == null) {
 //		   pageIndex = 0;
 //		}

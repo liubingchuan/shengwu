@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +48,11 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	@Override
 	public JSONObject executeXiangguan(int pageIndex, int pageSize,int type,String uuid,List<String> args) {
 		return convertIns(getHttpClient().execute(composeXiangguanDSL(pageIndex, pageSize, type,uuid,args)),pageSize);
+	}
+	
+	@Override
+	public void executefamingren(int pageIndex, int pageSize, int type,String q,String person,String creator) {
+		convert(getHttpClient().execute(composeDSL(pageIndex, pageSize, type,person,creator)));
 	}
 	
 	public ESHttpClient getHttpClient() {
@@ -200,7 +206,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
 					if (args[i].equals("近一天")) {
 				        JSONObject match = new JSONObject();
 						JSONObject field = new JSONObject();
-						field.put("pubtime", "2019-04-07");
+						field.put("pubtime", pubtime);
 						match.put("match", field);
 						must.add(match);
 					}
@@ -208,8 +214,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 				        JSONObject range = new JSONObject();
 						JSONObject field = new JSONObject();
 						JSONObject pub = new JSONObject();
-						pub.put("gte", "2019-04-20");
-						pub.put("lte", "2019-04-21");
+						pub.put("gte", getThreeDay());
+						pub.put("lte", pubtime);
 						//pub.put("format", "yyyy-MM-dd");
 						field.put("pubtime",pub);
 						range.put("range", field);
@@ -219,8 +225,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 				        JSONObject range = new JSONObject();
 						JSONObject field = new JSONObject();
 						JSONObject pub = new JSONObject();
-						pub.put("gte", "2019-04-13");
-						pub.put("lte", "2019-04-14");
+						pub.put("gte", getOneWeek());
+						pub.put("lte", pubtime);
 						//pub.put("format", "yyyy-MM-dd");
 						field.put("pubtime",pub);
 						range.put("range", field);
@@ -230,8 +236,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 				        JSONObject range = new JSONObject();
 						JSONObject field = new JSONObject();
 						JSONObject pub = new JSONObject();
-						pub.put("gte", "2019-04-18");
-						pub.put("lte", "2019-04-19");
+						pub.put("gte", getThreeWeek());
+						pub.put("lte", pubtime);
 						//pub.put("format", "yyyy-MM-dd");
 						field.put("pubtime",pub);
 						range.put("range", field);
@@ -241,8 +247,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 				        JSONObject range = new JSONObject();
 						JSONObject field = new JSONObject();
 						JSONObject pub = new JSONObject();
-						pub.put("gte", "2019-04-15");
-						pub.put("lte", "2019-04-16");
+						pub.put("gte", getLastMonth());
+						pub.put("lte", pubtime);
 						//pub.put("format", "yyyy-MM-dd");
 						field.put("pubtime",pub);
 						range.put("range", field);
@@ -521,4 +527,90 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	System.out.println("query ---  " + query.toString());
     	return query.toString();
 	}
+	public String composefamingrenDSL(int pageIndex, int pageSize,int type,String q,String person,String creator) {
+		List<String> crossedFields = new ArrayList<String>();
+		JSONObject query = new JSONObject();
+		JSONObject aggs = new JSONObject();
+		
+		JSONObject fz = new JSONObject();
+		JSONObject terms = new JSONObject();
+		int size = 10;
+		fz.put("field", "person");
+		fz.put("size", size);
+		terms.put("terms", fz);
+		aggs.put("person", terms);
+		JSONObject fz1 = new JSONObject();
+		JSONObject terms1 = new JSONObject();
+		fz1.put("field", "creator");
+		fz1.put("size", size);
+		terms1.put("terms", fz1);
+		aggs.put("creator", terms1);
+		query.put("aggs",aggs);
+    	
+		JSONObject param = new JSONObject();
+		JSONArray should = new JSONArray();
+		JSONObject multi_match = new JSONObject();
+		JSONObject match_all = new JSONObject();
+		JSONArray must = new JSONArray();
+		JSONObject bool1 = new JSONObject();
+    	JSONObject bool2 = new JSONObject();
+		JSONObject bool4 = new JSONObject();
+    	JSONObject bool3 = new JSONObject();
+    	Model model = ThreadLocalUtil.get();
+		if (q == null || q.length()==0 || q == null || "".equals(q) || "null".equals(q)) {
+		    match_all.put("match_all", param);
+		    must.add(match_all);
+		}else {
+			param.put("query", q);
+			model.addAttribute("query",q);
+			param.put("operator", "and");
+			param.put("type", "cross_fields");
+			param.put("fields", crossedFields.toArray());
+			multi_match.put("multi_match", param);
+			should.add(multi_match);
+			bool4.put("should", should);
+			bool3.put("bool", bool4);
+			must.add(bool3);
+		}
+		
+    	bool2.put("must",must);
+    	bool1.put("bool", bool2);
+    	query.put("query", bool1);
+    	query.put("from",pageIndex*pageSize);
+    	query.put("size", pageSize);
+    	System.out.println("query ---  " + query.toString());
+    	return query.toString();
+	}
+	public String getLastMonth(){
+        Calendar curr = Calendar.getInstance(); 
+        curr.set(Calendar.MONTH,curr.get(Calendar.MONTH)-1); //减少一月
+        Date date=curr.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String dateNowStr = sdf.format(date);  
+        return dateNowStr;
+    }
+	public String getThreeDay(){
+        Calendar curr = Calendar.getInstance(); 
+        curr.set(Calendar.DAY_OF_YEAR,curr.get(Calendar.DAY_OF_YEAR)-2); //减少2天
+        Date date=curr.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String dateNowStr = sdf.format(date);  
+        return dateNowStr;
+    }
+	public String getOneWeek(){
+        Calendar curr = Calendar.getInstance(); 
+        curr.set(Calendar.DAY_OF_YEAR,curr.get(Calendar.DAY_OF_YEAR)-6); //减少6天
+        Date date=curr.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String dateNowStr = sdf.format(date);  
+        return dateNowStr;
+    }
+	public String getThreeWeek(){
+        Calendar curr = Calendar.getInstance(); 
+        curr.set(Calendar.DAY_OF_YEAR,curr.get(Calendar.DAY_OF_YEAR)-20); //减少6天
+        Date date=curr.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String dateNowStr = sdf.format(date);  
+        return dateNowStr;
+    }
 }
