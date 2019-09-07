@@ -6,12 +6,12 @@ import javax.servlet.annotation.WebListener;
 
 /**
  */
-//@WebListener
+@WebListener
 public class AccessTokenListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         // 启动accessToken获取线程
-        new Thread(new AccessTokenThread()).start();
+//        new Thread(new AccessTokenThread()).start();
     }
 
     @Override
