@@ -60,9 +60,9 @@ public class UserController {
 	@RequestMapping(value = "user/bind", method = RequestMethod.POST,consumes = "application/json")
 	public R bind(@RequestBody RegisterRequest request) {
 		System.out.println("entering binding");
-		String openId = request.getOpenId();
+//		String openId = request.getOpenId();
 		String account = request.getAccount();
-		System.out.println("openId is " + openId);
+//		System.out.println("openId is " + openId);
 		String password = request.getPassword();
 		System.out.println("password is " + password);
 		String email = request.getEmail();
@@ -71,21 +71,23 @@ public class UserController {
 		System.out.println("nickName is " + nickName);
 		
 		User user = userMapper.getUserByAccount(account);
-		if(user != null && user.getId() != null && !user.getOpenId().equals(openId)) {
+		if(user != null && user.getId() != null) {
 			return R.error().put("code", "401").put("msg", "该用户名已被注册，请换一个用户名");
 		}
 		
-		user = userMapper.getUserByOpenId(openId);
+//		user = userMapper.getUserByOpenId(openId);
+		user = new User();
 		user.setAccount(account);
 		user.setPassword(password);
 		user.setEmail(email);
-		if(user != null && user.getId() != null) {
-			userMapper.updateByOpenId(user);
-			System.out.println("bind successfully");
-		}else {
-			logger.info("微信注册绑定失败，没有找到相应openId的人");
-			return R.error();
-		}
+//		if(user != null && user.getId() != null) {
+//			userMapper.updateByOpenId(user);
+//			System.out.println("bind successfully");
+//		}else {
+//			logger.info("微信注册绑定失败，没有找到相应openId的人");
+//			return R.error();
+//		}
+		userMapper.insertUser(user);
 		
 		return R.ok();
 	}
