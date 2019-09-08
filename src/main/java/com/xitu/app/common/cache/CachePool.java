@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class CachePool {
 	private static CachePool instance;//缓存池唯一实例
 	private Map<String,Object> cacheItems;//缓存Map
@@ -80,6 +82,8 @@ public class CachePool {
 	
 	public static void main(String[] args) {
 		CachePool cache = CachePool.getInstance();
+		JSONObject obj = new JSONObject();
+		cache.putCacheItem("abc", obj);
 		
 	}
 }
