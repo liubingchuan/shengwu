@@ -1,6 +1,9 @@
 package com.xitu.app.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -62,8 +65,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xitu.app.common.R;
+import com.xitu.app.common.cache.CachePool;
 import com.xitu.app.common.request.AgPersonRequest;
 import com.xitu.app.common.request.AgTypeRequest;
 import com.xitu.app.common.request.PatentPageListRequest;
@@ -76,6 +81,8 @@ import com.xitu.app.model.Price;
 import com.xitu.app.repository.PatentRepository;
 import com.xitu.app.service.es.JianceService;
 import com.xitu.app.service.es.PatentService;
+import com.xitu.app.utils.DocUtil;
+import com.xitu.app.utils.ImageUtil;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
@@ -346,10 +353,256 @@ public class PatentController {
 		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测
 		// TODO 静态变量未环绕需调整
 		ThreadLocalUtil.set(model);
-		patentService.execute(pageIndex, pageSize, i,q,person,creator,publicyear,ipc,country,lawstatus);
+		JSONObject jObject = patentService.execute(pageIndex, pageSize, i,q,person,creator,publicyear,ipc,country,lawstatus);
+		if (jObject != null) {
+			CachePool cache = CachePool.getInstance();
+			if (q == null || "".equals(q)) {
+				cache.putCacheItem("total", jObject);
+			}else{
+				cache.putCacheItem(q, jObject);
+			}
+		}
 		ThreadLocalUtil.remove();
 		String view = "result-zl";
 		return view;
+	}
+	@GetMapping(value = "patent/agmount")
+	public String agmount(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		CachePool cache = CachePool.getInstance();
+	    JSONObject obj = new JSONObject();
+	    //cache.putCacheItem("abc", obj);
+	    if (q == null || "".equals(q)) {
+	    	 obj = (JSONObject) cache.getCacheItem("total");
+		}else{
+			 obj = (JSONObject) cache.getCacheItem(q);
+		}
+	    Calendar cale = null;  
+        cale = Calendar.getInstance();  
+        int year = cale.get(Calendar.YEAR);  
+        String[] str=new String[5];
+	    int[] num={0,0,0,0,0};
+	    int lastfive = year-4;
+	    for(int i=0;i<5;i++){
+	    	str[i] = lastfive+"";
+	    	lastfive++;
+	    }
+	    
+	    JSONObject agg = (JSONObject) obj.get("applyyear");
+	    JSONArray ar = (JSONArray) agg.get("buckets");
+	    
+	    for(Object jsonObject : ar){
+	    	for(int j = 0;j<str.length;j++){
+	    		if(((JSONObject)jsonObject).get("key").equals(str[j])){
+		    		num[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+		    	}
+	    	}
+	    	
+	    }
+		//model.addAttribute(key, agg.get("buckets"));
+	    model.addAttribute("num", num);
+	    model.addAttribute("yearstr", str);
+	    if(totalCount == null || totalCount.equals("")){
+	    	totalCount = 163942+"";
+	    }
+	    model.addAttribute("totalCount", totalCount); 
+	    model.addAttribute("query", q);
+		return "zhuanlifenxizhuanlishenqingliang";
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/download", method = RequestMethod.POST,consumes = "application/json")
+	public R xiangguanpaperList(@RequestBody JSONObject info) {
+		String barBase64Info = (String) info.get("barBase64Info");
+		DocUtil docUtil = new DocUtil();
+	    //引入处理图片的工具类，包含将base64编码解析为图片并保存本地，获取图片本地路径
+	    ImageUtil imageUtil = new ImageUtil();
+	    //建立map存储所要导出到word的各种数据和图像，不能使用自己项目封装的类型，例如PageData
+	    Map<String, Object> dataMap = new HashMap<String, Object>(); 
+	    
+	  //这一步，进行图片的处理，获取前台传过来的图片base64编码，在利用工具类解析图片保存到本地，然后利用工具类获取图片本地地址
+	   
+	    String path = "C:";
+	    
+	    //String image1  = imageUtil.getImageStr(image1);
+	    
+	    
+		try {
+			String image1 = ImageUtil.savePictoServer(barBase64Info, path);
+			image1  = imageUtil.getImageStr(image1);
+			
+			dataMap.put("image1", image1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+
+	    File file = null;
+	    InputStream fin = null;
+	    OutputStream out = null;
+	    String filename = "文件名.doc";
+	        //dataMap是上面处理完的数据，MODELPATH是模板文件的存储路径，"模板.xml"是相应的模板文件
+	    file = docUtil.createWordFile(dataMap, "model.xml");
+	    System.out.print(file.getAbsolutePath());
+		return null;
+	}
+	
+	@GetMapping(value = "patent/agcountry")
+	public String agcountry(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		CachePool cache = CachePool.getInstance();
+	    JSONObject obj = new JSONObject();
+	    //cache.putCacheItem("abc", obj);
+	    if (q == null || "".equals(q)) {
+	    	 obj = (JSONObject) cache.getCacheItem("total");
+		}else{
+			 obj = (JSONObject) cache.getCacheItem(q);
+		}
+	   
+	    int[] num={0,0,0,0,0};
+	    
+	    JSONObject agg = (JSONObject) obj.get("country");
+	    JSONArray ar = (JSONArray) agg.get("buckets");
+	    int j=0;
+	    for(Object jsonObject : ar){
+	    	
+	    	if(((JSONObject)jsonObject).get("key").equals("中国")){
+		    	num[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+		    }
+	    	j++;
+	    	
+	    	
+	    }
+		//model.addAttribute(key, agg.get("buckets"));
+	    model.addAttribute("num", num);
+	   // model.addAttribute("yearstr", str);
+	    model.addAttribute("query", q);
+	    model.addAttribute("totalCount", totalCount); 
+		return "zhuanlifenxizhuanlishenqingguo";
+	}
+	
+	@GetMapping(value = "patent/agpeople")
+	public String agpeople(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		
+//		int pageSize = 10;
+//		int pageIndex = 0;
+//		
+//		//model.addAttribute("pageIndex", pageIndex);
+//		//model.addAttribute("pageSize", pageSize);
+//		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测
+//		// TODO 静态变量未环绕需调整
+//		ThreadLocalUtil.set(model);
+//		patentService.executefamingren(pageIndex, pageSize, i,null,"person","creator");
+//		ThreadLocalUtil.remove();
+		CachePool cache = CachePool.getInstance();
+	    JSONObject obj = new JSONObject();
+	    //cache.putCacheItem("abc", obj);
+	    if (q == null || "".equals(q)) {
+	    	 obj = (JSONObject) cache.getCacheItem("total");
+		}else{
+			 obj = (JSONObject) cache.getCacheItem(q);
+		}
+        String[] str=new String[10];
+	    int[] num=new int[10];
+	    
+	    
+	    JSONObject agg = (JSONObject) obj.get("creator");
+	    JSONArray ar = (JSONArray) agg.get("buckets");
+	    int j = 0;
+	    for(Object jsonObject : ar){
+	    	
+	    		str[j] = ((JSONObject)jsonObject).get("key").toString();
+		    	num[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+		    	j++;
+		    	if(j>=10){
+		    		break;
+		    	}
+	    	
+	    }
+	    model.addAttribute("num", num);
+	    model.addAttribute("famingren", str);
+	    
+	    String[] zhuanliquanrenstr=new String[10];
+	    int[] zhuanliquanrennum=new int[10];
+	    
+	    
+	    JSONObject zhuanliquanrenagg = (JSONObject) obj.get("person");
+	    JSONArray zhuanliquanrenar = (JSONArray) zhuanliquanrenagg.get("buckets");
+	    int jj = 0;
+	    for(Object jsonObject : zhuanliquanrenar){
+	    	
+	    	zhuanliquanrenstr[jj] = ((JSONObject)jsonObject).get("key").toString();
+	    	zhuanliquanrennum[jj] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+		    	jj++;
+		    	if(jj>=10){
+		    		break;
+		    	}
+	    	
+	    }
+	    model.addAttribute("zhuanliquanrennum", zhuanliquanrennum);
+	    model.addAttribute("zhuanliquanrenstr", zhuanliquanrenstr);
+	    
+	    if(totalCount == null || totalCount.equals("")){
+	    	totalCount = 163942+"";
+	    }
+	    model.addAttribute("totalCount", totalCount); 
+	    model.addAttribute("query", q);
+		return "zhuanlifenxifamingrenjizhuanliquanren";
+	}
+	
+	@GetMapping(value = "patent/agclassis")
+	public String agclassis(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		CachePool cache = CachePool.getInstance();
+	    JSONObject obj = new JSONObject();
+	    //cache.putCacheItem("abc", obj);
+	    if (q == null || "".equals(q)) {
+	    	 obj = (JSONObject) cache.getCacheItem("total");
+		}else{
+			 obj = (JSONObject) cache.getCacheItem(q);
+		}
+        String[] str=new String[10];
+	    int[] num=new int[10];
+	    
+	    
+	    JSONObject agg = (JSONObject) obj.get("ipc");
+	    JSONArray ar = (JSONArray) agg.get("buckets");
+	    int j = 0;
+	    for(Object jsonObject : ar){
+	    	
+	    		str[j] = ((JSONObject)jsonObject).get("key").toString();
+		    	num[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+		    	j++;
+		    	if(j>=10){
+		    		break;
+		    	}
+	    	
+	    }
+	    model.addAttribute("num", num);
+	    model.addAttribute("famingren", str);
+	    
+	    if(totalCount == null || totalCount.equals("")){
+	    	totalCount = 163942+"";
+	    }
+	    model.addAttribute("totalCount", totalCount); 
+	    model.addAttribute("query", q);
+		return "zhuanlifenxijishufenlei";
+	}
+	
+	@GetMapping(value = "patent/agtype")
+	public String agtype(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		 model.addAttribute("totalCount", totalCount); 
+		 model.addAttribute("query", q);
+		return "zhuanlifenxizhuanlileixing";
 	}
 	
 	@ResponseBody
@@ -549,33 +802,7 @@ public class PatentController {
 		return "zhuanlifenxifamingrenjizhuanliquanren";
 	}
 	
-	@GetMapping(value = "patent/agtype")
-	public String agtype() {
-		return "zhuanlifenxizhuanlileixing";
-	}
-	@GetMapping(value = "patent/agmount")
-	public String agmount() {
-		return "zhuanlifenxizhuanlishenqingliang";
-	}
-	@GetMapping(value = "patent/agcountry")
-	public String agcountry() {
-		return "zhuanlifenxizhuanlishenqingguo";
-	}
-	@GetMapping(value = "patent/agpeople")
-	public String agpeople(Model model) {
-		
-		int pageSize = 10;
-		int pageIndex = 0;
-		
-		//model.addAttribute("pageIndex", pageIndex);
-		//model.addAttribute("pageSize", pageSize);
-		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测
-		// TODO 静态变量未环绕需调整
-		ThreadLocalUtil.set(model);
-		patentService.executefamingren(pageIndex, pageSize, i,null,"person","creator");
-		ThreadLocalUtil.remove();
-		return "zhuanlifenxifamingrenjizhuanliquanren";
-	}
+	
 	
 	@ResponseBody
 	@RequestMapping(value = "patent/agpersons", method = RequestMethod.POST,consumes = "application/json")
@@ -663,10 +890,6 @@ public class PatentController {
 		return "T-hangyeCon";
 	}
 	
-	@GetMapping(value = "patent/agclassis")
-	public String agclassis() {
-		return "zhuanlifenxijishufenlei";
-	}
 	
 	@GetMapping(value = "patent/agclassiscon")
 	public String agclassiscon() {

@@ -42,27 +42,27 @@
 						</div>
 						<ul class="rencaiLfUl">
 							<li>
-								<a th:href="@{/patent/agmount}" class="ahover">
+								<a th:href="@{/patent/agmount(q=${query},totalcount=${totalCount})}" class="ahover">
 									<span>专利申请量</span>
 								</a>
 							</li>
 							<li>
-								<a th:href="@{/patent/agcountry}">
+								<a th:href="@{/patent/agcountry(q=${query},totalcount=${totalCount})}">
 									<span>专利申请国</span>
 								</a>
 							</li>
 							<li>
-								<a th:href="@{/patent/agpeople}">
+								<a th:href="@{/patent/agpeople(q=${query},totalcount=${totalCount})}">
 									<span>发明人及专利权人</span>
 								</a>
 							</li>
 							<li>
-								<a th:href="@{/patent/agclassis}">
+								<a th:href="@{/patent/agclassis(q=${query},totalcount=${totalCount})}">
 									<span>技术分类</span>
 								</a>
 							</li>
 							<li>
-								<a th:href="@{/patent/agtype}">
+								<a th:href="@{/patent/agtype(q=${query},totalcount=${totalCount})}">
 									<span>专利类型</span>
 								</a>
 							</li>
@@ -70,12 +70,15 @@
 					</div>
 				    <div class="rencaiRt right">
 				    	    <div class="zhuanlFive clearfix">
-				    	    	<span class="left">
-				    	    		检索命中: 109090条 
+				    	    	<span class="left" th:text="检索命中：+ ${totalCount} + 条">
+				    	    		
 				    	    	</span>
-				    	    	<a href="#" class="right btnYellow">
+				    	    	
+				    	    	<a href="#" onclick="downloading()" class="right btnYellow">
 				    	    		下载数据
 				    	    	</a>
+				    	    	
+				    	    	
 				    	    </div>
 				    		<div class="recaiForm clearfix zhuanlOneNr">
 				    			<span class="left zhuanlOne">
@@ -103,18 +106,19 @@
 			</div>
 		<div th:replace="footer :: myfooter"></div>
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
-		<script type="text/javascript">
-			
+		<script type="text/javascript" th:inline="javascript">
+		var yearstr =  [[${yearstr}]];
+		var num =  [[${num}]];
+		var barBase64Info = '';
 			$(document).ready(function() {
 				showLoginInfoFrontend();
 				showleixing('jinwunian');
 			});
 			function showleixing(type) {
 				if(type == 'jinwunian'){
-					var hengzhoushuju = ['1996','1997','1998','1999','2000'];
-					var faming = [120, 132, 101, 134, 90];
-					var waiguan = [220, 182, 191, 234, 290];
-					var shiyongxinxing = [150, 232, 201, 154, 190];
+					var hengzhoushuju = yearstr;
+					var faming = num;
+					
 					var myChart = echarts.init(document.getElementById('leixing'));
 					option = {
 						
@@ -132,6 +136,7 @@
 								saveAsImage: {}
 							}
 						},
+						animation:false,
 						xAxis: {
 							type: 'category',
 							
@@ -151,6 +156,9 @@
 					};
 
 				   myChart.setOption(option);
+				   barBase64Info = myChart.getDataURL();
+				  // var con = '<a href="/patent/download?barBase64Info='+barBase64Info+'" class="right btnYellow">下载数据</a>';
+				  // $("#downloaddata").html(con);
 				}
 				if(type == 'jinyinian'){
 					var hengzhoushuju = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
@@ -236,6 +244,24 @@
 
 				   myChart.setOption(option);
 				}
+			}
+			function downloading() {
+				var param = {
+						'barBase64Info' : barBase64Info
+						
+					};
+					 $.ajax({
+						url : "/patent/download",
+						data : JSON.stringify(param),
+						dataType : 'json',
+						type : 'post',
+						contentType: "application/json; charset=utf-8",
+						success : function(data) {
+							
+							alert('ok');
+							
+						}
+					}); 
 			}
 		</script>
 	</body>
