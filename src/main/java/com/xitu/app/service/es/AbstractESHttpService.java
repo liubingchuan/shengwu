@@ -36,8 +36,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	protected abstract Class<?> getEntityClass();
 
 	@Override
-	public void execute(int pageIndex, int pageSize, int type,String...args) {
-		convert(getHttpClient().execute(composeDSL(pageIndex, pageSize, type,args)));
+	public JSONObject execute(int pageIndex, int pageSize, int type,String...args) {
+		return convert(getHttpClient().execute(composeDSL(pageIndex, pageSize, type,args)));
 	}
 	
 	@Override
@@ -288,7 +288,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		return result;
 	}
 	
-	public void convert(JSONObject response) {
+	public JSONObject convert(JSONObject response) {
 		JSONObject hits = response.getJSONObject("hits");
 		Integer totalCount = hits.getInteger("total"); 
 		JSONArray list = hits.getJSONArray("hits");
@@ -316,6 +316,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
 			JSONObject agg = (JSONObject) aggregations.get(key);
 			model.addAttribute(key, agg.get("buckets"));
 		}
+		return aggregations;
 	}
 	
 	public JSONObject convertIns(JSONObject response,int pageSize) {
