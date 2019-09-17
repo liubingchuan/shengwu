@@ -98,6 +98,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.28</version>
         </dependency>
+        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
         <!-- <dependency>
 			<groupId>aes</groupId>
 			<artifactId>aes-jar1.6</artifactId>

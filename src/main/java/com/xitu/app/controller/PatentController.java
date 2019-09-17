@@ -1,6 +1,7 @@
 package com.xitu.app.controller;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -75,14 +77,17 @@ import com.xitu.app.common.request.PatentPageListRequest;
 import com.xitu.app.common.request.PriceAvgRequest;
 import com.xitu.app.mapper.PatentMapper;
 import com.xitu.app.mapper.PriceMapper;
+import com.xitu.app.model.Org;
 import com.xitu.app.model.Patent;
 import com.xitu.app.model.PatentMysql;
 import com.xitu.app.model.Price;
 import com.xitu.app.repository.PatentRepository;
 import com.xitu.app.service.es.JianceService;
 import com.xitu.app.service.es.PatentService;
-import com.xitu.app.utils.DocUtil;
-import com.xitu.app.utils.ImageUtil;
+import com.xitu.app.utils.FileUtil;
+import com.xitu.app.utils.JsonUtil;
+//import com.xitu.app.utils.DocUtil;
+//import com.xitu.app.utils.ImageUtil;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
@@ -331,6 +336,63 @@ public class PatentController {
 //			
 //		return view;
 //	}
+	
+	
+	@GetMapping(value = "patent/update")
+	public String updateOrg() {
+		String fileContent = null;
+		String filePath = "/Users/liubingchuan/Desktop/ren.json";
+		String output = "/Users/liubingchuan/Desktop/renout.json";
+		List<String> list = new LinkedList<String>();
+		Map<String, List<String>> map = new HashMap<String, List<String>>();
+		try {
+			fileContent = FileUtils.readFileToString(new File(filePath), "utf-8");
+			JSONArray array = JsonUtil.parseArray(fileContent);
+			Iterator<Object> it = array.iterator();
+			while (it.hasNext()) {
+				JSONObject ob = (JSONObject) it.next();
+				list.add(ob.getString("key"));
+			}
+		} catch (IOException e) {
+		}
+		Iterator<Patent> patents = patentRepository.findAll().iterator();
+		int i=0;
+		while(patents.hasNext()) {
+			if (list.size() >0) {
+				Patent patent = patents.next();
+				List<String> creators = patent.getCreator();
+				for(String c: creators) {
+					if(list.contains(c)){
+						map.put(c, patent.getPerson());
+						list.remove(c);
+					}
+				}
+			}else {
+				break;
+			}
+			i++;
+			System.out.println("the num is" + i);
+		}
+		try {
+			String line = System.getProperty("line.separator");
+			StringBuffer str = new StringBuffer();
+			FileWriter fw = new FileWriter(output, true);
+			Set set = map.entrySet();
+			Iterator iter = set.iterator();
+			while(iter.hasNext()){
+			Map.Entry entry = (Map.Entry)iter.next();
+			str.append(entry.getKey()+" : "+entry.getValue()).append(line);
+			}
+			fw.write(str.toString());
+			fw.close();
+			} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		return "fasdf";
+	}
+	
+	
 	@RequestMapping(value = "patent/list")
 	public String patents(@RequestParam(required=false,value="q") String q,
 			@RequestParam(required=false,value="person") String person,
@@ -412,43 +474,43 @@ public class PatentController {
 	}
 	
 	
-	@ResponseBody
-	@RequestMapping(value = "patent/download", method = RequestMethod.POST,consumes = "application/json")
-	public R xiangguanpaperList(@RequestBody JSONObject info) {
-		String barBase64Info = (String) info.get("barBase64Info");
-		DocUtil docUtil = new DocUtil();
-	    //引入处理图片的工具类，包含将base64编码解析为图片并保存本地，获取图片本地路径
-	    ImageUtil imageUtil = new ImageUtil();
-	    //建立map存储所要导出到word的各种数据和图像，不能使用自己项目封装的类型，例如PageData
-	    Map<String, Object> dataMap = new HashMap<String, Object>(); 
-	    
-	  //这一步，进行图片的处理，获取前台传过来的图片base64编码，在利用工具类解析图片保存到本地，然后利用工具类获取图片本地地址
-	   
-	    String path = "C:";
-	    
-	    //String image1  = imageUtil.getImageStr(image1);
-	    
-	    
-		try {
-			String image1 = ImageUtil.savePictoServer(barBase64Info, path);
-			image1  = imageUtil.getImageStr(image1);
-			
-			dataMap.put("image1", image1);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//	@ResponseBody
+//	@RequestMapping(value = "patent/download", method = RequestMethod.POST,consumes = "application/json")
+//	public R xiangguanpaperList(@RequestBody JSONObject info) {
+//		String barBase64Info = (String) info.get("barBase64Info");
+//		DocUtil docUtil = new DocUtil();
+//	    //引入处理图片的工具类，包含将base64编码解析为图片并保存本地，获取图片本地路径
+//	    ImageUtil imageUtil = new ImageUtil();
+//	    //建立map存储所要导出到word的各种数据和图像，不能使用自己项目封装的类型，例如PageData
+//	    Map<String, Object> dataMap = new HashMap<String, Object>(); 
+//	    
+//	  //这一步，进行图片的处理，获取前台传过来的图片base64编码，在利用工具类解析图片保存到本地，然后利用工具类获取图片本地地址
+//	   
+//	    String path = "C:";
+//	    
+//	    //String image1  = imageUtil.getImageStr(image1);
+//	    
+//	    
+//		try {
+//			String image1 = ImageUtil.savePictoServer(barBase64Info, path);
+//			image1  = imageUtil.getImageStr(image1);
+//			
+//			dataMap.put("image1", image1);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	    
 
-	    File file = null;
-	    InputStream fin = null;
-	    OutputStream out = null;
-	    String filename = "文件名.doc";
-	        //dataMap是上面处理完的数据，MODELPATH是模板文件的存储路径，"模板.xml"是相应的模板文件
-	    file = docUtil.createWordFile(dataMap, "model.xml");
-	    System.out.print(file.getAbsolutePath());
-		return null;
-	}
+//	    File file = null;
+//	    InputStream fin = null;
+//	    OutputStream out = null;
+//	    String filename = "文件名.doc";
+//	        //dataMap是上面处理完的数据，MODELPATH是模板文件的存储路径，"模板.xml"是相应的模板文件
+//	    file = docUtil.createWordFile(dataMap, "model.xml");
+//	    System.out.print(file.getAbsolutePath());
+//		return null;
+//	}
 	
 	@GetMapping(value = "patent/agcountry")
 	public String agcountry(@RequestParam(required=false,value="q") String q,

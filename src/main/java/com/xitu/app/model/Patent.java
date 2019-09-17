@@ -203,5 +203,35 @@ public class Patent implements Serializable{
 	public void setLawstatus(String lawstatus) {
 		this.lawstatus = lawstatus;
 	}
+	public List<String> getApplicantipc() {
+		return applicantipc;
+	}
+	public void setApplicantipc(List<String> applicantipc) {
+		this.applicantipc = applicantipc;
+	}
+	public List<String> getIpcyear() {
+		return ipcyear;
+	}
+	public void setIpcyear(List<String> ipcyear) {
+		this.ipcyear = ipcyear;
+	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	public String getTypeyear() {
+		return typeyear;
+	}
+	public void setTypeyear(String typeyear) {
+		this.typeyear = typeyear;
+	}
+	public String getTypemonth() {
+		return typemonth;
+	}
+	public void setTypemonth(String typemonth) {
+		this.typemonth = typemonth;
+	}
 	
 }
