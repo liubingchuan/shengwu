@@ -18,6 +18,7 @@ import sun.misc.*;
  * 类描述：图片处理工具类
  */
 public class ImageUtil {
+	
     
      /**
       * 从path这个地址获取一张图片然后转为base64码

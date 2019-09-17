@@ -25,6 +25,7 @@ import freemarker.template.TemplateExceptionHandler;
  * 类描述：导出word工具类
  */
 public class DocUtil {
+	
     public Configuration configure=null;
     
     public DocUtil(){
