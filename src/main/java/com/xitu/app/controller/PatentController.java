@@ -1,5 +1,7 @@
 package com.xitu.app.controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
@@ -23,6 +25,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -62,6 +65,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xitu.app.common.R;
 import com.xitu.app.common.request.AgPersonRequest;
@@ -70,12 +74,15 @@ import com.xitu.app.common.request.PatentPageListRequest;
 import com.xitu.app.common.request.PriceAvgRequest;
 import com.xitu.app.mapper.PatentMapper;
 import com.xitu.app.mapper.PriceMapper;
+import com.xitu.app.model.Org;
 import com.xitu.app.model.Patent;
 import com.xitu.app.model.PatentMysql;
 import com.xitu.app.model.Price;
 import com.xitu.app.repository.PatentRepository;
 import com.xitu.app.service.es.JianceService;
 import com.xitu.app.service.es.PatentService;
+import com.xitu.app.utils.FileUtil;
+import com.xitu.app.utils.JsonUtil;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
@@ -324,6 +331,63 @@ public class PatentController {
 //			
 //		return view;
 //	}
+	
+	
+	@GetMapping(value = "patent/update")
+	public String updateOrg() {
+		String fileContent = null;
+		String filePath = "/Users/liubingchuan/Desktop/ren.json";
+		String output = "/Users/liubingchuan/Desktop/renout.json";
+		List<String> list = new LinkedList<String>();
+		Map<String, List<String>> map = new HashMap<String, List<String>>();
+		try {
+			fileContent = FileUtils.readFileToString(new File(filePath), "utf-8");
+			JSONArray array = JsonUtil.parseArray(fileContent);
+			Iterator<Object> it = array.iterator();
+			while (it.hasNext()) {
+				JSONObject ob = (JSONObject) it.next();
+				list.add(ob.getString("key"));
+			}
+		} catch (IOException e) {
+		}
+		Iterator<Patent> patents = patentRepository.findAll().iterator();
+		int i=0;
+		while(patents.hasNext()) {
+			if (list.size() >0) {
+				Patent patent = patents.next();
+				List<String> creators = patent.getCreator();
+				for(String c: creators) {
+					if(list.contains(c)){
+						map.put(c, patent.getPerson());
+						list.remove(c);
+					}
+				}
+			}else {
+				break;
+			}
+			i++;
+			System.out.println("the num is" + i);
+		}
+		try {
+			String line = System.getProperty("line.separator");
+			StringBuffer str = new StringBuffer();
+			FileWriter fw = new FileWriter(output, true);
+			Set set = map.entrySet();
+			Iterator iter = set.iterator();
+			while(iter.hasNext()){
+			Map.Entry entry = (Map.Entry)iter.next();
+			str.append(entry.getKey()+" : "+entry.getValue()).append(line);
+			}
+			fw.write(str.toString());
+			fw.close();
+			} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		return "fasdf";
+	}
+	
+	
 	@RequestMapping(value = "patent/list")
 	public String patents(@RequestParam(required=false,value="q") String q,
 			@RequestParam(required=false,value="person") String person,
