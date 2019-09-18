@@ -428,6 +428,26 @@ public class PatentController {
 		String view = "result-zl";
 		return view;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/patentMonList", method = RequestMethod.POST,consumes = "application/json")
+	public R patentmonthList(@RequestBody JSONObject queryobj) {
+    	int pageSize = 10;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	String query= (String)queryobj.get("querystring");
+    	Calendar cale = null;  
+        cale = Calendar.getInstance();  
+        int year = cale.get(Calendar.YEAR);  
+    	
+		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		
+		int[] num = patentService.executeMonth(0, 10, i,query,null,null,year+"",null,null,null);
+		return R.ok().put("num", num).put("query", query);
+    }
+	
 	@GetMapping(value = "patent/agmount")
 	public String agmount(@RequestParam(required=false,value="q") String q,
 			@RequestParam(required=false,value="totalcount") String totalCount,

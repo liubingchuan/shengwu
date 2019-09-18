@@ -109,7 +109,9 @@
 		<script type="text/javascript" th:inline="javascript">
 		var yearstr =  [[${yearstr}]];
 		var num =  [[${num}]];
+		var query =  [[${query}]];
 		var barBase64Info = '';
+		var faming;
 			$(document).ready(function() {
 				showLoginInfoFrontend();
 				showleixing('jinwunian');
@@ -161,10 +163,33 @@
 				  // $("#downloaddata").html(con);
 				}
 				if(type == 'jinyinian'){
+					
+					
+					var param = {};
+					 
+				    param['querystring'] = query;
+					
+					var url = "/patent/patentMonList";
+					$.ajax({
+						url : url,
+						data : JSON.stringify(param),
+						contentType: "application/json; charset=utf-8",
+						dataType : 'json',
+						type : 'post',
+						success : function(data) {
+							faming = data;
+							
+						}
+					}); 
+					
+					
+					
+					
+					
 					var hengzhoushuju = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-					var faming = [420, 232, 601, 134, 490,345,420, 232, 601, 134, 490,345];
-					var waiguan = [220, 182, 191, 234, 290,123,220, 182, 191, 234, 290,123];
-					var shiyongxinxing = [150, 232, 201, 154, 190,567,150, 232, 201, 154, 190,567];
+					
+					//var faming = [420, 232, 601, 134, 490,345,420, 232, 601, 134, 490,345];
+					
 					var myChart = echarts.init(document.getElementById('leixing'));
 					option = {
 						
