@@ -53,10 +53,13 @@ public class Patent implements Serializable{
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private String publicyear; // 公开年
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String typeyear; // typeyear
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String typemonth; // typemonth
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String type; // 专利类型
 	private String description; // 专利描述

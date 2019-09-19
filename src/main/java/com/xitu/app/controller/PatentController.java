@@ -470,6 +470,118 @@ public class PatentController {
 		return R.ok().put("b", b).put("query", query).put("hengzhoushuju", hengzhoushuju);
     }
 	
+	@GetMapping(value = "patent/agtype")
+	public String agtype(@RequestParam(required=false,value="q") String q,
+			@RequestParam(required=false,value="totalcount") String totalCount,
+			Model model) {
+		CachePool cache = CachePool.getInstance();
+	    JSONObject obj = new JSONObject();
+	    //cache.putCacheItem("abc", obj);
+	    if (q == null || "".equals(q)) {
+	    	 obj = (JSONObject) cache.getCacheItem("total");
+		}else{
+			 obj = (JSONObject) cache.getCacheItem(q);
+		}
+	    Calendar cale = null;  
+        cale = Calendar.getInstance();  
+        int year = cale.get(Calendar.YEAR);  
+        String[] str=new String[5];
+        int[] famingnumtotal={0,0,0,0,0};
+	    int[] famingnum={0,0,0,0,0};
+	    int[] famingshouquannum={0,0,0,0,0};
+	    int[] shiyongnum={0,0,0,0,0};
+	    int[] waiguannum={0,0,0,0,0};
+	    int lastfive = year-4;
+	    for(int i=0;i<5;i++){
+	    	str[i] = lastfive+"";
+	    	lastfive++;
+	    }
+	    
+	    JSONObject agg = (JSONObject) obj.get("typeyear");
+	    JSONArray ar = (JSONArray) agg.get("buckets");
+	    
+	    for(Object jsonObject : ar){
+	    	for(int j = 0;j<str.length;j++){
+	    		if(((JSONObject)jsonObject).get("key").toString().contains(str[j])){
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("发明_")){
+	    				famingnum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("发明授权_")){
+	    				famingshouquannum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("实用新型_")){
+	    				shiyongnum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("外观_")){
+	    				waiguannum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+		    	}
+	    	}
+	    	
+	    }
+	    for(int i=0; i<5; i++){
+	    	famingnumtotal[i] = famingnum[i] + famingshouquannum[i];
+		}
+		//model.addAttribute(key, agg.get("buckets"));
+	    model.addAttribute("famingnumtotal", famingnumtotal);
+	    model.addAttribute("waiguannum", waiguannum);
+	    model.addAttribute("shiyongnum", shiyongnum);
+	    model.addAttribute("yearstr", str);
+	    if(totalCount == null || totalCount.equals("")){
+	    	totalCount = 163942+"";
+	    }
+	    model.addAttribute("totalCount", totalCount); 
+	    model.addAttribute("query", q);
+		return "zhuanlifenxizhuanlileixing";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/patentTypeMonList", method = RequestMethod.POST,consumes = "application/json")
+	public R patenttypemonthList(@RequestBody JSONObject queryobj) {
+    	int pageSize = 10;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	String query= (String)queryobj.get("querystring");
+    	Calendar cale = null;  
+        cale = Calendar.getInstance();  
+        int year = cale.get(Calendar.YEAR);  
+    	
+		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		
+		JSONObject num = patentService.executeTypeMonth(0, 10, i,query,null,null,""+year,null,null,null,null);
+		return R.ok().put("famingnumtotal", num.get("famingnumtotal")).put("waiguannum", num.get("waiguannum")).put("shiyongnum", num.get("shiyongnum")).put("query", query);
+    }
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/patentTypeLastMonList", method = RequestMethod.POST,consumes = "application/json")
+	public R patenttypelastmonthList(@RequestBody JSONObject queryobj) {
+    	int pageSize = 10;
+//		if(pageIndex == null) {
+//		   pageIndex = 0;
+//		}
+    	String query= (String)queryobj.get("querystring");
+    	Calendar cale = null;  
+        cale = Calendar.getInstance();  
+        int year = cale.get(Calendar.YEAR);  
+        int month = cale.get(Calendar.MONTH)+1;  
+        String[] hengzhoushuju = {month-2+"月",month-1+"月",month+"月"};
+		int i = 0;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构；5代表专家；
+		// TODO 静态变量未环绕需调整
+		
+		JSONObject num = patentService.executeTypeMonth(0, 10, i,query,null,null,""+year,null,null,null,null);
+		int[] b1 = new int[3];
+		int[] b2 = new int[3];
+		int[] b3 = new int[3];
+		System.arraycopy(num.get("famingnumtotal"), month-3, b1, 0, 3);
+		System.arraycopy(num.get("waiguannum"), month-3, b2, 0, 3);
+		System.arraycopy(num.get("shiyongnum"), month-3, b3, 0, 3);
+		
+		return R.ok().put("famingnumtotal", b1).put("waiguannum",b2).put("shiyongnum", b3).put("query", query).put("hengzhoushuju", hengzhoushuju);
+		
+    }
+	
 	@GetMapping(value = "patent/agmount")
 	public String agmount(@RequestParam(required=false,value="q") String q,
 			@RequestParam(required=false,value="totalcount") String totalCount,
@@ -700,14 +812,6 @@ public class PatentController {
 		return "zhuanlifenxijishufenlei";
 	}
 	
-	@GetMapping(value = "patent/agtype")
-	public String agtype(@RequestParam(required=false,value="q") String q,
-			@RequestParam(required=false,value="totalcount") String totalCount,
-			Model model) {
-		 model.addAttribute("totalCount", totalCount); 
-		 model.addAttribute("query", q);
-		return "zhuanlifenxizhuanlileixing";
-	}
 	
 	@ResponseBody
 	@RequestMapping(value = "patent/pageList", method = RequestMethod.POST,consumes = "application/json")

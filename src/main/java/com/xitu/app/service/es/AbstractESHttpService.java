@@ -46,6 +46,11 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	}
 	
 	@Override
+	public JSONObject executeTypeMonth(int pageIndex, int pageSize, int type,String...args) {
+		return convertTypeMonth(getHttpClient().execute(composeDSLMonth(pageIndex, pageSize, type,args)));
+	}
+	
+	@Override
 	public JSONObject executeIns(String insNamearr,int pageIndex, int pageSize, String field, int type) {
 		return convertIns(getHttpClient().execute(composeInsDSL(insNamearr,pageIndex, pageSize, field, type)),pageSize);
 	}
@@ -527,6 +532,50 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	    }
 		
 		return num;
+	}
+	
+	public JSONObject convertTypeMonth(JSONObject response) {
+		
+		
+		JSONObject aggregations = response.getJSONObject("aggregations");
+		Set<String> keys = aggregations.keySet();
+		
+		JSONObject agg = (JSONObject) aggregations.get("typemonth");
+		JSONArray ar = (JSONArray) agg.get("buckets");
+		int[] num={0,0,0,0,0,0,0,0,0,0,0,0};
+		int[] famingnumtotal={0,0,0,0,0,0,0,0,0,0,0,0};
+	    int[] famingnum={0,0,0,0,0,0,0,0,0,0,0,0};
+	    int[] famingshouquannum={0,0,0,0,0,0,0,0,0,0,0,0};
+	    int[] shiyongnum={0,0,0,0,0,0,0,0,0,0,0,0};
+	    int[] waiguannum={0,0,0,0,0,0,0,0,0,0,0,0};
+		String[] str= {"01","02","03","04","05","06","07","08","09","10","11","12"};
+		for(Object jsonObject : ar){
+	    	for(int j = 0;j<str.length;j++){
+	    		if(((JSONObject)jsonObject).get("key").toString().contains(str[j])){
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("发明_")){
+	    				famingnum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("发明授权_")){
+	    				famingshouquannum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("实用新型_")){
+	    				shiyongnum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+	    			if(((JSONObject)jsonObject).get("key").toString().contains("外观_")){
+	    				waiguannum[j] = Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString());
+	    			}
+		    	}
+	    	}
+	    	
+	    }
+		for(int i=0; i<12; i++){
+	    	famingnumtotal[i] = famingnum[i] + famingshouquannum[i];
+		}
+		JSONObject rs = new JSONObject();
+		rs.put("famingnumtotal", famingnumtotal);
+		rs.put("shiyongnum", shiyongnum);
+		rs.put("waiguannum", waiguannum);
+		return rs;
 	}
 	
 	public JSONObject convertIns(JSONObject response,int pageSize) {
