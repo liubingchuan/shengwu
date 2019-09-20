@@ -86,8 +86,8 @@ import com.xitu.app.service.es.JianceService;
 import com.xitu.app.service.es.PatentService;
 import com.xitu.app.utils.FileUtil;
 import com.xitu.app.utils.JsonUtil;
-//import com.xitu.app.utils.DocUtil;
-//import com.xitu.app.utils.ImageUtil;
+import com.xitu.app.utils.DocUtil;
+import com.xitu.app.utils.ImageUtil;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
@@ -474,43 +474,43 @@ public class PatentController {
 	}
 	
 	
-//	@ResponseBody
-//	@RequestMapping(value = "patent/download", method = RequestMethod.POST,consumes = "application/json")
-//	public R xiangguanpaperList(@RequestBody JSONObject info) {
-//		String barBase64Info = (String) info.get("barBase64Info");
-//		DocUtil docUtil = new DocUtil();
-//	    //引入处理图片的工具类，包含将base64编码解析为图片并保存本地，获取图片本地路径
-//	    ImageUtil imageUtil = new ImageUtil();
-//	    //建立map存储所要导出到word的各种数据和图像，不能使用自己项目封装的类型，例如PageData
-//	    Map<String, Object> dataMap = new HashMap<String, Object>(); 
-//	    
-//	  //这一步，进行图片的处理，获取前台传过来的图片base64编码，在利用工具类解析图片保存到本地，然后利用工具类获取图片本地地址
-//	   
-//	    String path = "C:";
-//	    
-//	    //String image1  = imageUtil.getImageStr(image1);
-//	    
-//	    
-//		try {
-//			String image1 = ImageUtil.savePictoServer(barBase64Info, path);
-//			image1  = imageUtil.getImageStr(image1);
-//			
-//			dataMap.put("image1", image1);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	@ResponseBody
+	@RequestMapping(value = "patent/download", method = RequestMethod.POST,consumes = "application/json")
+	public R xiangguanpaperList(@RequestBody JSONObject info) {
+		String barBase64Info = (String) info.get("barBase64Info");
+		DocUtil docUtil = new DocUtil();
+	    //引入处理图片的工具类，包含将base64编码解析为图片并保存本地，获取图片本地路径
+	    ImageUtil imageUtil = new ImageUtil();
+	    //建立map存储所要导出到word的各种数据和图像，不能使用自己项目封装的类型，例如PageData
+	    Map<String, Object> dataMap = new HashMap<String, Object>(); 
+	    
+	  //这一步，进行图片的处理，获取前台传过来的图片base64编码，在利用工具类解析图片保存到本地，然后利用工具类获取图片本地地址
+	   
+	    String path = "C:";
+	    
+	    //String image1  = imageUtil.getImageStr(image1);
+	    
+	    
+		try {
+			String image1 = ImageUtil.savePictoServer(barBase64Info, path);
+			image1  = imageUtil.getImageStr(image1);
+			
+			dataMap.put("image1", image1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    
 
-//	    File file = null;
-//	    InputStream fin = null;
-//	    OutputStream out = null;
-//	    String filename = "文件名.doc";
-//	        //dataMap是上面处理完的数据，MODELPATH是模板文件的存储路径，"模板.xml"是相应的模板文件
-//	    file = docUtil.createWordFile(dataMap, "model.xml");
-//	    System.out.print(file.getAbsolutePath());
-//		return null;
-//	}
+	    File file = null;
+	    InputStream fin = null;
+	    OutputStream out = null;
+	    String filename = "文件名.doc";
+	        //dataMap是上面处理完的数据，MODELPATH是模板文件的存储路径，"模板.xml"是相应的模板文件
+	    file = docUtil.createWordFile(dataMap, "model.xml");
+	    System.out.print(file.getAbsolutePath());
+		return null;
+	}
 	
 	@GetMapping(value = "patent/agcountry")
 	public String agcountry(@RequestParam(required=false,value="q") String q,
