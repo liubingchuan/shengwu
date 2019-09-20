@@ -11,8 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +50,10 @@ public abstract class AbstractESHttpService implements ESHttpService {
 	@Override
 	public JSONObject executeTypeMonth(int pageIndex, int pageSize, int type,String...args) {
 		return convertTypeMonth(getHttpClient().execute(composeDSLMonth(pageIndex, pageSize, type,args)));
+	}
+	@Override
+	public Map executeQushi(int pageIndex, int pageSize, int type,String q,String[] args1) {
+		return convertQushi(getHttpClient().execute(composequshiDSL(pageIndex, pageSize, type,q,args1)));
 	}
 	
 	@Override
@@ -462,6 +468,139 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	System.out.println("query ---  " + query.toString());
     	return query.toString();
 	}
+	
+	public String composequshiDSL(int pageIndex, int pageSize,int type,String q,String[] args1) {
+		List<Field> fields = getFields(getEntityClass());
+		List<String> crossedFields = new ArrayList<String>();
+		List<String> singleFields = new ArrayList<String>();
+		JSONObject query = new JSONObject();
+		JSONObject aggs = new JSONObject();
+		for (Field f : fields) {
+			AggQuery aggQuery = f.getAnnotation(AggQuery.class);
+			CrossQuery crossQuery = f.getAnnotation(CrossQuery.class);
+			SingleQuery singleQuery = f.getAnnotation(SingleQuery.class);
+			String fieldName = f.getName();
+			if (aggQuery != null && fieldName.equals("ipcyear") ) {
+				JSONObject fz = new JSONObject();
+				JSONObject terms = new JSONObject();
+				//int size = aggQuery.size();
+				fz.put("field", fieldName);
+				fz.put("size", 500);
+				terms.put("terms", fz);
+				aggs.put(fieldName, terms);
+			} 
+			if (crossQuery != null) {
+				crossedFields.add(fieldName);
+			} 
+			if(singleQuery != null) {
+				singleFields.add(fieldName);
+			}
+		}
+		query.put("aggs",aggs);
+    	JSONArray sort = new JSONArray();
+    	JSONObject _score = new JSONObject();
+    	JSONObject order = new JSONObject();
+    	order.put("order", "desc");//method=desc
+    	_score.put("_score",order);//orderby=_score
+    	sort.add(_score);
+    	JSONObject pubtimes = new JSONObject();
+    	String sortfield ="";
+    	if (type == 3) {
+    		sortfield = "pubtime";
+		}
+    	if (type == 0) {
+    		sortfield = "publictime";
+		}
+    	if (type == 1) {
+    		sortfield = "year";
+		}
+    	if (type == 2) {
+    		sortfield = "now";
+		}
+    	if (type == 4) {
+    		sortfield = "now";
+		}
+    	if (type == 5) {
+    		sortfield = "now";
+		}
+    	if (type == 6) {
+    		sortfield = "now";
+		}
+//    	JSONObject order1s = new JSONObject();
+//    	order1s.put("order", "desc");
+//    	pubtimes.put(sortfield,order1s);
+//    	sort.add(pubtimes);
+    	query.put("sort",sort);
+		JSONObject param = new JSONObject();
+		JSONArray should = new JSONArray();
+		JSONObject multi_match = new JSONObject();
+		JSONObject match_all = new JSONObject();
+		JSONArray must = new JSONArray();
+		JSONObject bool1 = new JSONObject();
+    	JSONObject bool2 = new JSONObject();
+		JSONObject bool4 = new JSONObject();
+    	JSONObject bool3 = new JSONObject();
+    	//Model model = ThreadLocalUtil.get();
+		if (q == null || "".equals(q) || "null".equals(q)) {
+		    match_all.put("match_all", param);
+		    must.add(match_all);
+		}else {
+			param.put("query", q);
+			//model.addAttribute("query", args[0]);
+			param.put("operator", "and");
+			param.put("type", "cross_fields");
+			param.put("fields", crossedFields.toArray());
+			//param.put("type", "best_fields");
+			multi_match.put("multi_match", param);
+			should.add(multi_match);
+			bool4.put("should", should);
+			bool3.put("bool", bool4);
+			must.add(bool3);
+		}
+		JSONArray should1 = new JSONArray();
+		JSONObject boolqushi = new JSONObject();
+		JSONObject boolq = new JSONObject();
+		
+		for(int i=0;i<args1.length;i++) {
+			JSONObject match = new JSONObject();
+			JSONObject queryfield = new JSONObject();
+			JSONObject param1 = new JSONObject();
+			
+			param1.put("query", args1[i]);
+			//param1.put("type", "phrase");
+			queryfield.put("ipc", param1);
+			match.put("match_phrase", queryfield);
+			should1.add(match);
+		}
+		boolqushi.put("should", should1);
+		boolq.put("bool", boolqushi);
+		must.add(boolq);
+//		JSONObject match = new JSONObject();
+//		JSONObject field = new JSONObject();
+//		String[] str= {"A61P35/00(2006.01)I(3821)","C12N1/21(2006.01)I(2576)","C12N15/70(2006.01)I(1813)","A61P31/04(2006.01)I(1723)","A61P31/14(2006.01)I(1649)","C12N15/63(2006.01)I(1540)","A61K48/00(2006.01)I(1355)"};
+//		field.put("ipc", str);
+//		match.put("terms", field);
+//		must.add(match);
+		
+		JSONObject range = new JSONObject();
+		JSONObject field1 = new JSONObject();
+		JSONObject pub = new JSONObject();
+		pub.put("gte", "2010");
+		
+		//pub.put("format", "yyyy-MM-dd");
+		field1.put("applyyear",pub);
+		range.put("range", field1);
+		must.add(range);
+		
+		
+    	bool2.put("must",must);
+    	bool1.put("bool", bool2);
+    	query.put("query", bool1);
+    	query.put("from",pageIndex*pageSize);
+    	query.put("size", pageSize);
+    	System.out.println("query ---  " + query.toString());
+    	return query.toString();
+	}
 
 	private List<Field> getFields(Class<?> clazz) {
 		List<Field> result = new ArrayList<Field>();
@@ -576,6 +715,23 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		rs.put("shiyongnum", shiyongnum);
 		rs.put("waiguannum", waiguannum);
 		return rs;
+	}
+	
+	public Map convertQushi(JSONObject response) {
+		
+		
+		JSONObject aggregations = response.getJSONObject("aggregations");
+		Set<String> keys = aggregations.keySet();
+		
+		JSONObject agg = (JSONObject) aggregations.get("ipcyear");
+		JSONArray ar = (JSONArray) agg.get("buckets");
+		 
+		Map<String,Integer> aggmap = new HashMap<String,Integer>();
+		for(Object jsonObject : ar){
+			aggmap.put(((JSONObject)jsonObject).get("key").toString(), Integer.valueOf(((JSONObject)jsonObject).get("doc_count").toString()));
+	    }
+		
+		return aggmap;
 	}
 	
 	public JSONObject convertIns(JSONObject response,int pageSize) {
