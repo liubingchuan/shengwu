@@ -109,7 +109,9 @@
 		<script type="text/javascript" th:inline="javascript">
 		var yearstr =  [[${yearstr}]];
 		var num =  [[${num}]];
+		var query =  [[${query}]];
 		var barBase64Info = '';
+		
 			$(document).ready(function() {
 				showLoginInfoFrontend();
 				showleixing('jinwunian');
@@ -161,88 +163,128 @@
 				  // $("#downloaddata").html(con);
 				}
 				if(type == 'jinyinian'){
-					var hengzhoushuju = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-					var faming = [420, 232, 601, 134, 490,345,420, 232, 601, 134, 490,345];
-					var waiguan = [220, 182, 191, 234, 290,123,220, 182, 191, 234, 290,123];
-					var shiyongxinxing = [150, 232, 201, 154, 190,567,150, 232, 201, 154, 190,567];
-					var myChart = echarts.init(document.getElementById('leixing'));
-					option = {
-						
-						tooltip: {
-							trigger: 'axis'
-						},
-						grid: {
-							left: '3%',
-							right: '4%',
-							bottom: '3%',
-							containLabel: true
-						},
-						toolbox: {
-							feature: {
-								saveAsImage: {}
-							}
-						},
-						xAxis: {
-							type: 'category',
+					
+					
+					var param = {};
+					 
+				    param['querystring'] = query;
+					
+					var url = "/patent/patentMonList";
+					$.ajax({
+						url : url,
+						data : JSON.stringify(param),
+						contentType: "application/json; charset=utf-8",
+						dataType : 'json',
+						type : 'post',
+						success : function(data) {
+							var faming = data.num;
+							var hengzhoushuju = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 							
-							data: hengzhoushuju
-						},
-						yAxis: {
-							type: 'value'
-						},
-						series: [
-							{
-								type:'line',
-								stack: '总量',
-								data: faming,
-								itemStyle : { normal: {label : {show: true}}}
-							}
-						]
-					};
+							//var faming = [420, 232, 601, 134, 490,345,420, 232, 601, 134, 490,345];
+							
+							var myChart = echarts.init(document.getElementById('leixing'));
+							option = {
+								
+								tooltip: {
+									trigger: 'axis'
+								},
+								grid: {
+									left: '3%',
+									right: '4%',
+									bottom: '3%',
+									containLabel: true
+								},
+								toolbox: {
+									feature: {
+										saveAsImage: {}
+									}
+								},
+								xAxis: {
+									type: 'category',
+									
+									data: hengzhoushuju
+								},
+								yAxis: {
+									type: 'value'
+								},
+								series: [
+									{
+										type:'line',
+										stack: '总量',
+										data: faming,
+										itemStyle : { normal: {label : {show: true}}}
+									}
+								]
+							};
 
-				   myChart.setOption(option);
+						   myChart.setOption(option);
+						}
+					}); 
+					
+					
+					
+					
+					
+					
 				}
 				if(type == 'jinsanyue'){
-					var hengzhoushuju = ['1月','2月','3月'];
-					var faming = [420, 232, 601];
-					var waiguan = [220, 182, 191];
-					var shiyongxinxing = [150, 232, 201];
-					var myChart = echarts.init(document.getElementById('leixing'));
-					option = {
-						
-						tooltip: {
-							trigger: 'axis'
-						},
-						grid: {
-							left: '3%',
-							right: '4%',
-							bottom: '3%',
-							containLabel: true
-						},
-						toolbox: {
-							feature: {
-								saveAsImage: {}
-							}
-						},
-						xAxis: {
-							type: 'category',
+					
+					var param = {};
+					 
+				    param['querystring'] = query;
+					
+					var url = "/patent/patentLastMonList";
+					$.ajax({
+						url : url,
+						data : JSON.stringify(param),
+						contentType: "application/json; charset=utf-8",
+						dataType : 'json',
+						type : 'post',
+						success : function(data) {
+							var faming = data.b;
+							var hengzhoushuju = data.hengzhoushuju;
 							
-							data: hengzhoushuju
-						},
-						yAxis: {
-							type: 'value'
-						},
-						series: [
-							{
-								type:'line',
-								stack: '总量',
-								data: faming,
-								itemStyle : { normal: {label : {show: true}}}
-							}
-						]
-					};
+							//var faming = [420, 232, 601, 134, 490,345,420, 232, 601, 134, 490,345];
+							
+							var myChart = echarts.init(document.getElementById('leixing'));
+							option = {
+								
+								tooltip: {
+									trigger: 'axis'
+								},
+								grid: {
+									left: '3%',
+									right: '4%',
+									bottom: '3%',
+									containLabel: true
+								},
+								toolbox: {
+									feature: {
+										saveAsImage: {}
+									}
+								},
+								xAxis: {
+									type: 'category',
+									
+									data: hengzhoushuju
+								},
+								yAxis: {
+									type: 'value'
+								},
+								series: [
+									{
+										type:'line',
+										stack: '总量',
+										data: faming,
+										itemStyle : { normal: {label : {show: true}}}
+									}
+								]
+							};
 
-				   myChart.setOption(option);
+						   myChart.setOption(option);
+						}
+					}); 
+					
 				}
 			}
 			function downloading() {

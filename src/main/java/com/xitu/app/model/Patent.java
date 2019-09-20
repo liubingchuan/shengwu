@@ -26,6 +26,7 @@ public class Patent implements Serializable{
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> person;   // 专利权人（申请人）
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> applicantipc;   // applicant+_+ipc 的值存入该字段；（专利权人和ipc）
 	@AggQuery
@@ -33,8 +34,10 @@ public class Patent implements Serializable{
 	@Field(type=FieldType.Keyword)
 	private List<String> creator;
 	
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> ipcyear; // 将 ipc+_+applyyear 的值存入该字段
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String month; // 提取自申请日
 	@Field(type=FieldType.Keyword)
@@ -42,6 +45,7 @@ public class Patent implements Serializable{
 	@Field(type=FieldType.Keyword)
 	private String publictime; // 公开（公告）日
 	@AggQuery
+	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private String applyyear; // 申请年
 	
@@ -49,10 +53,13 @@ public class Patent implements Serializable{
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private String publicyear; // 公开年
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String typeyear; // typeyear
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String typemonth; // typemonth
+	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private String type; // 专利类型
 	private String description; // 专利描述
