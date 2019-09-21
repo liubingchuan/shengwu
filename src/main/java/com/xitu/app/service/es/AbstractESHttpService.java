@@ -585,7 +585,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		JSONObject range = new JSONObject();
 		JSONObject field1 = new JSONObject();
 		JSONObject pub = new JSONObject();
-		pub.put("gte", "2010");
+		pub.put("gte", "1996");
 		
 		//pub.put("format", "yyyy-MM-dd");
 		field1.put("applyyear",pub);
