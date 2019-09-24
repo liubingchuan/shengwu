@@ -88,7 +88,7 @@
 				    				<a href="javascript:showfamingrenshenqingliang('zhuanliquanren')">
 				    					专利权人申请量
 				    				</a>
-				    				<a href="javascript:showfamingrenshenqingliang('jishufenbu')">
+				    				<a href="javascript:showqushi();">
 				    					专利权人技术分布
 				    				</a>
 				    			</div>
@@ -111,7 +111,7 @@
 		<script type="text/javascript" th:inline="javascript">
 		var famingren =  [[${famingren}]];
 		var num =  [[${num}]];
-		
+		var query =  [[${query}]];	
 		var zhuanliquanrenstr =  [[${zhuanliquanrenstr}]];
 		var zhuanliquanrennum =  [[${zhuanliquanrennum}]];
 			
@@ -238,7 +238,72 @@
 				}
 				
 			}
-			
+			 function showqushi(){
+					document.getElementById('famingrenshenqingliang').style.display='none';
+					document.getElementById('jishufenbu').style.display='block';
+					var param = {};
+					 
+				    param['querystring'] = query;
+					
+					var url = "/patent/patentJishufenbu";
+					$.ajax({
+						url : url,
+						data : JSON.stringify(param),
+						contentType: "application/json; charset=utf-8",
+						dataType : 'json',
+						type : 'post',
+						success : function(data) {
+							var hours = data.year;
+					var days = data.ipc;
+					var qushi = data.qushi;
+					var myChart1 = echarts.init(document.getElementById('jishufenbu'));
+					option = {
+						tooltip: {
+							position: 'top'
+						},
+						title: [],
+						singleAxis: [],
+						series: []
+					};
+
+					echarts.util.each(days, function (day, idx) {
+						option.title.push({
+							textBaseline: 'middle',
+							top: (idx + 0.5) * 100 / 7 + '%',
+							text: day
+						});
+						option.singleAxis.push({
+							left: 150,
+							type: 'category',
+							boundaryGap: false,
+							data: hours,
+							top: (idx * 100 / 7 + 5) + '%',
+							height: (100 / 7 - 10) + '%',
+							axisLabel: {
+								interval: 2
+							}
+						});
+						option.series.push({
+							singleAxisIndex: idx,
+							coordinateSystem: 'singleAxis',
+							type: 'scatter',
+							data: [],
+							symbolSize: function (dataItem) {
+								return dataItem[1] / 4;
+							}
+						});
+					});
+
+					echarts.util.each(qushi, function (dataItem) {
+						option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+					});
+
+					myChart1.setOption(option);
+						}
+					}); 
+					
+					
+				}
 		</script>
 	</body>
 </html>
