@@ -22,13 +22,21 @@ public class Org implements Serializable{
 	
 	@CrossQuery
 	private String name; // 机构名称
+	@Field(type=FieldType.Keyword)
+	private String anotherName; // 机构名称
 	
 	@Field(type=FieldType.Keyword)
 	private List<String> alias; // 其他名称
 	
 	private String description; // 机构介绍
 	@Field(type=FieldType.Keyword)
+	private String desc;  // 机构介绍
+	@Field(type=FieldType.Keyword)
 	private List<String> area;  // 研究领域 
+	
+	@CrossQuery
+	@Field(type=FieldType.Keyword)
+	private List<String> tags;  // tags 
 	
 	@AggQuery
 	@SingleQuery
@@ -58,6 +66,10 @@ public class Org implements Serializable{
 	private String ctime; // 提交时间
 	private Long now; // 更改时间
 	private String frontend; // LOGO封面
+	@Field(type=FieldType.Keyword)
+	private String seq; // 排序
+	@Field(type=FieldType.Keyword)
+	private String top; // 顶置
 	private String frontendFileName; // LOGO文件名
 	private String frontendSize; // LOGO大小
 	
@@ -199,6 +211,36 @@ public class Org implements Serializable{
 	}
 	public void setFrontendSize(String frontendSize) {
 		this.frontendSize = frontendSize;
+	}
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	public String getSeq() {
+		return seq;
+	}
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
+	public String getAnotherName() {
+		return anotherName;
+	}
+	public void setAnotherName(String anotherName) {
+		this.anotherName = anotherName;
+	}
+	public String getTop() {
+		return top;
+	}
+	public void setTop(String top) {
+		this.top = top;
 	}
 	
 	
