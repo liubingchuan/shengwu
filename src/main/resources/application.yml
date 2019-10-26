@@ -8,7 +8,6 @@ spring:
      username: root
      password: 123456
      driver-class: 'com.mysql.jdbc.Driver'
-     #database-name: xitu
      database-name: yiyao
      init-sql: mysql/init.sql
   thymeleaf:
@@ -21,12 +20,12 @@ spring:
   data:
      elasticsearch:
        cluster-name: docker-cluster
-       #cluster-nodes: 47.104.7.73:9300
-       cluster-nodes: 45.77.86.209:9300
+       cluster-nodes: 39.96.82.217:9300
+       #cluster-nodes: 45.77.86.209:9300
        #cluster-nodes: 47.104.7.73:9300
 
 server:
-  port: 8090
+  port: 80
     
 mybatis:
   configuration:
@@ -36,4 +35,5 @@ files:
   path: /root/files
 
 es:
-  endpoint: 45.77.86.209:9200
+  #endpoint: 45.77.86.209:9200
+  endpoint: 39.96.82.217:9200

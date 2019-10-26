@@ -80,6 +80,7 @@ public class UserController {
 		user.setAccount(account);
 		user.setPassword(password);
 		user.setEmail(email);
+		user.setRole("普通用户");
 //		if(user != null && user.getId() != null) {
 //			userMapper.updateByOpenId(user);
 //			System.out.println("bind successfully");
@@ -89,39 +90,20 @@ public class UserController {
 //		}
 		userMapper.insertUser(user);
 		
-		return R.ok();
+		return R.ok().put("loginName", account).put("role", "普通用户");
 	}
 	
-	@PostMapping(value = "user/login")
-	public String login(LoginRequest request,Model model) {
-		System.out.println();
-		String account = "";
-		if(request.getToken() != null && !"".equals(request.getToken())) {
-			try {
-				account = JwtUtils.parseJWT(request.getToken()).getSubject();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		account = request.getAccount();
-		User user = userMapper.getUserByAccount(account);
+	@ResponseBody
+	@RequestMapping(value = "user/login", method = RequestMethod.POST,consumes = "application/json")
+	public R login(@RequestBody LoginRequest request) {
+		String account = request.getAccount();
 		String password = request.getPassword();
-		if(user !=null) {
-			model.addAttribute("user", user);
-			if(password != null && !password.equals(user.getPassword())) {
-				model.addAttribute("token", "1");
-			}else {
-				String JWT = JwtUtils.createJWT("1", account, SystemConstant.JWT_TTL);
-				model.addAttribute("token", JWT);
-				model.addAttribute("account", user.getAccount());
-				model.addAttribute("role", user.getRole());
-			}
-		}else {
-			model.addAttribute("token", "2");
-			model.addAttribute("user", new User());
+		User user = userMapper.getUserByAccount(account);
+		if (!user.getPassword().equals(password)) {
+			return R.error();
 		}
-		return "index";
+		String role = user.getRole();
+		return R.ok().put("loginName", account).put("role", role);
 	}
 	
 	

@@ -66,10 +66,11 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		return convertIns(getHttpClient().execute(composeInsDSL(insNamearr,pageIndex, pageSize, field, type)),pageSize);
 	}
 	
-	@Override
-	public JSONObject executeJianceIndex(int pageIndex, int pageSize, int type,String...args) {
-		return convertJianceIndex(getHttpClient().execute(composeJianceindexDSL(pageIndex, pageSize, type,args)));
-	}
+	// FIXME
+//	@Override
+//	public JSONObject executeJianceIndex(int pageIndex, int pageSize, int type,String...args) {
+//		return convertJianceIndex(getHttpClient().execute(composeJianceindexDSL(pageIndex, pageSize, type,args)));
+//	}
 	
 	@Override
 	public JSONObject executeXiangguan(int pageIndex, int pageSize,int type,String uuid,List<String> args) {
