@@ -35,13 +35,16 @@ public class Project implements Serializable{
 	private String budget; 
 	private String start;   //开始日期
 	private String end;    // 截止日期
+	@CrossQuery
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private String entrust; // 委托
+	@CrossQuery
 	private String contacts;
 	private String phone;
 	private String address;
+	@CrossQuery
 	private String agent;   // 项目代理机构
 	private String url;   // 原文地址
 	private String ctime;  // 提交时间

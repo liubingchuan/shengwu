@@ -22,12 +22,12 @@ public class Paper implements Serializable{
 	private String title;  //标题
 	@CrossQuery
 	private String subject; //摘要
-	
+	@CrossQuery
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> author;   // 作者
-	
+	@CrossQuery
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)

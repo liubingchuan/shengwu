@@ -22,6 +22,7 @@ public class Patent implements Serializable{
 	private String title;  //标题 （天地锁）
 	@CrossQuery
 	private String subject; //摘要 
+	@CrossQuery
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
@@ -29,6 +30,7 @@ public class Patent implements Serializable{
 	@AggQuery
 	@Field(type=FieldType.Keyword)
 	private List<String> applicantipc;   // applicant+_+ipc 的值存入该字段；（专利权人和ipc）
+	@CrossQuery
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)

@@ -66,7 +66,6 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		return convertIns(getHttpClient().execute(composeInsDSL(insNamearr,pageIndex, pageSize, field, type)),pageSize);
 	}
 	
-	// FIXME
 //	@Override
 //	public JSONObject executeJianceIndex(int pageIndex, int pageSize, int type,String...args) {
 //		return convertJianceIndex(getHttpClient().execute(composeJianceindexDSL(pageIndex, pageSize, type,args)));
@@ -149,6 +148,8 @@ public abstract class AbstractESHttpService implements ESHttpService {
     	_score.put("_score",order);//orderby=_score
     	sort.add(_score);
     	JSONObject pubtimes = new JSONObject();
+    	JSONObject areas = new JSONObject();
+    	JSONObject photos = new JSONObject();
     	String sortfield ="";
     	if (type == 3) {
     		sortfield = "pubtime";
@@ -163,10 +164,28 @@ public abstract class AbstractESHttpService implements ESHttpService {
     		sortfield = "now";
 		}
     	if (type == 4) {
-    		sortfield = "now";
+    		sortfield = "seq";
+        	JSONObject order1s = new JSONObject();
+        	order1s.put("order", "desc");
+        	photos.put(sortfield,order1s);
+        	sort.add(photos);
+//        	sortfield = "desc";
+//        	JSONObject order2s = new JSONObject();
+//        	order2s.put("order", "desc");
+//        	areas.put(sortfield,order2s);
+//        	sort.add(areas);
 		}
     	if (type == 5) {
-    		sortfield = "now";
+    		sortfield = "seq";
+        	JSONObject order1s = new JSONObject();
+        	order1s.put("order", "desc");
+        	photos.put(sortfield,order1s);
+        	sort.add(photos);
+        	sortfield = "area";
+        	JSONObject order2s = new JSONObject();
+        	order2s.put("order", "desc");
+        	areas.put(sortfield,order2s);
+        	sort.add(areas);
 		}
     	if (type == 6) {
     		sortfield = "now";
