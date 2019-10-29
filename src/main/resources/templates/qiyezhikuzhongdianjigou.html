@@ -22,8 +22,8 @@
 				</a>
 				<div class="left headsuos">
 					<em></em>
-					<input type="button" class="headsuosBtn" value="搜索" />
-					<input type="text" class="headsuosInp" />
+					<input type="button" class="headsuosBtn" value="搜索" onClick="search();"/>
+					<input type="text" class="headsuosInp" th:text="${query}" id="keywords"/>
 				</div>
 				<div th:replace="qiantaidenglu :: myqiantaidenglu"></div>
 			</div>
@@ -83,10 +83,10 @@
 				    	</form>
 				       <ul class="clearfix jigouUl">
 				       	<li class="clearfix" th:each="org: ${list}">
-				       		<a th:href="@{/org/get(id=${org.id},front=0)}" class="left jigouliLf">
+				       		<a th:href="@{/org/get(id=${org.id},front=0)}" class="left jigouliLf1">
 				       			<!-- <img th:src="@{/file/fileDownload(filename=${org.frontend})}" /> -->
 				       			<img th:if=" ${org.frontend !=null && org.frontend != ''}" th:src="@{/file/fileDownload(filename=${org.frontend})}" />
-				        			<img th:if=" ${org.frontend ==null || org.frontend == ''}" th:src="@{/images/default.png}" />
+				        			<img th:if=" ${org.frontend ==null || org.frontend == ''}" th:src="@{/images/default.png}"/>
 				       			
 				       		</a>
 				       		<div class="right jigouRt">
@@ -150,7 +150,7 @@
 		 	});
 		 	function search(){
 			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
-			     window.location.href="/patent/list?q=" + $("#keywords").val();
+			     window.location.href="/org/list?front=0&q=" + $("#keywords").val();
 				/* window.location.href="http://47.104.7.73/patent/list?q=" + $("#keywords").val(); */
 			}
 		 	$("#keywords").keypress(function(e) {

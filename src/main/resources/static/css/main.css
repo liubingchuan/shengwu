@@ -43,6 +43,10 @@ body{background-color: rgba(249,249,249,1);}
 .footerTopMiddle{width: 353px;margin:0px 37px;}
 .footerTopText a{color: #fff;}
 .footerTopText a:hover{text-decoration: underline;}
+
+.jigouliLf1{display: block;width: 156px;text-align:center}
+.jigouliLf1 img{width: 35%;vertical-align: middle;}
+
 .footerTopMiddleTop{margin-bottom: 16px;}
 .footerTopLX{width: 214px;}
 .footerTopText span{display: block;height: 75px;overflow: hidden;}
