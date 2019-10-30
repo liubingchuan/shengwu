@@ -429,6 +429,7 @@ public class PatentController {
 		return view;
 	}
 	
+	
 	@ResponseBody
 	@RequestMapping(value = "patent/patentMonList", method = RequestMethod.POST,consumes = "application/json")
 	public R patentmonthList(@RequestBody JSONObject queryobj) {

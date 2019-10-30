@@ -19,7 +19,7 @@ public class Patent implements Serializable{
 	@Id
 	private String id;
 	@CrossQuery
-	private String title;  //标题 （天地锁）
+	private String title;  //标题 （天地锁）   En title
 	@CrossQuery
 	private String subject; //摘要 
 	@CrossQuery
@@ -45,7 +45,7 @@ public class Patent implements Serializable{
 	@Field(type=FieldType.Keyword)
 	private String applytime; // 申请日
 	@Field(type=FieldType.Keyword)
-	private String publictime; // 公开（公告）日
+	private String publictime; // 公开（公告）日   En Publication date
 	@AggQuery
 	@SingleQuery
 	@Field(type=FieldType.Keyword)
