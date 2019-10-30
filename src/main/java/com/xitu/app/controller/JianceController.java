@@ -1,12 +1,16 @@
 package com.xitu.app.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -37,6 +41,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 import com.xitu.app.common.R;
 import com.xitu.app.mapper.TaskMapper;
 import com.xitu.app.model.Jiance;
@@ -56,7 +64,9 @@ public class JianceController {
 	private static final Logger logger = LoggerFactory.getLogger(JianceController.class);
 	
 	@Autowired
-    private JianceRepository paperRepository;
+    private JianceRepository jianceRepository;
+	
+	private List<String> titles = new LinkedList<String>();
 	
 	@Autowired
 	private ElasticsearchTemplate esTemplate;
@@ -342,6 +352,52 @@ public class JianceController {
 		return view;
 	}
 	
+	@GetMapping(value = "jiance/jianceinfo")
+	public String jianceinfo() {
+		List<Jiance> objs = new LinkedList<Jiance>();
+    	try {
+    		Map<String, String> map = new HashMap<String, String>();
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/48/sohuyiyao.xml", "行业新闻");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/51/sohuyiyao.xml", "产业动态");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/55/sohuyiyao.xml", "国家政策");
+//    		map.put("http://rss.webofknowledge.com/rss?e=f97b03035b0f1e80&c=d4ed61076561feea4381b88e0f6dc3b4", "研究前沿");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			int i=1;
+			for(Map.Entry<String, String> kv: map.entrySet()) {
+				try (XmlReader reader = new XmlReader(new URL(kv.getKey()))) {
+					SyndFeed feed = new SyndFeedInput().build(reader);
+					System.out.println(feed.getTitle());
+					System.out.println("***********************************");
+					for (SyndEntry entry : feed.getEntries()) {
+						if(titles.contains(entry.getTitle())){
+							continue;
+						}else {
+							titles.add(entry.getTitle());
+						}
+						Jiance jiance = new Jiance();
+						jiance.setId(UUID.randomUUID().toString());
+						jiance.setTitle(entry.getTitle());
+						jiance.setDescription(entry.getDescription().getValue());
+						jiance.setPubtime(sdf.format(entry.getPublishedDate()));
+						jiance.setLanmu(kv.getValue());
+						jiance.setInstitution("xyz");
+						
+						objs.add(jiance);
+						System.out.println("***********************************");
+					}
+					System.out.println("Done");
+				}
+				i++;
+			}
+			jianceRepository.saveAll(objs);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return "success";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value = "jiance/jianceIndex", method = RequestMethod.POST,consumes = "application/json")
 	public R jianceIndex(@RequestBody JSONObject insname) {
@@ -361,7 +417,7 @@ public class JianceController {
 	public String getPaper(@RequestParam(required=false,value="id") String id, Model model) {
 		Jiance paper = new Jiance();
 		if(id != null) {
-			paper = paperRepository.findById(id).get();
+			paper = jianceRepository.findById(id).get();
 		}
 		model.addAttribute("paper", paper);
 		Integer pageIndex = 0;
@@ -386,7 +442,7 @@ public class JianceController {
 			SearchQuery searchQuery = new NativeSearchQueryBuilder().withPageable(pageable)
 					.withQuery(functionScoreQueryBuilder).build();
 
-			Page<Jiance> searchPageResults = paperRepository.search(searchQuery);
+			Page<Jiance> searchPageResults = jianceRepository.search(searchQuery);
 			paperList = searchPageResults.getContent();
 			totalCount = esTemplate.count(searchQuery, Paper.class);
 			
@@ -415,4 +471,7 @@ public class JianceController {
 		rs = jianceService.executeIns(insname.getString("insname"),pageIndex, pageSize, "institution",i);
 		return R.ok().put("list", rs.get("list")).put("totalPages", rs.get("totalPages")).put("totalCount", rs.get("totalCount")).put("pageIndex", pageIndex);
     }
+	
+	
+	
 }
