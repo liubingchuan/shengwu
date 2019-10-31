@@ -320,7 +320,7 @@
 		        });
 
 			});
-			 getExperts('新闻动态');
+			 getExperts('行业新闻');
 		 });
 			function search(){
 			    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
@@ -329,30 +329,29 @@
 			}
 			
 			function getExperts(index) {
-				if(index == '新闻动态'){
-					var html = "<a href=\"javascript:getExperts('新闻动态');\" class=\"ahover\">行业新闻</a>";
+				if(index == '行业新闻'){
+					var html = "<a href=\"javascript:getExperts('行业新闻');\" class=\"ahover\">行业新闻</a>";
 					html += "<a href=\"javascript:getExperts('国家政策');\" >国家政策</a>";
 					html += "<a href=\"javascript:getExperts('产业动态');\" >产业动态</a>";
 					html += "<a href=\"javascript:getExperts('科研进展');\" >科研进展</a>";
 					$("#biaoti").html(html);
 				}
 				if(index == '国家政策'){
-					var html = "<a href=\"javascript:getExperts('新闻动态');\">行业新闻</a>";
+					var html = "<a href=\"javascript:getExperts('行业新闻');\">行业新闻</a>";
 					html += "<a href=\"javascript:getExperts('国家政策');\"  class=\"ahover\">国家政策</a>";
 					html += "<a href=\"javascript:getExperts('产业动态');\" >产业动态</a>";
 					html += "<a href=\"javascript:getExperts('科研进展');\" >科研进展</a>";
 					$("#biaoti").html(html);
 				}
 				if(index == '产业动态'){
-					var html = "<a href=\"javascript:getExperts('新闻动态');\">行业新闻</a>";
+					var html = "<a href=\"javascript:getExperts('行业新闻');\">行业新闻</a>";
 					html += "<a href=\"javascript:getExperts('国家政策');\"  >国家政策</a>";
 					html += "<a href=\"javascript:getExperts('产业动态');\" class=\"ahover\">产业动态</a>";
 					html += "<a href=\"javascript:getExperts('科研进展');\" >科研进展</a>";
 					$("#biaoti").html(html);
-					index = '新闻动态';
 				}
 				if(index == '科研进展'){
-					var html = "<a href=\"javascript:getExperts('新闻动态');\">行业新闻</a>";
+					var html = "<a href=\"javascript:getExperts('行业新闻');\">行业新闻</a>";
 					html += "<a href=\"javascript:getExperts('国家政策');\"  >国家政策</a>";
 					html += "<a href=\"javascript:getExperts('产业动态');\" >产业动态</a>";
 					html += "<a href=\"javascript:getExperts('科研进展');\" class=\"ahover\">科研进展</a>";
