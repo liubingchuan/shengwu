@@ -592,6 +592,17 @@ public class PatentController {
 	    //cache.putCacheItem("abc", obj);
 	    if (q == null || "".equals(q)) {
 	    	 obj = (JSONObject) cache.getCacheItem("total");
+	    	 if (obj == null) {
+	    		 
+	    		ThreadLocalUtil.set(model);
+    			JSONObject jObject = patentService.execute(0, 10, 0,q,null,null,null,null,null,null,null);
+    			if (jObject != null) {
+    				
+    				cache.putCacheItem("total", jObject);
+    				obj = (JSONObject) cache.getCacheItem("total");
+    			}
+    			ThreadLocalUtil.remove();
+			}
 		}else{
 			 obj = (JSONObject) cache.getCacheItem(q);
 		}
