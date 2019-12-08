@@ -58,6 +58,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
@@ -71,6 +72,7 @@ import com.xitu.app.model.Project;
 import com.xitu.app.repository.PaperRepository;
 import com.xitu.app.service.es.PaperService;
 import com.xitu.app.utils.BeanUtil;
+import com.xitu.app.utils.JsonUtil;
 import com.xitu.app.utils.ThreadLocalUtil;
 
 
@@ -902,6 +904,95 @@ public class PaperController {
 //    	}
     	return R.ok();
     }
+    
+    @GetMapping(value="paper/read")
+    @ResponseBody 
+    public R readPaper() {
+    	String fileName = "/Users/liubingchuan/demo.json";
+    	File file = new File(fileName);
+        BufferedReader reader = null;
+        try {
+            System.out.println("以行为单位读取文件内容，一次读一行");
+            reader = new BufferedReader(new FileReader(file));
+            String tempString = null;
+            int line = 1;
+//一次读一行，读入null时文件结束
+            List<Paper> papers = new ArrayList<Paper>();
+            while ((tempString = reader.readLine()) != null) {
+//把当前行号显示出来
+                System.out.println("line " + line + ": " + tempString);
+                line++;
+                JSONObject obj = JsonUtil.parseObject(tempString);
+                System.out.println(obj.toJSONString());
+                Paper paper = new Paper();
+                paper.setJournal(obj.getString("journal"));
+                List<String> authors = new ArrayList<String>();
+                List<String> authorList = (List<String>) obj.get("author");
+                for(String s : authorList) {
+                	String aut = s;
+                	if(aut.endsWith("|")) {
+                		continue;
+                	}
+                	if(aut.contains("\r\n")) {
+                		aut = aut.replaceAll("\r\n", "");
+                	}
+                	if(aut.contains(";")) {
+                		aut = aut.replaceAll(";", "");
+                	}
+                	authors.add(aut);
+                }
+                paper.setAuthor(authors);
+                List<String> orgs = new ArrayList<String>();
+                List<String> orgList = (List<String>) obj.get("organization");
+                for(String s : orgList) {
+                	String org = s;
+                	if(org.endsWith("|")) {
+                		continue;
+                	}
+                	if(org.contains("\r\n")) {
+                		org = org.replaceAll("\r\n", "");
+                	}
+                	if(org.contains(";")) {
+                		org = org.replaceAll(";", "");
+                	}
+                	orgs.add(org);
+                }
+                paper.setInstitution(orgs);
+                
+                String onlinedate = obj.getString("online_date");
+                if(onlinedate.length()>=4) {
+                	paper.setYear(onlinedate.substring(0, 4));
+                	paper.setIssue(onlinedate.substring(5,7));
+                }
+                paper.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
+                List<String> keywords = (List<String>) obj.get("key_word");
+                paper.setKeywords(keywords);
+                paper.setSubject(obj.getString("abstract"));
+                paper.setTitle(obj.getString("title"));
+                List<String> links = new ArrayList<String>();
+                links.add(obj.getString("url"));
+                paper.setLink(links);
+                paper.setNow(System.currentTimeMillis());
+                papers.add(paper);
+                
+            }
+            paperRepository.saveAll(papers);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+    	
+    	return R.ok();
+    }
+    
+    
     
     /**
      * 机构合并
