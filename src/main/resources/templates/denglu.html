@@ -2,8 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <div th:fragment="mydenglu">
     <div class="alertCon alertZh" id="alertZh">
-	    	<div class="alertTl">
+    		<div class="alertTl1">
+	    	<span class="left">
 	    		账户登录
+	    	</span>
+	    	<span id="close" class="right">
+	    	
+	    		<img th:src="@{/images/close.png}" />
+	    	
+	    	</span>
 	    	</div>
 	    	<div class="alertForm">
 	    		<form id="loginForm">

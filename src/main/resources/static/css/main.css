@@ -50,7 +50,8 @@ body{background-color: rgba(249,249,249,1);}
 
 .footerTopMiddleTop{margin-bottom: 16px;}
 .footerTopLX{width: 214px;}
-.footerTopText span{display: block;height: 75px;overflow: hidden;}
+.footerTopText span{display: block;height: 150px;}
+/* .footerTopText span{display: block;height: 75px;overflow: hidden;} */
 .footerTopLXB li a{height: 25px;display: block;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
 .footerTopLXB{margin-top: 66px;}
 .footerTopErw{text-align: center;font-size: 14px;}
@@ -103,6 +104,7 @@ body{background-color: rgba(249,249,249,1);}
 .alertErwA a:hover{color: #F5A623;}
 .alertZh{width: 446px;margin-left: -223px;border-radius: 5px;overflow: hidden;margin-top: -235px;}
 .alertTl{background: url(../images/report_bg.png) no-repeat center;background-size: cover;padding: 20px 30px;color: #fff;font-size: 24px;}
+.alertTl1{background: url(../images/report_bg.png) no-repeat center;background-size: cover;padding: 20px 30px 40px 30px;color: #fff;font-size: 24px;}
 .alertForm{padding: 24px 30px;}
 .alertFormName{color: #4A4A4A;font-size: 14px;display: block;margin-bottom: 15px;}
 .alertFormName span{color: red;}
