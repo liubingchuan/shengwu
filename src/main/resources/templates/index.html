@@ -20,10 +20,14 @@
 				</a>
 				<div class="left menu clearfix">
 					<a href="/">平台首页</a>
-					<a id="chanyejiance" th:href="@{/jiance/jiancelist}">产业监测</a>
+					<!-- <a id="chanyejiance" th:href="@{/jiance/jiancelist}">产业监测</a>
 					<a id="xituzhiku" th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}">企业智库</a>
 					<a id="zhishifuwu" th:href="@{/zhishifuwu/zhishifuwu}">知识服务</a>
-					<a th:href="@{/patent/agmount(q=)}">专利分析</a>
+					<a id="zhuanlifenxi" th:href="@{/patent/agmount(q=)}">专利分析</a> -->
+					<a id="chanyejiance">产业监测</a>
+					<a id="xituzhiku" >企业智库</a>
+					<a id="zhishifuwu">知识服务</a>
+					<a id="zhuanlifenxi">专利分析</a>
 					
 					
 				</div>
@@ -155,7 +159,7 @@
 	    		    					可视化数据展示
 	    		    				</li>
 	    		    			</ul>
-	    		    			<a th:href="@{/patent/agmount}" class="btnYellow indexLFA">
+	    		    			<a id="zhuanlifenxi2"  class="btnYellow indexLFA">
 	    		    				进入数据库>>
 	    		    			</a>
 	    		    		</div>
@@ -175,7 +179,7 @@
 	    		    				</li>
 	    		    				
 	    		    			</ul>
-	    		    			<a id="zhishifuwu2" th:href="@{/zhishifuwu/zhishifuwu}" class="btnYellow indexLFA">
+	    		    			<a id="zhishifuwu2" class="btnYellow indexLFA">
 	    		    				开始委托>>
 	    		    			</a>
 	    		    		</div>
@@ -197,7 +201,7 @@
 	    		    					行业分析报告数据
 	    		    				</li>
 	    		    			</ul>
-	    		    			<a th:href="@{/org/list(pageSize=10,pageIndex=0,front=0)}" class="btnYellow indexLFA">
+	    		    			<a id="xituzhiku2" class="btnYellow indexLFA">
 	    		    				进入智库>>
 	    		    			</a>
 	    		    		</div>
@@ -237,26 +241,6 @@
     	
 		 $(document).ready(function () {
 			showLoginInfoFrontend();
-			$("#alertbd").css('display','none');
-			
-			$("#registry").click(function(){
-				$("#alertZh").css('display','none');
-				$("#alertbd").css('display','block');
-		    });
-			
-			$("#close").click(function(){
-				$("#alertZh").css('display','none');
-				
-		    });
-			$("#closezhuce").click(function(){
-				$("#alertbd").css('display','none');
-				
-		    });
-			
-			$("#login").click(function(){
-				$("#alertbd").css('display','none');
-				$("#alertZh").css('display','block');
-		    });
 			
 			 $("#bindButtion").click(function(){
 				if($("#bdaccount").val() == ""){

@@ -12,12 +12,22 @@ $("#quit").click(function(){
 	$.cookie("loginName", "", {expires: -1});
 	window.location.href = "/";
 });
+
+$("#close").click(function(){
+	$("#alertZh").css('display','none');
+	
+});
+$("#closezhuce").click(function(){
+	$("#alertbd").css('display','none');
+	
+});
+
 $("#chanyejiance").click(function(){
 	if($.cookie("role")!=null) {
 		window.location.href = "/jiance/jiancelist";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#xituzhiku").click(function(){
@@ -25,7 +35,7 @@ $("#xituzhiku").click(function(){
 		window.location.href = "/org/list?pageSize=10&pageIndex=0&front=0";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#xituzhiku2").click(function(){
@@ -33,7 +43,7 @@ $("#xituzhiku2").click(function(){
 		window.location.href = "/org/list?pageSize=10&pageIndex=0&front=0";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#zhuanlifenxi").click(function(){
@@ -41,7 +51,7 @@ $("#zhuanlifenxi").click(function(){
 		window.location.href = "/patent/agmount?q=";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#zhuanlifenxi2").click(function(){
@@ -49,7 +59,7 @@ $("#zhuanlifenxi2").click(function(){
 		window.location.href = "/patent/agmount?q=";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#zhishifuwu").click(function(){
@@ -57,7 +67,7 @@ $("#zhishifuwu").click(function(){
 		window.location.href = "/zhishifuwu/zhishifuwu";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
 	}
 });
 $("#zhishifuwu2").click(function(){
@@ -65,7 +75,23 @@ $("#zhishifuwu2").click(function(){
 		window.location.href = "/zhishifuwu/zhishifuwu";
 	}else {
 		alert("请先登录")
-		window.location.href = "/";
+		$("#login").click()
+	}
+});
+$("#zhuanlifenxi").click(function(){
+	if($.cookie("role")!=null) {
+		window.location.href = "/patent/agmount?q=";
+	}else {
+		alert("请先登录")
+		$("#login").click()
+	}
+});
+$("#zhuanlifenxi2").click(function(){
+	if($.cookie("role")!=null) {
+		window.location.href = "/patent/agmount?q=";
+	}else {
+		alert("请先登录")
+		$("#login").click()
 	}
 });
 
