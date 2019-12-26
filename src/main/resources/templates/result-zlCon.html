@@ -65,6 +65,12 @@
 		        		</div>
 		        		<div class="resultLfCon">
 		        			<div class="resultLfConTl">
+		        				申请号： 
+		        			</div>
+		        			<p th:text="*{applynumber}"></p>
+		        		</div>
+		        		<div class="resultLfCon">
+		        			<div class="resultLfConTl">
 		        				公开年： 
 		        			</div>
 		        			<p th:text="*{publicyear}"></p>
@@ -94,9 +100,17 @@
 		        			<p th:text="*{ipc}">
 		        			</p>
 		        		</div>
-		        		<a href="#" class="resultDown">
+		        		<a href="javascript:downloadtupian()" class="resultDown">
 		        			全文下载
 		        		</a>
+		        		<div id="yanzhengmatupian">
+		        		
+		        		</div>
+		        		<div id="yanzhengmashuru" class="clearfix" style="padding-top:20px;display:none">
+		        			
+							<input type="text" id="shuru"/>
+							<input type="button"  value="确定" onClick="downloadpdf();"/>
+		        		</div>
 		        		</div>
 		        	    
 		        	    
@@ -139,6 +153,7 @@
 			<div th:replace="footer :: myfooter"></div>
 		<script type="text/javascript" th:src="@{/js/main.js}" ></script>
 		<script type="text/javascript" th:inline="javascript">
+		var applynumbera = [[${applynumber}]];
 		$(document).ready(function () {
 			showLoginInfoFrontend();
 		});
@@ -164,6 +179,21 @@
 				if($("#keywords").val() != "") {
 			    	window.location.href="/patent/list?q=" + $("#keywords").val() + "&" + uri;
 				}
+			}
+			
+			function downloadtupian(){
+				
+				//ajax
+				
+				var html = "<div><img src=\"/file/fileDownload?filename="+applynumbera+".jpg\" /></div>";
+				
+				
+				document.getElementById("yanzhengmashuru").style.display="block";
+				document.getElementById("yanzhengmatupian").innerHTML =html;
+			}
+			
+			function downloadpdf(){
+				//点击确定以后触发
 			}
 				</script>
 	</body>
