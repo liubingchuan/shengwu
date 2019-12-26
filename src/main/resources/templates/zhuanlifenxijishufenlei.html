@@ -23,8 +23,8 @@
 				</a>
 				<div class="left headsuos">
 					<em></em>
-					<input type="button" class="headsuosBtn" value="搜索" />
-					<input type="text" class="headsuosInp" />
+					<input type="button" class="headsuosBtn" value="搜索" id="search" onClick="search();"/>
+					<input type="text" class="headsuosInp" id="keywords"/>
 				</div>
 				<div th:replace="qiantaidenglu :: myqiantaidenglu"></div>
 			</div>
@@ -249,6 +249,11 @@
 					}); 
 					
 					
+				}
+			 function search(){
+				    /*  window.location.href="http://127.0.0.1:8088/project/list?q=" + $("#keywords").val(); */
+				    window.location.href="/patent/list?q=" + $("#keywords").val();
+					/* window.location.href="http://47.104.7.73/patent/list?q=" + $("#keywords").val(); */
 				}
 			
 		</script>

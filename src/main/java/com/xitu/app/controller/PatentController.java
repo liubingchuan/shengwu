@@ -133,6 +133,7 @@ public class PatentController {
 			patent = patentRepository.findById(id).get();
 		}
 		model.addAttribute("patent", patent);
+		model.addAttribute("applynumber", patent.getApplynumber());
 		return "result-zlCon";
 	}
 	
