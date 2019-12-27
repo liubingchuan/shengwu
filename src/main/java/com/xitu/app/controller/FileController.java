@@ -128,5 +128,42 @@ public class FileController {
             }  
         }  
     }
+    
+    /**
+     * 实现文件下载
+     * */
+    @SuppressWarnings("unused")
+    @RequestMapping(value="pdf/fileDownload")
+    public void yzmDownload(@RequestParam("filename") String filename,HttpServletRequest request, HttpServletResponse response){
+    	
+    	FileInputStream fis = null;  
+    	OutputStream os = null;  
+    	try {  
+    		System.out.println(filename);
+    		fis = new FileInputStream("/tmp/yzm" + File.separator + filename);  
+    		//String path = "C:\\Users\\";
+    		//fis = new FileInputStream(path + filename); 
+    		os = response.getOutputStream();  
+    		int count = 0;  
+    		byte[] buffer = new byte[1024 * 8];  
+    		while ((count = fis.read(buffer)) != -1) {  
+    			os.write(buffer, 0, count);  
+    			os.flush();  
+    		}  
+    	} catch (Exception e) {  
+    		e.printStackTrace();  
+    	} finally {  
+    		try {  
+    			if(fis != null) {
+    				fis.close();  
+    			}
+    			if(os != null) {
+    				os.close();  
+    			}
+    		} catch (IOException e) {  
+    			e.printStackTrace();  
+    		}  
+    	}  
+    }
 	
 }

@@ -197,8 +197,8 @@ $("#loginButtion").click(function(){
 				$.cookie("role",data.role);
 				$.cookie("loginName",data.loginName);
 				//$("#headImg").attr("src", $.cookie("headImg"));
-				$("#loginBefore").css('display','none');
-				$("#loginAfter").css('display','block');
+//				$("#loginBefore").css('display','none');
+//				$("#loginAfter").css('display','block');
 				window.location.href = "/";
 			}
 			else
@@ -221,11 +221,11 @@ $("#loginButtion").click(function(){
 
 function showLoginInfoFrontend(){
 	$("#alertbd").css('display','none');
-    if($.cookie("openId")!=null) {
+    if($.cookie("loginName")!=null) {
 		$("#loginBefore").css('display','none'); 
 	    //$("#headImg").attr("src", $.cookie("headImg"));
 		$("#loginAfter").css('display','block');
-		if($.cookie("role")!=null && $.cookie("role")==="visitor"){
+		if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
 			$(".vip").html("普通用户"); 
 			$("#backgroud").css('display','none');
 			/* document.getElementById("xituzhiku").removeAttribute("href");
@@ -260,7 +260,7 @@ function showLoginInfoFrontend(){
 			$("#backgroud").css('display','block'); 
 		}
 		$(".vip").html($.cookie("role"));
-		$("#logoinName").html($.cookie("nickName"));
+		$("#logoinName").html($.cookie("loginName"));
 	}else {
 		$("#loginBefore").css('display','block'); 
 		$("#loginAfter").css('display','none'); 
@@ -270,8 +270,8 @@ function showLoginInfoFrontend(){
 function showLoginInfoBackend(){
     if($.cookie("role")!=null) {
 		if($.cookie("role")!=null){
-			$("#logoinNames").html($.cookie("role")); 
-			$("#logoinRole").html($.cookie("loginName")); 
+			$("#logoinNames").html($.cookie("loginName")); 
+			$("#logoinRole").html($.cookie("role")); 
 		}
 	}else {
 		alert("请登录")
