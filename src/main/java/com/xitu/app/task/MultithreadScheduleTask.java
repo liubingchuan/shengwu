@@ -140,7 +140,7 @@ public class MultithreadScheduleTask {
 //    }
 	
 	@Async
-    @Scheduled(cron = "0 0 8 * * ?")
+	@Scheduled(cron = "0 0 13 * * ?")
 //	@Scheduled(cron = "*/30 * * * * ?")  //间隔十五秒
 	public void jiance(){
     	List<Jiance> objs = new LinkedList<Jiance>();

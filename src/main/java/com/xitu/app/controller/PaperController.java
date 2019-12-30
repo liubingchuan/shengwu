@@ -908,7 +908,7 @@ public class PaperController {
     @GetMapping(value="paper/read")
     @ResponseBody 
     public R readPaper() {
-    	String fileName = "/Users/liubingchuan/demo.json";
+    	String fileName = "/Users/liubingchuan/Desktop/sw.json";
     	File file = new File(fileName);
         BufferedReader reader = null;
         try {
