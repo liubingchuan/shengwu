@@ -460,7 +460,7 @@ public class JianceController {
     		map.put("http://35.201.235.191:3000/users/1/web_requests/48/sohuyiyao.xml", "行业新闻");
     		map.put("http://35.201.235.191:3000/users/1/web_requests/51/sohuyiyao.xml", "产业动态");
     		map.put("http://35.201.235.191:3000/users/1/web_requests/55/sohuyiyao.xml", "国家政策");
-    		map.put("http://rss.webofknowledge.com/rss?e=f97b03035b0f1e80&c=d4ed61076561feea4381b88e0f6dc3b4", "研究前沿");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/68/keyanqianyan.xml", "研究前沿");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			int i=1;
 			for(Map.Entry<String, String> kv: map.entrySet()) {
