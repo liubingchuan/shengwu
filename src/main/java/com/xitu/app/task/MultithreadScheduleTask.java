@@ -138,6 +138,15 @@ public class MultithreadScheduleTask {
 //        }
 //	
 //    }
+	private boolean isNow(String date) {
+        //当前时间
+        Date now = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        //获取今天的日期
+        String nowDay = sf.format(now);
+        //对比的时间
+        return date.equals(nowDay);
+    }
 	
 	@Async
 	@Scheduled(cron = "0 0 13 * * ?")
@@ -149,7 +158,7 @@ public class MultithreadScheduleTask {
     		map.put("http://35.201.235.191:3000/users/1/web_requests/48/sohuyiyao.xml", "行业新闻");
     		map.put("http://35.201.235.191:3000/users/1/web_requests/51/sohuyiyao.xml", "产业动态");
     		map.put("http://35.201.235.191:3000/users/1/web_requests/55/sohuyiyao.xml", "国家政策");
-    		map.put("http://rss.webofknowledge.com/rss?e=f97b03035b0f1e80&c=d4ed61076561feea4381b88e0f6dc3b4", "研究前沿");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/68/keyanqianyan.xml", "研究前沿");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			int i=1;
 			for(Map.Entry<String, String> kv: map.entrySet()) {
@@ -158,10 +167,8 @@ public class MultithreadScheduleTask {
 					System.out.println(feed.getTitle());
 					System.out.println("***********************************");
 					for (SyndEntry entry : feed.getEntries()) {
-						if(titles.contains(entry.getTitle())){
+						if(!this.isNow(sdf.format(entry.getPublishedDate()))) {
 							continue;
-						}else {
-							titles.add(entry.getTitle());
 						}
 						Jiance jiance = new Jiance();
 						jiance.setId(UUID.randomUUID().toString());

@@ -61,9 +61,9 @@
 				    	<form>
 				    		<div class="recaiForm clearfix">
 				    			<select class="left" id="linkselect">
-				    				<option>
-				    					全产业链
-				    				</option>
+				    				<!-- <option>
+				    					请选择
+				    				</option> -->
 				    				<option th:each="item : ${link}" th:if="${item.key != null && item.key != ''}" th:value="${item.key}" th:text="${item.key}"></option>
 				    			</select>
 				    			<select class="left" id="classicselect">
