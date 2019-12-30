@@ -304,11 +304,11 @@
 		var display =  [[${display}]];
 		$(document).ready(function () {
 			showLoginInfoFrontend();
-		    document.getElementById("shenqinglist").href="/zhishifuwu/shenqinglist?userid="+$.cookie("nickName");
+		    document.getElementById("shenqinglist").href="/zhishifuwu/shenqinglist?userid="+$.cookie("loginName");
 		    if(display != null && display == 1){
-		    	 document.getElementById("shenqinglist2").href="/zhishifuwu/shenqinglist?userid="+$.cookie("nickName");
+		    	 document.getElementById("shenqinglist2").href="/zhishifuwu/shenqinglist?userid="+$.cookie("loginName");
 		    }
-		    $("#userId").attr("value",$.cookie("nickName"));
+		    $("#userId").attr("value",$.cookie("loginName"));
 
 		});
 		 $("#frontendFile").live('change',function() {
