@@ -3,7 +3,7 @@ spring:
      name: shengwu
   datasource:
      #url: 'jdbc:mysql://47.104.7.73:3306/?useUnicode=true&characterEncoding=utf-8&useSSL=false'
-     url: 'jdbc:mysql://47.93.216.109:3306/?useUnicode=true&characterEncoding=utf-8&useSSL=false'
+     url: 'jdbc:mysql://218.60.29.246:3306/?useUnicode=true&characterEncoding=utf-8&useSSL=false'
      username: yiyao
      password: rrheD2P6zHDSCYdA
      driver-class: 'com.mysql.jdbc.Driver'
@@ -19,12 +19,12 @@ spring:
   data:
      elasticsearch:
        cluster-name: docker-cluster
-       cluster-nodes: 39.96.82.217:9300
+       cluster-nodes: 218.60.29.246:9300
        #cluster-nodes: 45.77.86.209:9300
        #cluster-nodes: 47.104.7.73:9300
 
 server:
-  port: 8080
+  port: 80
     
 mybatis:
   configuration:
@@ -35,4 +35,4 @@ files:
 
 es:
   #endpoint: 45.77.86.209:9200
-  endpoint: 39.96.82.217:9200
+  endpoint: 218.60.29.246:9200
