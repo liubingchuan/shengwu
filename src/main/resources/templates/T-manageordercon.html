@@ -344,7 +344,7 @@
 			  if($.cookie("role")!=null && $.cookie("role")==="普通用户"){
 					$("#backgroud").css('display','none'); 
 				}
-				$("#logoinName").html($.cookie("nickName"));
+				$("#logoinName").html($.cookie("loginName"));
 			    $("#headImg").attr("src", $.cookie("headImg"));
 		});
 		var frontendId = null;
@@ -427,7 +427,7 @@
 			function uptext(type) {
 				if(type==0){
 					   //window.location.href="/zhishifuwu/jiedan?uuid="+uuid+"&front=0&pageIndex="+pageIndex+"&pageSize="+pageSize;
-					   window.location.href="/zhishifuwu/jiedan?uuid=" + uuid + "&pageIndex="+pageIndex+"&pageSize="+pageSize+"&chuliren="+$.cookie("openId");
+					   window.location.href="/zhishifuwu/jiedan?uuid=" + uuid + "&pageIndex="+pageIndex+"&pageSize="+pageSize+"&chuliren="+$.cookie("loginName");
 				}
 				if(type==1){
 				   window.location.href="/zhishifuwu/tijiao?uuid="+uuid+"&front=0&pageIndex="+pageIndex+"&pageSize="+pageSize+"&chulirenfujianId="+$("#chulirenfujianId").val()+"&chuliyijian="+ $("#chuliyijian").val();

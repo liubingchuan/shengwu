@@ -66,8 +66,6 @@ public class JianceController {
 	@Autowired
     private JianceRepository jianceRepository;
 	
-	private List<String> titles = new LinkedList<String>();
-	
 	@Autowired
 	private ElasticsearchTemplate esTemplate;
 	
@@ -369,11 +367,6 @@ public class JianceController {
 					System.out.println(feed.getTitle());
 					System.out.println("***********************************");
 					for (SyndEntry entry : feed.getEntries()) {
-						if(titles.contains(entry.getTitle())){
-							continue;
-						}else {
-							titles.add(entry.getTitle());
-						}
 						Jiance jiance = new Jiance();
 						jiance.setId(UUID.randomUUID().toString());
 						jiance.setTitle(entry.getTitle());
@@ -457,6 +450,60 @@ public class JianceController {
 		}
 		return "T-jianceCon";
 	}
+	
+	
+	@GetMapping(value = "jiance/monitor")
+	public String jianceMonitor() {
+		List<Jiance> objs = new LinkedList<Jiance>();
+    	try {
+    		Map<String, String> map = new HashMap<String, String>();
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/48/sohuyiyao.xml", "行业新闻");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/51/sohuyiyao.xml", "产业动态");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/55/sohuyiyao.xml", "国家政策");
+    		map.put("http://35.201.235.191:3000/users/1/web_requests/68/keyanqianyan.xml", "研究前沿");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			int i=1;
+			for(Map.Entry<String, String> kv: map.entrySet()) {
+				try (XmlReader reader = new XmlReader(new URL(kv.getKey()))) {
+					SyndFeed feed = new SyndFeedInput().build(reader);
+					System.out.println(feed.getTitle());
+					System.out.println("***********************************");
+					for (SyndEntry entry : feed.getEntries()) {
+//						if(titles.contains(entry.getTitle())){
+//							continue;
+//						}else {
+//							titles.add(entry.getTitle());
+//						}
+						Jiance jiance = new Jiance();
+						jiance.setId(UUID.randomUUID().toString());
+						jiance.setTitle(entry.getTitle());
+						jiance.setDescription(entry.getDescription().getValue());
+						if(entry.getPublishedDate() != null) {
+							jiance.setPubtime(sdf.format(entry.getPublishedDate()));
+						}else {
+							System.out.println();
+						}
+						jiance.setLanmu(kv.getValue());
+						jiance.setInstitution("xyz");
+						
+						objs.add(jiance);
+						System.out.println("***********************************");
+					}
+					System.out.println("Done");
+				}
+				i++;
+			}
+			jianceRepository.saveAll(objs);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "T-jianceCon";
+	}
+	
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "jiance/jianceInsList", method = RequestMethod.POST,consumes = "application/json")
 	public R expertInsList(@RequestBody JSONObject insname) {

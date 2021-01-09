@@ -131,8 +131,6 @@ $("#bindButtion").click(function(){
     $.each(formArray,function(i,item){
         formObject[item.name] = item.value;
     });
-    //formObject["nickName"] = $.cookie("nickName")
-    //formObject["openId"] = $.cookie("openId")
     $.ajax({
         url:"user/bind",
         type:"post",

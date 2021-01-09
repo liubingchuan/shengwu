@@ -211,7 +211,7 @@ public abstract class AbstractESHttpService implements ESHttpService {
 		}else {
 			param.put("query", args[0]);
 			model.addAttribute("query", args[0]);
-			param.put("operator", "and");
+//			param.put("operator", "and");
 			param.put("type", "cross_fields");
 			param.put("fields", crossedFields.toArray());
 			//param.put("type", "best_fields");

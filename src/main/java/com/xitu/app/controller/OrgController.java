@@ -79,7 +79,7 @@ public class OrgController {
 		Org org = new Org();
 		BeanUtil.copyBean(request, org);
 		if(org.getId() == null || "".equals(org.getId())) {
-			org.setId(UUID.randomUUID().toString());
+			org.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
 		}
 		List<String> area = new ArrayList<String>();
 		List<String> classic = new ArrayList<String>();
