@@ -12,6 +12,7 @@ import java.net.Proxy;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -75,9 +77,12 @@ import com.xitu.app.common.request.AgPersonRequest;
 import com.xitu.app.common.request.AgTypeRequest;
 import com.xitu.app.common.request.PatentPageListRequest;
 import com.xitu.app.common.request.PriceAvgRequest;
+import com.xitu.app.common.request.SavePaperRequest;
+import com.xitu.app.common.request.SavePatentRequest;
 import com.xitu.app.mapper.PatentMapper;
 import com.xitu.app.mapper.PriceMapper;
 import com.xitu.app.model.Org;
+import com.xitu.app.model.Paper;
 import com.xitu.app.model.Patent;
 import com.xitu.app.model.PatentMysql;
 import com.xitu.app.model.Price;
@@ -135,6 +140,115 @@ public class PatentController {
 		model.addAttribute("patent", patent);
 		model.addAttribute("applynumber", patent.getApplynumber());
 		return "result-zlCon";
+	}
+	
+	
+	@PostMapping(value = "patent/save")
+	public String savePatent(@RequestBody SavePatentRequest request) {
+		
+		Patent patent = new Patent();
+		patent.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
+		patent.setTitle(request.getTitle());
+		patent.setSubject(request.getSubject());
+		if (request.getPerson()!= null) {
+			String[] persons = request.getPerson().split(";");
+			List<String> personList = Arrays.asList(persons);
+			patent.setPerson(personList);
+		}
+		
+		if (request.getApplicantipc() != null) {
+			String[] apcs = request.getApplicantipc().split(";");
+			List<String> apcList = Arrays.asList(apcs);
+			patent.setApplicantipc(apcList);
+		}
+		
+		if (request.getCreator() != null) {
+			String[] creators = request.getCreator().split(";");
+			List<String> creatorList = Arrays.asList(creators);
+			patent.setCreator(creatorList);
+		}
+		
+		if (request.getIpcyear() != null) {
+			String[] ipcyears = request.getIpcyear().split(";");
+			List<String> ipcyearList = Arrays.asList(ipcyears);
+			patent.setIpcyear(ipcyearList);
+		}
+		
+		if (request.getMonth() != null) {
+			patent.setMonth(request.getMonth());
+		}
+		
+		if (request.getApplytime() != null) {
+			patent.setApplytime(request.getApplytime());
+		}
+		
+		if (request.getPublictime() != null) {
+			patent.setPublictime(request.getPublictime());
+		}
+		
+		if (request.getApplyyear() != null) {
+			patent.setApplyyear(request.getApplyyear());
+		}
+		
+		if ( request.getPublicyear() != null) {
+			patent.setPublicyear(request.getPublicyear());
+		}
+		
+		if ( request.getTypeyear() != null ) {
+			patent.setTypeyear(request.getTypeyear());
+		}
+		
+		if (request.getTypemonth() != null) {
+			patent.setTypemonth(request.getTypemonth());
+		}
+		if(request.getType() != null) {
+			patent.setType(request.getType());
+		}
+		
+		if( request.getDescription() != null) {
+			patent.setDescription(request.getDescription());
+		}
+		if (request.getClaim() != null) {
+			patent.setClaim(request.getClaim());
+		}
+		if (request.getPublicnumber() != null) {
+			patent.setPublicnumber(request.getPublicnumber());
+		}
+		
+		if (request.getApplynumber() != null) {
+			patent.setApplynumber(request.getApplynumber());
+		}
+		
+		if ( request.getIpc() != null) {
+			String[] ipcs = request.getIpc().split(";");
+			List<String> ipcList = Arrays.asList(ipcs);
+			patent.setIpc(ipcList);
+		}
+		
+		if (request.getCpc() != null) {
+			String[] cpcs = request.getCpc().split(";");
+			List<String> cpcList = Arrays.asList(cpcs);
+			patent.setCpc(cpcList);
+		}
+		
+		if(request.getPiroryear() != null) {
+			patent.setPiroryear(request.getPiroryear());
+		}
+		
+		if ( request.getCountry() != null) {
+			patent.setCountry(request.getCountry());
+		}
+		
+		if (request.getLawstatus() != null) {
+			patent.setLawstatus(request.getLawstatus());
+		}
+		
+		patent.setNow(System.currentTimeMillis());
+		patentRepository.save(patent);
+		
+		
+		
+		return "redirect:/org/list";
 	}
 	
 //	@RequestMapping(value = "patent/list")

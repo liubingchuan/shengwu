@@ -24,7 +24,7 @@ spring:
        #cluster-nodes: 47.104.7.73:9300
 
 server:
-  port: 80
+  port: 8080
     
 mybatis:
   configuration:

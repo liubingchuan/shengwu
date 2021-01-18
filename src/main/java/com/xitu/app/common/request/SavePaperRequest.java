@@ -23,6 +23,13 @@ public class SavePaperRequest extends BaseRequest{
 	private Long ref; // 被引量
 	private String keywords;
 	private Long now;
+	private String org;
+	public String getOrg() {
+		return org;
+	}
+	public void setOrg(String org) {
+		this.org = org;
+	}
 	public String getId() {
 		return id;
 	}

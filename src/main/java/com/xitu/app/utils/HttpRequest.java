@@ -62,7 +62,7 @@ public class HttpRequest {
         }
         logSb.append("]-");
         logSb.append(ignoreHttps == true ? "[忽略https证书]-" : "[不忽略https证书]-");
-        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
+//        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
         LogUtil.info(logSb);
         String resStr = response(httpGet, ignoreHttps);
         LogUtil.info("响应报文：[" + resStr + "]");
@@ -100,7 +100,7 @@ public class HttpRequest {
         logSb.append("]-");
         logSb.append("cotentType" + "[" + cotentType + "]-");
         logSb.append(ignoreHttps == true ? "[忽略https证书]-" : "[不忽略https证书]-");
-        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
+//        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
         LogUtil.info(logSb);
         String resStr = response(httpPost, ignoreHttps);
         LogUtil.info("响应报文：[" + resStr + "]");
@@ -138,7 +138,7 @@ public class HttpRequest {
         logSb.append("]-");
         logSb.append("cotentType" + "[" + cotentType + "]-");
         logSb.append(ignoreHttps == true ? "[忽略https证书]-" : "[不忽略https证书]-");
-        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
+//        logSb.append(OPEN_PROXY == true ? ("[开启代理" + PROXY_SCHEME + "://" + PROXY_HOST_NAME + ":" + PROXY_PORT + "]-") : "[未开启代理]");
         LogUtil.info(logSb);
         return responseAsStream(httpPost, ignoreHttps);
     }
