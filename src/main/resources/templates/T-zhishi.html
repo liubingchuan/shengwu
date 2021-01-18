@@ -165,7 +165,7 @@
 												<select class="chaxinselect"  th:field="*{chaxinfanwei}">
 													<option value ="请选择查新范围">请选择查新范围</option>
 													<option value ="国内">国内</option>
-													<option value ="国外">国外</option>
+													<option value ="国内外">国内外</option>
 												</select>
 												<!-- <div class="erroText">
 	    				                                                输入错误
@@ -177,7 +177,9 @@
 												</p>
 												<select class="chaxinselect" th:field="*{mudi}">
 													<option value="请选择项目目的">请选择项目目的</option>
-													<option value="项目评审">项目评审</option>
+													<option value="立项查新">立项查新</option>
+													<option value="成果查新">成果查新</option>
+													<option value="其他查新">其他查新</option>
 												</select>
 												<!-- <div class="erroText">
 	    				                                                输入错误
@@ -197,7 +199,7 @@
 								    	<div class="clearfix chaxinzjGp">
 								    	<div class="chaxinMB chaxinw-four left">
 										       <p class="chaxinName">
-												检索点<span class="colorRed">*</span>
+												查新点<span class="colorRed">*</span>
 												</p>
 												<input type="text" id="jiansuodian" placeholder="多个检索点之间请用分号分隔" class="chaxingpInp" th:field="*{jiansuodian}"/>
 												<div class="erroText" id="jiansuodianer">
@@ -231,7 +233,7 @@
 									    </a> -->
 								        </div>
 								    </div>
-								    <div class="clearfix">
+								    <!-- <div class="clearfix">
 								    	<div class="left chaxinMB chaxinw-two">
 								    		<p class="chaxinName">
 												学科分类
@@ -240,9 +242,9 @@
 													<option value="请选择学科分类">请选择学科分类</option>
 													<option value="遗传学">遗传学</option>
 												</select>
-												<!-- <div class="erroText">
+												<div class="erroText">
 	    				                                                输入错误
-	    			                            </div> -->
+	    			                            </div>
 								    	</div>
 								    	<div class="left chaxinMB  chaxinw-two ml21">
 								    		<p class="chaxinName">
@@ -252,11 +254,11 @@
 													<option value="请选择产业分类">请选择产业分类</option>
 													<option value="生物医药">生物医药</option>
 												</select>
-												<!-- <div class="erroText">
+												<div class="erroText">
 	    				                                                输入错误
-	    			                            </div> -->
+	    			                            </div>
 								    	</div>
-								    </div>
+								    </div> -->
 								    <div class="chaxinMB">
 										       <p class="chaxinName">
 												说明
