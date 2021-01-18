@@ -103,7 +103,8 @@
 		        				全文链接 ：
 		        			</div>
 		        			<p>
-		        				<a href="#" class="colorBlue" th:text="*{link}"></a>
+		        				
+		        				<a th:href="${lin}" th:each="lin: ${paper.link}" class="colorBlue" th:text="${lin}"></a>
 		        			</p>
 		        		</div>
 		        		

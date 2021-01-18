@@ -110,6 +110,7 @@
 		var yearstr =  [[${yearstr}]];
 		var num =  [[${num}]];
 		var query =  [[${query}]];
+		
 		var barBase64Info = '';
 		
 			$(document).ready(function() {
@@ -299,9 +300,9 @@
 						type : 'post',
 						contentType: "application/json; charset=utf-8",
 						success : function(data) {
-							
-							alert('ok');
-							
+							var filename = data.filename;
+							//window.location.href = "http://47.93.216.109:8000/pdf/download/" + number + "/" + applynumbera;
+							window.location.href = "http://localhost/pdf/download?filename=" + filename;
 						}
 					}); 
 			}
