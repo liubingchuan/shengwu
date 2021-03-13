@@ -237,7 +237,7 @@ public class OrgController {
 		int i = 4;//0代表专利；1代表论文；2代表项目；3代表监测;4代表机构
 		// TODO 静态变量未环绕需调整
 		ThreadLocalUtil.set(model);
-		orgService.execute(pageIndex, pageSize, i,q,type,link,classic);
+		orgService.execute(pageIndex, pageSize, i,q,type,classic);
 		ThreadLocalUtil.remove();
 		String view = "qiyezhikuzhongdianjigouliebiao";
 		if (front != null) {
@@ -385,28 +385,31 @@ public class OrgController {
     		int aggsize = insNamearr.size();
     		
     		JSONObject expertInsName = ESHttpClient.conexpertESIns(orgService.createQqueryByListIns(insNamearr,aggsize,"unit"));
-    		JSONObject aggregations = expertInsName.getJSONObject("aggregations");
-    		JSONObject agg = (JSONObject) aggregations.get("unit");
-    		for(Object s:(JSONArray)agg.get("buckets")){
-    			JSONObject ss = (JSONObject) s;
-    			expertaggcountMap.put(ss.getString("key"), Integer.valueOf(ss.getString("doc_count")));
-    		}
-    		for(Map.Entry<String, Object> entry: map.entrySet()) {
-    			String name = entry.getKey();
-    			List<String> bieming = (List<String>) entry.getValue();
-    			//bieming.add(name);
-    			int count = 0;
-    			for (String ns:bieming) {
-					if (expertaggcountMap.containsKey(ns)) {
-						count += expertaggcountMap.get(ns);
-					}
-				}
-    			if (expertaggcountMap.containsKey(name)) {
-					count += expertaggcountMap.get(name);
-				}
-    			expertinscountMap.put(name, count);
-    		}
-    		reData.put("ExpertNum", expertinscountMap);
+    		if (expertInsName != null) {
+    			JSONObject aggregations = expertInsName.getJSONObject("aggregations");
+        		JSONObject agg = (JSONObject) aggregations.get("unit");
+        		for(Object s:(JSONArray)agg.get("buckets")){
+        			JSONObject ss = (JSONObject) s;
+        			expertaggcountMap.put(ss.getString("key"), Integer.valueOf(ss.getString("doc_count")));
+        		}
+        		for(Map.Entry<String, Object> entry: map.entrySet()) {
+        			String name = entry.getKey();
+        			List<String> bieming = (List<String>) entry.getValue();
+        			//bieming.add(name);
+        			int count = 0;
+        			for (String ns:bieming) {
+    					if (expertaggcountMap.containsKey(ns)) {
+    						count += expertaggcountMap.get(ns);
+    					}
+    				}
+        			if (expertaggcountMap.containsKey(name)) {
+    					count += expertaggcountMap.get(name);
+    				}
+        			expertinscountMap.put(name, count);
+        		}
+        		reData.put("ExpertNum", expertinscountMap);
+			}
+    		
     		
     		Map<String, Integer> patentaggcountMap = new HashMap<String, Integer>();
         	Map<String, Integer> patentinscountMap = new HashMap<String, Integer>();

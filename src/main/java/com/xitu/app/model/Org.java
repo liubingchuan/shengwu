@@ -43,8 +43,6 @@ public class Org implements Serializable{
 	@Field(type=FieldType.Keyword)
 	private String type;  // 机构类型
 	
-	@AggQuery
-	@SingleQuery
 	@Field(type=FieldType.Keyword)
 	private String link; // 产业链
 	

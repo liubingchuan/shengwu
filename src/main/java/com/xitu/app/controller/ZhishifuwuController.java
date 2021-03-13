@@ -430,6 +430,7 @@ public class ZhishifuwuController {
 		return "redirect:/zhishifuwu/shenqinglist?front=0&pageIndex="+pageIndex+"&pageSize="+pageSize;
 		
 	}
+
 	@GetMapping(value = "zhishifuwu/tijiao")
 	public String tijiao(@RequestParam(required=false, value="token") String token, 
 			@RequestParam(required=false,value="uuid") String uuid,
