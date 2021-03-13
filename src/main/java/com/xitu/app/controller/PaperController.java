@@ -7,7 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,9 +66,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONReader;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.xitu.app.common.R;
+import com.xitu.app.common.request.SaveOrgRequest;
 import com.xitu.app.common.request.SavePaperRequest;
 import com.xitu.app.mapper.PatentMapper;
 import com.xitu.app.model.AggVO;
+import com.xitu.app.model.Org;
 import com.xitu.app.model.Paper;
 import com.xitu.app.model.PaperVO;
 import com.xitu.app.model.Project;
@@ -91,6 +96,47 @@ public class PaperController {
 	
 	@Autowired
 	private PaperService paperService;
+	
+	
+	@PostMapping(value = "paper/save")
+	public String saveOrg(@RequestBody SavePaperRequest request) {
+		
+		Paper paper = new Paper();
+		paper.setId(UUID.randomUUID().toString().replaceAll("\\-", ""));
+		paper.setTitle(request.getTitle());
+		paper.setSubject(request.getSubject());
+		if (request.getAuthor() != null) {
+			String[] authors = request.getAuthor().split(";");
+			List<String> authorList = Arrays.asList(authors);
+			paper.setAuthor(authorList);
+		}
+		
+		if ( request.getOrg() != null) {
+			String[] orgs = request.getOrg().split(";");
+			List<String> orgList = Arrays.asList(orgs);
+			paper.setInstitution(orgList);
+		}
+		
+		if ( request.getKeywords() != null) {
+			String[] keywords = request.getKeywords().split(";");
+			List<String> keyList = Arrays.asList(keywords);
+			paper.setKeywords(keyList);
+		}
+		
+		paper.setJournal(request.getJournal());
+		
+		paper.setIssue(request.getVp());
+		paper.setIssn(request.getIssn());
+		paper.setYear(request.getYear());
+		List<String> links = new ArrayList<String>();
+		links.add(request.getLink());
+		paper.setLink(links);
+		paper.setNow(System.currentTimeMillis());
+		paperRepository.save(paper);
+		
+		
+		return "redirect:/org/list";
+	}
 	
 	
 	@GetMapping(value = "paper/get")
@@ -908,7 +954,7 @@ public class PaperController {
     @GetMapping(value="paper/read")
     @ResponseBody 
     public R readPaper() {
-    	String fileName = "/Users/liubingchuan/Desktop/sw.json";
+    	String fileName = "/tmp/yiyao4.json";
     	File file = new File(fileName);
         BufferedReader reader = null;
         try {
