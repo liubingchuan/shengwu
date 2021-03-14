@@ -119,8 +119,8 @@ public class PatentController {
 	private PatentService patentService;
 	
 	// 代理隧道验证信息
-    final static String ProxyUser = "H677S6B336VV189D";
-    final static String ProxyPass = "8E65F1A7219B95AB";
+    final static String ProxyUser = "H1H17D0134OD999D";
+    final static String ProxyPass = "2A44BD5B12A05398";
 
     // 代理服务器
     final static String ProxyHost = "http-dyn.abuyun.com";
@@ -1654,6 +1654,373 @@ public class PatentController {
 			System.out.println();
 		}
 		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "patent/fetch/proxy/local", method = RequestMethod.GET)
+	public R fetchProxyLocal(@RequestParam(required=false,value="interval") Integer interval,
+			@RequestParam(required=false,value="patentIndex") Integer patentIndex,
+			@RequestParam(required=false,value="tail") Integer tail) {
+		String[] url={"http://www.soopat.com/Home/Result","http://www2.soopat.com/Home/Result","http://www1.soopat.com/Home/Result"};
+		String[] base = {"http://www.soopat.com","http://www1.soopat.com","http://www2.soopat.com"};
+		List<String> missedList = new ArrayList<String>();
+		Random random = new Random();
+		Map<String, String> map = new HashMap<String, String>();
+		int month = 0;
+		while(month<=280) {
+//			if(month==10) {
+//				System.out.println();
+//			}
+			System.out.println("已经到了"+month);
+			String date = getLastMonth(month);
+//			map.put("SearchWord", "(ZY:( 东软医疗 ) OR MC:( 东软医疗 ) OR SMS:(东软医疗)) AND GKRQ:(" + date + ")");
+			map.put("SearchWord", "(ZY:( 东软医疗 ) OR MC:( 东软医疗 ) OR SMS:(东软医疗) OR QLYQ (东软医疗)) AND GKRQ:( " + date + " )");
+//		map.put("SearchWord", "稀土");
+			map.put("FMZL", "Y");
+			map.put("SYXX", "Y");
+			map.put("WGZL", "Y");
+			map.put("FMSQ", "Y");
+			List<Patent> patents = new LinkedList<Patent>();
+			Authenticator.setDefault(new Authenticator() {
+				public PasswordAuthentication getPasswordAuthentication()
+				{
+					return new PasswordAuthentication(ProxyUser, ProxyPass.toCharArray());
+				}
+			});
+			
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHost, ProxyPort));
+			int out=0;
+			boolean cleaning = false;
+			patentIndex = 10;
+			tail = 20;
+			for(;patentIndex<tail;){
+				System.out.println("正在执行的date---------->" + date);
+				if(patents.size() >= 100) {
+					patentRepository.saveAll(patents);
+					patents.clear();
+				}
+				// TODO
+				boolean retry = true;
+				System.out.println("开启新的一页------>patentIndex---->" + patentIndex );
+				
+				Map<String,String> innerPathMap = new HashMap<String,String>();
+				if(missedList.size() > 0) {
+					for(String s: missedList) {
+						String[] str = s.split("%");
+						innerPathMap.put(str[0], str[1]);
+					}
+					missedList.clear();
+				}
+				map.put("PatentIndex", String.valueOf(patentIndex));
+				patentIndex += 10;
+				
+				try {
+					
+					// 看是否是在清扫
+					if(!cleaning) {
+						
+						out++;
+						String pageUrl = url[out%3];
+						System.out.println("pageUrl is ->" + pageUrl);
+						Connection conn = Jsoup.connect(pageUrl).
+								header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9").
+								header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36").
+								header("Accept-Encoding", "gzip, deflate").
+								header("Accept-Language", "zh-CN,zh;q=0.9").
+								header("Connection", "keep-alive").
+								header("Cookie", "__gads=ID=b0c8c96468c9d131-2285e973a3c5003d:T=1610281281:RT=1610281281:S=ALNI_MbyUMScNzpqSbowzaZQbIzA44pJHg; __utmz=135424883.1610281372.1.1.utmccn=(referral)|utmcsr=plus.soopat.com|utmcct=/|utmcmd=referral; ASP.NET_SessionId=qwajbrgirhcgqlkb4htdwm2e; advu1=; advu2=; advu3=; advu4=; patentids=; __utma=135424883.1989305164.1610281372.1610281372.1615655016.2; __utmc=135424883").
+								header("Host", "www.soopat.com").
+								header("Referer", "http://www.soopat.com/Home/Result?SearchWord=东软医疗&FMZL=Y&SYXX=Y&WGZL=Y&FMSQ=Y&PatentIndex=90").
+								header("Upgrade-Insecure-Requests", "1");
+						conn.data(map);
+						Document doc = conn.timeout(5000).header(ProxyHeadKey, ProxyHeadVal).proxy(proxy).get();
+//					Document doc = conn.get();
+//					System.out.println(doc.toString());
+						if(doc.toString().contains("请按图片上的要求依次点击图片上对应的字符")) {
+							System.out.println("已被拦截，当前PatentIndex为"+ (patentIndex-10) + "手动干预后放开断点，并继续执行");
+//					System.out.println("当前被封ip--》" + System.getProperties().getProperty("http.proxyHost") + System.getProperties().getProperty("http.proxyPort"));
+							System.out.println("正在尝试的url是 " + url[out%3]);
+							doc = conn.timeout(5000).header(ProxyHeadKey, ProxyHeadVal).proxy(proxy).get();
+//						doc = conn.get();
+							
+						}
+						
+						retry = false;
+//				System.out.println(doc.toString());
+						Elements patentBlocks = doc.getElementsByClass("PatentBlock");
+						if(doc.toString().contains("没有搜索到相关专利，原因可能是")) {
+							System.out.println(date + "没有搜索到相关专利");
+							break;
+						}
+						if(patentBlocks.size()>0) {
+							Elements right = doc.getElementsByClass("right");
+//							System.out.println(right.text());
+							s:
+								for(Element e: right) {
+									Elements ele = e.getElementsByTag("b");
+									for(Element elet: ele) {
+										if(!"".equals(elet.text())) {
+											tail = Integer.valueOf(elet.text());
+											if(tail > 1000) {
+												tail = 1000;
+											}
+										}
+										break s;
+									}
+//									System.out.println(e.text());
+								}
+							for(Element patentBlock: patentBlocks) {
+								Document patentDoc = Jsoup.parse(patentBlock.toString());
+								Elements patentTypeElements = patentDoc.getElementsByClass("PatentTypeBlock");
+								if(patentTypeElements.size() == 0) {
+									continue;
+								}
+								jump:
+									for(Element pte: patentTypeElements) {
+										System.out.println(pte.text());
+										String type = extractMessageByRegular(pte.text()).get(0);
+										Document pteDoc = Jsoup.parse(pte.toString());
+										Elements hrefs = pteDoc.select("a[href]");
+										for(Element elem: hrefs) {
+											if(!"".equals(elem.attr("href"))){
+												String href = elem.attr("href");
+												innerPathMap.put(href, type);
+												break jump;
+											}
+										}
+									}
+							}
+						}else {
+							patentIndex -= 10;
+							retry = true;
+						}
+					}
+					
+					
+//				int max=5000;
+//				int min=2000;
+					
+					int in=0;
+					for(Map.Entry<String, String> entry: innerPathMap.entrySet()) {
+//					int sleep = random.nextInt(max)%(max-min+1) + min;
+//					System.out.println("休眠" + sleep + "毫秒");
+//					try {
+//						Thread.sleep(sleep);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+						Patent patent = new Patent();
+						PatentMysql patentMysql = new PatentMysql();
+						String singleUrl = base[in%3] + entry.getKey();
+						in++;
+						
+						System.out.println("正在调用-------------------------->" + entry.getKey());
+						Connection singlePageConn = Jsoup.connect(singleUrl).
+								header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9").
+								header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36").
+								header("Accept-Encoding", "gzip, deflate").
+								header("Connection", "keep-alive").
+								header("Accept-Language", "zh-CN,zh;q=0.9").
+								header("Cookie", "__gads=ID=b0c8c96468c9d131-2285e973a3c5003d:T=1610281281:RT=1610281281:S=ALNI_MbyUMScNzpqSbowzaZQbIzA44pJHg; __utmz=135424883.1610281372.1.1.utmccn=(referral)|utmcsr=plus.soopat.com|utmcct=/|utmcmd=referral; ASP.NET_SessionId=qwajbrgirhcgqlkb4htdwm2e; advu1=; advu2=; advu3=; advu4=; patentids=; __utma=135424883.1989305164.1610281372.1610281372.1615655016.2; __utmc=135424883").
+								header("Host", "www.soopat.com").
+								header("Referer", "http://www.soopat.com/Home/Result?SearchWord=东软医疗&FMZL=Y&SYXX=Y&WGZL=Y&FMSQ=Y&PatentIndex=90").
+								header("Upgrade-Insecure-Requests", "1");
+						try {
+							System.out.println("正在执行的date---------->" + date);
+							Document singleDoc = singlePageConn.timeout(3000).header(ProxyHeadKey, ProxyHeadVal).proxy(proxy).get();
+//						Document singleDoc = singlePageConn.get();
+							System.out.println("成功调用-------------------->" + entry.getKey());
+							System.out.println("******************" + singleDoc.toString());
+							System.out.println("当前的month是--------------->" + month);
+							if(singleDoc.toString().contains("请按图片上的要求依次点击图片上对应的字符")) {
+								java.awt.Toolkit.getDefaultToolkit().beep();
+								System.out.println("已被拦截，当前PatentIndex为"+ (retry==true?patentIndex:(patentIndex-10)) + "手动干预后放开断点，并继续执行");
+								System.out.println("正在尝试的url是 " + singleUrl);
+								
+								// retry
+								singleDoc = singlePageConn.timeout(3000).header(ProxyHeadKey, ProxyHeadVal).proxy(proxy).get();
+//							singleDoc = singlePageConn.get();
+								
+								
+							}
+							System.out.println("******** step1");
+							Elements h1Elements = singleDoc.getElementsByTag("h1");
+							if(h1Elements==null || h1Elements.size()==0) {
+								missedList.add(entry.getKey() + "%" + entry.getValue());
+								System.out.println("未获取block，进入补偿队列的是---->" + entry.getKey() + "%" + entry.getValue());
+								continue;
+							}
+							System.out.println("********** step2");
+							for(Element h1Element: h1Elements) {
+								String title = h1Element.text();
+								if(title != null) {
+									patent.setType(entry.getValue());
+									patent.setTitle(title.split(" ")[0]);
+									String lawStatus = title.split(" ")[1];
+									if("".equals(lawStatus)) {
+										System.out.println("法律状态异常");
+										patent.setLawstatus("未知");
+									}
+									System.out.println(lawStatus);
+									patent.setLawstatus(title.split(" ")[1]);
+									patentMysql.setPtype(entry.getValue());
+									patentMysql.setTitle(title.split(" ")[0]);
+									patentMysql.setLawstatus(title.split(" ")[1]);
+									break;
+								}
+							}
+							System.out.println("正在执行的date---------->" + date);
+							System.out.println("************ step3");
+							Elements grayElements = singleDoc.getElementsByClass("gray");
+							for(Element grayElement: grayElements) {
+								String appliance = grayElement.text();
+								if(appliance != null) {
+									String[] s = appliance.split(" ");
+									if(s.length>=2) {
+										patent.setApplynumber(s[0].substring(4, s[0].length()));
+//									patent.setId(s[0].substring(4, s[0].length()));
+										patentMysql.setApplynumber(s[0].substring(4, s[0].length()));
+										String applytime = s[1].substring(4, s[1].length());
+										patent.setApplytime(applytime);
+										patentMysql.setApplytime(applytime);
+										patent.setApplyyear(applytime.substring(0, 4));
+										patentMysql.setApplyyear(applytime.substring(0, 4));
+										break;
+									}
+								}
+							}
+							
+							Elements datainfoElements = singleDoc.getElementsByClass("datainfo");
+							for(Element dataInfo : datainfoElements) {
+								Elements tdelements = dataInfo.getElementsByTag("td");
+								for(Element td: tdelements) {
+									if(td.text().contains("摘要：")){
+										patent.setSubject(td.text());
+										patentMysql.setSubject(td.text());
+									}else if(td.text().contains("申请人：")){
+										List<String> persons = new ArrayList<String>();
+										String personstr = td.text().replace("申请人：", "").trim();
+										String[] personArray = personstr.split(" ");
+										for(String s: personArray) {
+											persons.add(s);
+										}
+										patentMysql.setPerson(personstr.replace(" ", ";"));
+										patent.setPerson(persons);
+									}else if(td.text().contains("发明(设计)人：")) {
+										List<String> creators = new ArrayList<String>();
+										String creatorstr = td.text().replace("发明(设计)人：", "").trim();
+										String[] creatorArray = creatorstr.split(" ");
+										for(String s: creatorArray) {
+											creators.add(s);
+										}
+										patentMysql.setCreator(creatorstr.replace(" ", ";"));
+										patent.setCreator(creators);
+									}else if(td.text().contains("分类号：") && (!td.text().contains("主分类号："))) {
+										List<String> ipcs = new ArrayList<String>();
+										String ipc = td.text().replace("分类号：", "").trim();
+										String[] ipcArray = ipc.split(" ");
+										for(String s: ipcArray) {
+											ipcs.add(s);
+										}
+										patentMysql.setIpc(ipc.replace(" ", ";"));
+										patent.setIpc(ipcs);
+									}
+									System.out.println(td.text());
+								}
+							}
+							Elements vipcomElements = singleDoc.getElementsByClass("vipcom");
+							for(Element vipcom: vipcomElements) {
+								String s = vipcom.toString();
+								if(s.contains("其他信息")) {
+									int i = 0;
+									Elements tdelements = vipcom.getElementsByTag("td");
+									for(Element td: tdelements) {
+										if(i==1) {
+											String claim = td.text().length()>2000?td.text().substring(0,2000):td.text();
+											patent.setClaim(claim);
+											patentMysql.setClaim(td.text());
+										}else if(i==4) {
+											patent.setPublicnumber(td.text());
+											patentMysql.setPublicnumber(td.text());
+										}else if(i==7) {
+											String publictime = td.text().replace("&nbsp;", "").trim();
+											patent.setPublictime(publictime);
+											patentMysql.setPublictime(publictime);
+											if(publictime.contains("-")) {
+												patent.setPublicyear(publictime.split("-")[0]);
+												patentMysql.setPublicyear(publictime.split("-")[0]);
+											}
+										}else if(i==19) {
+											System.out.println("priority-----" + td.text());
+											patent.setPiroryear(td.text().equals("&nbsp;")?"":td.text());
+											patentMysql.setPiroryear(td.text().equals("&nbsp;")?"":td.text());
+										}
+										i++;
+									}
+								}
+							}
+							System.out.println("****************last step");
+							patent.setId(UUID.randomUUID().toString());
+							patent.setCountry("中国");
+							patent.setNow(System.currentTimeMillis());
+							patentMysql.setCountry("中国");
+//						patentMysql.setNow(System.currentTimeMillis());
+							System.out.println("开始插入mysql");
+							patentMapper.insertPatent(patentMysql);
+							System.out.println("结束插入mysql");
+							System.out.println("开始插入es");
+//							patentRepository.save(patent);
+							System.out.println("结束插入es");
+							patents.add(patent);
+						} catch(Exception e) {
+							e.printStackTrace();
+							System.out.println("出现异常，进入补偿队列的是---->" + entry.getKey() + "%" + entry.getValue());
+							missedList.add(entry.getKey() + "%" + entry.getValue());
+						}
+					}
+					
+					System.out.println("fasdf");
+					
+					try {
+						Thread.sleep(interval);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("当前month是：" + month);
+					System.out.println("当前pageindex是：" +patentIndex);
+					if(retry) {
+						patentIndex -= 10;
+					}
+					// 将补偿队列还原回来
+					for(Map.Entry<String, String> entry: innerPathMap.entrySet()) {
+						missedList.add(entry.getKey() + "%" + entry.getValue());
+					}
+					if(patents.size()>10) {
+						patentRepository.saveAll(patents);
+						patents.clear();
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				// 末轮清空补偿队列
+				if(patentIndex >= tail && (!missedList.isEmpty())) {
+					patentIndex -= 10;
+					cleaning = true;
+				}
+			}
+			if(patents.size() > 0) {
+				patentRepository.saveAll(patents);
+			}
+			System.out.println(date + "这一轮全部结束");
+			month++;
+		}
+		return R.ok();
 	}
 	
 }
